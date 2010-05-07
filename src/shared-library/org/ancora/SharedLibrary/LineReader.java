@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -43,16 +44,14 @@ public class LineReader {
     }
 
    /**
-    * Builds a TraceReader from the given file. If the object could
+    * Builds a LineReader from the given file. If the object could
     * not be created, returns null.
     *
-    * <p>Creating a TraceReader involves File operations which can lead
+    * <p>Creating a LineReader involves File operations which can lead
     * to failure in creation of the object. That is why we use a public
     * static method instead of a constructor.
     *
-    * @param traceFile a file representing a MicroBlaze Trace, as in the format
-    * of the tool of the Ancora Group (not avaliable yet).
-    * @return a TraceReader If the object could not be created, returns null.
+    * @return a LineReader If the object could not be created, returns null.
     */
    public static LineReader createLineReader(File file) {
 
@@ -67,10 +66,10 @@ public class LineReader {
             return new LineReader(newReader);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LineReader.class.getName()).
-                    warning("FileNotFoundException: "+ex.getMessage());
+                    log(Level.WARNING, "FileNotFoundException: {0}", ex.getMessage());
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(LineReader.class.getName()).
-                    warning("UnsupportedEncodingException: "+ex.getMessage());
+                    log(Level.WARNING, "UnsupportedEncodingException: {0}", ex.getMessage());
         }
 
       return null;
@@ -87,7 +86,7 @@ public class LineReader {
               return reader.readLine();
            } catch (IOException ex) {
               Logger.getLogger(LineReader.class.getName()).
-                      warning("IOException: "+ex.getMessage());
+                      log(Level.WARNING, "IOException: {0}", ex.getMessage());
               return null;
            }
     }
