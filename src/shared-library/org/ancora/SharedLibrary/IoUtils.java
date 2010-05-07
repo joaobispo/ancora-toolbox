@@ -22,10 +22,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -76,8 +82,8 @@ public class IoUtils {
       // Check if File exists. If true, is not a folder.
       final boolean folderExists = folder.exists();
       if (folderExists) {
-         Logger.getLogger(IoUtils.class.getName()).warning("Path '" + folderpath + "' exists, but " +
-                 "doesn't represent a folder.");
+         Logger.getLogger(IoUtils.class.getName()).log(Level.WARNING,"Path ''{0}" + "'' exists, but " +
+                 "doesn''t represent a folder.", folderpath);
          return null;
       }
 
@@ -85,14 +91,14 @@ public class IoUtils {
       final boolean folderCreated = folder.mkdirs();
       if (folderCreated) {
          Logger.getLogger(IoUtils.class.getName()).
-                 info("Folder created (" + folder.getAbsolutePath() + ").");
+                 log(Level.INFO, "Folder created ({0}).", folder.getAbsolutePath());
          return folder;
 
       } else {
          // Couldn't create folder
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("Path '" + folderpath + "' doesn't exist and " +
-                 "couldn't be created.");
+                 log(Level.WARNING,"Path ''{0}" + "'' doesn''t exist and " +
+                 "couldn''t be created.", folderpath);
          return null;
       }
    }
@@ -130,13 +136,13 @@ public class IoUtils {
       final boolean fileExists = file.exists();
       if (fileExists) {
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("Path '" + filepath + "' exists, but doesn't " +
-                 "represent a file.");
+                 log(Level.WARNING,"Path ''{0}" + "'' exists, but doesn''t " +
+                 "represent a file.", filepath);
          return null;
       } else {
          // File doesn't exist, return null.
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("Path '" + filepath + "' does not exist.");
+                 log(Level.WARNING, "Path ''{0}'' does not exist.", filepath);
          return null;
 
       }
@@ -192,7 +198,7 @@ public class IoUtils {
          "file '" + file.getAbsolutePath() + "'");
           */
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("FileNotFoundException: " + ex.getMessage());
+                 log(Level.WARNING, "FileNotFoundException: {0}", ex.getMessage());
          stringBuilder = new StringBuilder(0);
 
       } catch (IOException ex) {
@@ -202,13 +208,13 @@ public class IoUtils {
          "file '" + file.getAbsolutePath() + "'");
           */
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("IOException: " + ex.getMessage());
+                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
          stringBuilder = new StringBuilder(0);
       }
 
       if (stringBuilder.length() == 0) {
          Logger.getLogger(IoUtils.class.getName()).
-                 info("Read 0 characters from file '" + file.getAbsolutePath() + "'.");
+                 log(Level.INFO, "Read 0 characters from file ''{0}''.", file.getAbsolutePath());
       }
 
 
@@ -299,16 +305,16 @@ public class IoUtils {
             if(!filePath.equals(lastAppeddedFileAbsolutePath)) {
                lastAppeddedFileAbsolutePath = filePath;
                Logger.getLogger(IoUtils.class.getName()).
-                       info("File appended (" + file.getAbsolutePath() + ").");
+                       log(Level.INFO, "File appended ({0}).", file.getAbsolutePath());
             }
          } else {
             Logger.getLogger(IoUtils.class.getName()).
-                    info("File written (" + file.getAbsolutePath() + ").");
+                    log(Level.INFO, "File written ({0}).", file.getAbsolutePath());
          }
 
       } catch (IOException ex) {
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("IOException: " + ex.getMessage());
+                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
          return false;
       }
 
@@ -342,10 +348,90 @@ public class IoUtils {
          return props;
       } catch (IOException ex) {
          Logger.getLogger(IoUtils.class.getName()).
-                 warning("IOException: " + ex.getMessage());
+                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
       }
 
       return null;
+   }
+
+   /**
+    * Given a filename, removes the extension suffix and the separator.
+    *
+    * <p>Example:
+    * <br>filename: 'readme.txt'
+    * <br>separator: '.'
+    * <br>result: 'readme'
+    *
+    * @param filename a string
+    * @param separator the extension separator
+    * @return the name of the file without the extension and the separator
+    */
+      public static String removeExtension(String filename, String separator) {
+      int extIndex = filename.lastIndexOf(separator);
+      return filename.substring(0, extIndex);
+   }
+
+      /**
+       * @param folder a File representing a folder.
+       * @param extensions a set of strings
+       * @return all the files inside the given folder, excluding other folders,
+       * that have a certain extension as determined by the set.
+       */
+      public static List<File> getFilesRecursive(File folder, Set<String> extensions) {
+      List<File> fileList = new ArrayList<File>();
+
+      for(String extension : extensions) {
+         fileList.addAll(getFilesRecursive(folder, extension));
+      }
+
+      return fileList;
+   }
+
+      /**
+       * @param folder a File representing a folder.
+       * @param extension a string
+       * @return all the files inside the given folder, excluding other folders,
+       * that have a certain extension.
+       */
+      public static List<File> getFilesRecursive(File folder, String extension) {
+      List<File> fileList = new ArrayList<File>();
+      File[] files = folder.listFiles(new ExtensionFilter(extension));
+      
+      fileList.addAll(Arrays.asList(files));
+
+      files = folder.listFiles();
+      for(File file : files) {
+         if(file.isDirectory()) {
+            fileList.addAll(getFilesRecursive(file, extension));
+         }
+      }
+
+      return fileList;
+   }
+
+
+      /**
+       * @param folder a File representing a folder.
+       * @return all the files inside the given folder, excluding
+       * other folders.
+       */
+      public static List<File> getFilesRecursive(File folder) {
+      List<File> fileList = new ArrayList<File>();
+      File[] files = folder.listFiles();
+
+      for(File file : files) {
+         if(file.isFile()) {
+            fileList.add(file);
+         }
+      }
+
+      for(File file : files) {
+         if(file.isDirectory()) {
+            fileList.addAll(getFilesRecursive(file));
+         }
+      }
+
+      return fileList;
    }
 
    
@@ -356,7 +442,27 @@ public class IoUtils {
     * Default CharSet used in file operations.
     */
    final public static String DEFAULT_CHAR_SET = "UTF-8";
-
+   final public static String DEFAULT_EXTENSION_SEPARATOR = ".";
    // Records the name of the last file appended
    private static String lastAppeddedFileAbsolutePath = "";
+
+   /**
+    * INNER CLASS
+    *
+    * Accepts files with a certain extension.
+    */
+   static class ExtensionFilter implements FilenameFilter {
+
+      public ExtensionFilter(String extension) {
+         this.extension = extension;
+         this.separator = DEFAULT_EXTENSION_SEPARATOR;
+      }
+
+      public boolean accept(File dir, String name) {
+         String suffix = separator + extension;
+         return name.endsWith(suffix);
+      }
+      private String extension;
+      private String separator;
+   }
 }
