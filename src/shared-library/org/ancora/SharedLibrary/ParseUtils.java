@@ -41,7 +41,7 @@ public class ParseUtils {
          intResult = Integer.parseInt(integer);
       } catch (NumberFormatException e) {
          Logger.getLogger(ParseUtils.class.getName()).
-                 log(Level.WARNING, "Couldn''t parse ''{0}'' into an integer. Returning {1}.", new Object[]{integer, intResult});
+                 log(Level.WARNING, "Couldn''t parse '"+integer+"' into an integer. Returning "+intResult+".");
       }
 
       return intResult;
@@ -60,7 +60,7 @@ public class ParseUtils {
          longResult = Long.parseLong(longNumber);
       } catch (NumberFormatException e) {
          Logger.getLogger(ParseUtils.class.getName()).
-                 log(Level.WARNING, "Couldn''t parse ''{0}'' into an long. Returning {1}.", new Object[]{longNumber, longResult});
+                 log(Level.WARNING, "Couldn''t parse '"+longNumber+"' into an long. Returning "+longResult+".");
       }
 
       return longResult;

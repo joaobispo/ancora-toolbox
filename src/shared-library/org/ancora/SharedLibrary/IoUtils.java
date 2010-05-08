@@ -82,8 +82,10 @@ public class IoUtils {
       // Check if File exists. If true, is not a folder.
       final boolean folderExists = folder.exists();
       if (folderExists) {
-         Logger.getLogger(IoUtils.class.getName()).log(Level.WARNING,"Path ''{0}" + "'' exists, but " +
-                 "doesn''t represent a folder.", folderpath);
+//         Logger.getLogger(IoUtils.class.getName()).log(Level.WARNING,"Path ''{0}" + "'' exists, but " +
+//                 "doesn''t represent a folder.", folderpath);
+         Logger.getLogger(IoUtils.class.getName()).log(Level.WARNING,"Path '"+folderpath+"' exists, but " +
+                 "doesn''t represent a folder.");
          return null;
       }
 
@@ -91,14 +93,14 @@ public class IoUtils {
       final boolean folderCreated = folder.mkdirs();
       if (folderCreated) {
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.INFO, "Folder created ({0}).", folder.getAbsolutePath());
+                 log(Level.INFO, "Folder created ("+folder.getAbsolutePath()+").");
          return folder;
 
       } else {
          // Couldn't create folder
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING,"Path ''{0}" + "'' doesn''t exist and " +
-                 "couldn''t be created.", folderpath);
+                 log(Level.WARNING,"Path '" + folderpath+"' does not exist and " +
+                 "couldn''t be created.");
          return null;
       }
    }
@@ -136,13 +138,13 @@ public class IoUtils {
       final boolean fileExists = file.exists();
       if (fileExists) {
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING,"Path ''{0}" + "'' exists, but doesn''t " +
-                 "represent a file.", filepath);
+                 log(Level.WARNING,"Path '" +filepath+ "' exists, but doesn''t " +
+                 "represent a file.");
          return null;
       } else {
          // File doesn't exist, return null.
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING, "Path ''{0}'' does not exist.", filepath);
+                 log(Level.WARNING, "Path '"+filepath+"' does not exist.");
          return null;
 
       }
@@ -198,7 +200,7 @@ public class IoUtils {
          "file '" + file.getAbsolutePath() + "'");
           */
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING, "FileNotFoundException: {0}", ex.getMessage());
+                 log(Level.WARNING, "FileNotFoundException: "+ex.getMessage() );
          stringBuilder = new StringBuilder(0);
 
       } catch (IOException ex) {
@@ -208,13 +210,13 @@ public class IoUtils {
          "file '" + file.getAbsolutePath() + "'");
           */
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
+                 log(Level.WARNING, "IOException: "+ ex.getMessage());
          stringBuilder = new StringBuilder(0);
       }
 
       if (stringBuilder.length() == 0) {
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.INFO, "Read 0 characters from file ''{0}''.", file.getAbsolutePath());
+                 log(Level.INFO, "Read 0 characters from file '"+file.getAbsolutePath()+"'.");
       }
 
 
@@ -305,16 +307,16 @@ public class IoUtils {
             if(!filePath.equals(lastAppeddedFileAbsolutePath)) {
                lastAppeddedFileAbsolutePath = filePath;
                Logger.getLogger(IoUtils.class.getName()).
-                       log(Level.INFO, "File appended ({0}).", file.getAbsolutePath());
+                       log(Level.INFO, "File appended ("+file.getAbsolutePath()+").");
             }
          } else {
             Logger.getLogger(IoUtils.class.getName()).
-                    log(Level.INFO, "File written ({0}).", file.getAbsolutePath());
+                    log(Level.INFO, "File written ("+file.getAbsolutePath()+").");
          }
 
       } catch (IOException ex) {
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
+                 log(Level.WARNING, "IOException: " + ex.getMessage());
          return false;
       }
 
@@ -348,7 +350,7 @@ public class IoUtils {
          return props;
       } catch (IOException ex) {
          Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.WARNING, "IOException: {0}", ex.getMessage());
+                 log(Level.WARNING, "IOException: "+ ex.getMessage());
       }
 
       return null;

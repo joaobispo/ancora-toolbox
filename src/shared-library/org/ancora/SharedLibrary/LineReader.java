@@ -66,10 +66,10 @@ public class LineReader {
             return new LineReader(newReader);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LineReader.class.getName()).
-                    log(Level.WARNING, "FileNotFoundException: {0}", ex.getMessage());
+                    log(Level.WARNING, "FileNotFoundException: "+ ex.getMessage());
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(LineReader.class.getName()).
-                    log(Level.WARNING, "UnsupportedEncodingException: {0}", ex.getMessage());
+                    log(Level.WARNING, "UnsupportedEncodingException: "+ ex.getMessage());
         }
 
       return null;
@@ -86,7 +86,7 @@ public class LineReader {
               return reader.readLine();
            } catch (IOException ex) {
               Logger.getLogger(LineReader.class.getName()).
-                      log(Level.WARNING, "IOException: {0}", ex.getMessage());
+                      log(Level.WARNING, "IOException: "+ ex.getMessage());
               return null;
            }
     }
