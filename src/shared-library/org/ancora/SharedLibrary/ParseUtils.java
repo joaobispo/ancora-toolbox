@@ -124,24 +124,24 @@ public class ParseUtils {
 
    /**
     * Adds spaces to the end of the given string until it has the desired size.
-    * @param string
-    * @param length
-    * @return
+    * @param string a string
+    * @param length the size we want the string to be
+    * @return the string, with the desired size
     */
-   public static String padRight(String s, int n) {
-      return String.format("%1$-" + n + "s", s);
+   public static String padRight(String string, int length) {
+      return String.format("%1$-" + length + "s", string);
    }
 
    /**
     * Adds spaces to the beginning of the given string until it has the
     * desired size.
     * 
-    * @param s
-    * @param n
-    * @return
+    * @param string a string
+    * @param length length the size we want the string to be
+    * @return the string, with the desired size
     */
-   public static String padLeft(String s, int n) {
-      return String.format("%1$#" + n + "s", s);
+   public static String padLeft(String string, int length) {
+      return String.format("%1$#" + length + "s", string);
    }
 
 }
