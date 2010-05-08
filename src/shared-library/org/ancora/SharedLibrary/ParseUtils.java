@@ -17,6 +17,7 @@
 
 package org.ancora.SharedLibrary;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -40,7 +41,7 @@ public class ParseUtils {
          intResult = Integer.parseInt(integer);
       } catch (NumberFormatException e) {
          Logger.getLogger(ParseUtils.class.getName()).
-                 warning("Couldn't parse '"+integer+"' into an integer. Returning "+intResult+".");
+                 log(Level.WARNING, "Couldn''t parse ''{0}'' into an integer. Returning {1}.", new Object[]{integer, intResult});
       }
 
       return intResult;
@@ -59,7 +60,7 @@ public class ParseUtils {
          longResult = Long.parseLong(longNumber);
       } catch (NumberFormatException e) {
          Logger.getLogger(ParseUtils.class.getName()).
-                 warning("Couldn't parse '"+longNumber+"' into an long. Returning "+longResult+".");
+                 log(Level.WARNING, "Couldn''t parse ''{0}'' into an long. Returning {1}.", new Object[]{longNumber, longResult});
       }
 
       return longResult;
@@ -119,6 +120,28 @@ public class ParseUtils {
       }
 
       return index;
+   }
+
+   /**
+    * Adds spaces to the end of the given string until it has the desired size.
+    * @param string
+    * @param length
+    * @return
+    */
+   public static String padRight(String s, int n) {
+      return String.format("%1$-" + n + "s", s);
+   }
+
+   /**
+    * Adds spaces to the beginning of the given string until it has the
+    * desired size.
+    * 
+    * @param s
+    * @param n
+    * @return
+    */
+   public static String padLeft(String s, int n) {
+      return String.format("%1$#" + n + "s", s);
    }
 
 }
