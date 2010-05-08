@@ -18,6 +18,8 @@
 package org.ancora.DTool;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -51,6 +53,9 @@ class Test {
 
       //System.out.println("Cycles 2:"+traceReader.getCycles());
       //System.out.println("Inst 2:"+traceReader.getNumberInstructions());
+      String testString = "aaaa";
+      Logger.getLogger(Test.class.getName()).
+                 log(Level.INFO,"Testing :''{0}''.", testString);
    }
 
 }
