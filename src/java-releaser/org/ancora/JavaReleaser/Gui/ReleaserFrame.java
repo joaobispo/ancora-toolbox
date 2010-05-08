@@ -103,7 +103,7 @@ public class ReleaserFrame extends javax.swing.JFrame {
          }
       });
 
-      jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/Releaser/browse-icon.PNG"))); // NOI18N
+      jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/JavaReleaser/browse-icon.PNG"))); // NOI18N
       jButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
       jButton2.setMaximumSize(new java.awt.Dimension(30, 28));
       jButton2.setMinimumSize(new java.awt.Dimension(30, 28));
@@ -114,7 +114,7 @@ public class ReleaserFrame extends javax.swing.JFrame {
          }
       });
 
-      jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/Releaser/browse-icon.PNG"))); // NOI18N
+      jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/JavaReleaser/browse-icon.PNG"))); // NOI18N
       jButton3.setMargin(new java.awt.Insets(0, 0, 0, 0));
       jButton3.setMaximumSize(new java.awt.Dimension(30, 28));
       jButton3.setMinimumSize(new java.awt.Dimension(30, 28));
@@ -125,7 +125,7 @@ public class ReleaserFrame extends javax.swing.JFrame {
          }
       });
 
-      jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/Releaser/browse-icon.PNG"))); // NOI18N
+      jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/ancora/JavaReleaser/browse-icon.PNG"))); // NOI18N
       jButton4.setMargin(new java.awt.Insets(0, 0, 0, 0));
       jButton4.setMaximumSize(new java.awt.Dimension(30, 28));
       jButton4.setMinimumSize(new java.awt.Dimension(30, 28));
