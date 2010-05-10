@@ -43,7 +43,7 @@ public class DtoolTraceBusReader implements InstructionBusReader {
       TraceReader reader = TraceReader.createTraceReader(traceFile);
       if(reader == null) {
          Logger.getLogger(DtoolTraceBusReader.class.getName()).
-                    warning("Could not create MbTraceReader.");
+                    warning("Could not create TraceReader.");
          return null;
       }
 
