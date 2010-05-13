@@ -92,8 +92,14 @@ public class IoUtils {
       // Try to create folder.
       final boolean folderCreated = folder.mkdirs();
       if (folderCreated) {
+         try{
          Logger.getLogger(IoUtils.class.getName()).
+                 //log(Level.INFO, "Folder created ("+folder.getAbsolutePath()+").");
+                 log(Level.INFO, "Folder created ("+folder.getCanonicalPath()+").");
+         } catch(IOException ex) {
+          Logger.getLogger(IoUtils.class.getName()).
                  log(Level.INFO, "Folder created ("+folder.getAbsolutePath()+").");
+         }
          return folder;
 
       } else {
@@ -215,8 +221,14 @@ public class IoUtils {
       }
 
       if (stringBuilder.length() == 0) {
-         Logger.getLogger(IoUtils.class.getName()).
-                 log(Level.INFO, "Read 0 characters from file '"+file.getAbsolutePath()+"'.");
+         try {
+            Logger.getLogger(IoUtils.class.getName()).
+                    //log(Level.INFO, "Read 0 characters from file '"+file.getAbsolutePath()+"'.");
+                    log(Level.INFO, "Read 0 characters from file '" + file.getCanonicalPath() + "'.");
+         } catch (IOException ex) {
+            Logger.getLogger(IoUtils.class.getName()).
+                    log(Level.INFO, "Read 0 characters from file '" + file.getAbsolutePath() + "'.");
+         }
       }
 
 
@@ -303,15 +315,17 @@ public class IoUtils {
          // Inform about the operation
          if (append) {
             // Check if this is the same file as the last time
-            String filePath = file.getAbsolutePath();
-            if(!filePath.equals(lastAppeddedFileAbsolutePath)) {
-               lastAppeddedFileAbsolutePath = filePath;
+            //String filePath = file.getAbsolutePath();
+            String filePath = file.getCanonicalPath();
+            if(!filePath.equals(lastAppeddedFileCanonicalPath)) {
+               lastAppeddedFileCanonicalPath = filePath;
                Logger.getLogger(IoUtils.class.getName()).
-                       log(Level.INFO, "File appended ("+file.getAbsolutePath()+").");
+                       //log(Level.INFO, "File appended ("+file.getAbsolutePath()+").");
+                       log(Level.INFO, "Appending file ("+file.getCanonicalPath()+").");
             }
          } else {
             Logger.getLogger(IoUtils.class.getName()).
-                    log(Level.INFO, "File written ("+file.getAbsolutePath()+").");
+                    log(Level.INFO, "File written ("+file.getCanonicalPath()+").");
          }
 
       } catch (IOException ex) {
@@ -446,7 +460,8 @@ public class IoUtils {
    final public static String DEFAULT_CHAR_SET = "UTF-8";
    final public static String DEFAULT_EXTENSION_SEPARATOR = ".";
    // Records the name of the last file appended
-   private static String lastAppeddedFileAbsolutePath = "";
+   //private static String lastAppeddedFileAbsolutePath = "";
+   private static String lastAppeddedFileCanonicalPath = "";
 
    /**
     * INNER CLASS
