@@ -115,6 +115,33 @@ public class LoggingUtils {
       redirectSystemErr();
    }
 
+   public static void setLevel(Level level) {
+      /// From StackOverflow
+      //http://stackoverflow.com/questions/470430/java-util-logging-logger-doesnt-respect-java-util-logging-level
+      //get the top Logger:
+      Logger topLogger = Logger.getLogger("");
+
+      // Handler for console (reuse it if it already exists)
+      Handler consoleHandler = null;
+      //see if there is already a console handler
+      for (Handler handler : topLogger.getHandlers()) {
+         if (handler instanceof ConsoleHandler) {
+            //found the console handler
+            consoleHandler = handler;
+            break;
+         }
+      }
+
+
+      if (consoleHandler == null) {
+         //there was no console handler found, create a new one
+         consoleHandler = new ConsoleHandler();
+         topLogger.addHandler(consoleHandler);
+      }
+      //set the console handler to fine:
+      consoleHandler.setLevel(level);
+   }
+
    // Preserving a reference to original stdout/stderr streams,
    // in case they might be useful.
    public final static PrintStream stdout = System.out;
