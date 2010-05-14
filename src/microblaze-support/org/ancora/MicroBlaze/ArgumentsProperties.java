@@ -22,7 +22,7 @@ import static org.ancora.MicroBlaze.InstructionName.*;
 
 
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -51,7 +51,7 @@ public class ArgumentsProperties {
    public static final Map<InstructionName, ArgumentProperty[]> argumentsProperties;
 
    static {
-      Map<InstructionName, ArgumentProperty[]> aMap = new Hashtable<InstructionName, ArgumentProperty[]>();
+      Map<InstructionName, ArgumentProperty[]> aMap = new HashMap<InstructionName, ArgumentProperty[]>();
       aMap.put(add, writeReadRead);
       aMap.put(addc, writeReadRead);
       aMap.put(addk, writeReadRead);
