@@ -129,6 +129,7 @@ public class ArgumentsProperties {
       aMap.put(sw, readReadRead);
       aMap.put(swi, readReadRead);
 
+      aMap.put(xor, writeReadRead);
       aMap.put(xori, writeReadRead);
 
       argumentsProperties = Collections.unmodifiableMap(aMap);
