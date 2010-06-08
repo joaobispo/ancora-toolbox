@@ -17,6 +17,10 @@
 
 package org.ancora.SharedLibrary;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Methods for Enumeration manipulation.
  *
@@ -61,6 +65,27 @@ public class EnumUtils {
       } else {
          return true;
       }
+   }
+
+   /**
+    * Builds an unmmodifiable table which maps the name of the enum to the
+    * enum itself.
+    *
+    * <p>This table can be useful to get the enum correspondent to a particular
+    * option in String format which was collected from, for example, a config file.
+    *
+    * @param <K>
+    * @param values
+    * @return
+    */
+   public static <K extends Enum> Map<String, K> buildMap(K[] values) {
+      Map<String, K> aMap = new HashMap<String, K>();
+
+      for (K enume : values) {
+         aMap.put(enume.toString(), enume);
+      }
+
+      return Collections.unmodifiableMap(aMap);
    }
 
 }
