@@ -218,6 +218,34 @@ public class BitUtils {
       return target | mask;
    }
 
+    /**
+    * Clears a specific bit of an int.
+    *
+    * @param bit the bit to clear. The least significant bit is bit 0
+    * @param target the integer where the bit will be cleared
+    * @return the updated value of the target
+    */
+   public static int clearBit(int bit, int target) {
+      // Create mask
+      int mask = 1 << bit;
+      // Clear bit
+      return target & ~mask;
+   }
+
+    /**
+     * Returns true if a is greater than b.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean unsignedComp(int a, int b) {
+            // Unsigned Comparison
+            long longA = a & MASK_32_BITS;
+            long longB = b & MASK_32_BITS;
+            return longA > longB;
+    }
+
 
    ///
    // CONSTANTS
@@ -225,5 +253,6 @@ public class BitUtils {
    private static final String ZERO = "0";
    private static final String HEX_PREFIX = "0x";
    private static final long MASK_16_BITS = 0xFFFFL;
+   private static final long MASK_32_BITS = 0xFFFFFFFFL;
    private static final int MASK_BIT_1 = 0x1;
 }
