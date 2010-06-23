@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +34,7 @@ public class ProcessUtils {
 
    public static int runProcess(List<String> command, String workingDir) {
       int returnValue = -1;
-      Logger logger = Logger.getLogger(ProcessUtils.class.getName());
+      final Logger logger = Logger.getLogger(ProcessUtils.class.getName());
 
       try {
          String commandString = getCommandString(command);
@@ -44,14 +46,50 @@ public class ProcessUtils {
 
          final Process process = builder.start();
 
-         BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-         BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+         final BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+         final BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-         String errline = null;
-         String stdline = null;
+         //String errline = null;
+         //String stdline = null;
 
          //output(stdInput, stdError);
-         
+
+
+
+         ExecutorService stderrThread = Executors.newSingleThreadExecutor();
+         stderrThread.submit(new Runnable() {
+
+            public void run() {
+               try {
+                  String stdline = null;
+                  while ((stdline = stdError.readLine()) != null) {
+                     System.err.println(stdline);
+                  }
+               } catch (IOException e) {
+                  logger.warning("IOException during program execution:" + e.getMessage());
+               }
+            }
+         });
+
+         ExecutorService stdoutThread = Executors.newSingleThreadExecutor();
+         stdoutThread.submit(new Runnable() {
+
+            public void run() {
+               try {
+                  String stdline = null;
+                  while ((stdline = stdInput.readLine()) != null) {
+                     System.out.println(stdline);
+                  }
+               } catch (IOException e) {
+                  logger.warning("IOException during program execution:" + e.getMessage());
+               }
+            }
+         });
+
+         stderrThread.shutdown();
+         stdoutThread.shutdown();
+
+         /*
          while ((stdline = stdInput.readLine()) != null ||
                  (errline = stdError.readLine()) != null) {
             if(stdline != null) {
@@ -63,12 +101,13 @@ public class ProcessUtils {
             }
 
          }
-          
+          */
           
 
 
          returnValue = process.waitFor();
          logger.info("Program terminated.");
+
       } catch (InterruptedException ex) {
          logger.warning("Program interrupted:"+ex.getMessage());
       } catch (IOException e) {
