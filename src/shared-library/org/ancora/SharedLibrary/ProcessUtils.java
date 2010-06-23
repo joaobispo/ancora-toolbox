@@ -50,15 +50,21 @@ public class ProcessUtils {
          String errline = null;
          String stdline = null;
 
-         while ((errline = stdError.readLine()) != null ||
-                 (stdline = stdInput.readLine()) != null) {
-            if(errline!= null) {
-               System.err.println(errline);
-            }
+         //output(stdInput, stdError);
+         
+         while ((stdline = stdInput.readLine()) != null ||
+                 (errline = stdError.readLine()) != null) {
             if(stdline != null) {
                System.out.println(stdline);
             }
+
+            if(errline!= null) {
+               System.err.println(errline);
+            }
+
          }
+          
+          
 
 
          returnValue = process.waitFor();
@@ -89,5 +95,36 @@ public class ProcessUtils {
       }
 
       return builder.toString();
+   }
+
+   private static void output(BufferedReader stdInput, BufferedReader stdError) {
+      String errline = null;
+      String stdline = null;
+      try {
+
+         while((stdline = stdInput.readLine()) != null) {
+            System.out.println(stdline);
+         }
+
+         while((errline = stdError.readLine()) != null) {
+            System.out.println(errline);
+         }
+
+         /*
+         while ((errline = stdError.readLine()) != null
+                 || (stdline = stdInput.readLine()) != null) {
+            if (errline != null) {
+               System.err.println(errline);
+            }
+            if (stdline != null) {
+               System.out.println(stdline);
+            }
+         }
+          *
+          */
+
+      } catch (IOException e) {
+         System.err.println("IOException during program execution:" + e.getMessage());
+      }
    }
 }

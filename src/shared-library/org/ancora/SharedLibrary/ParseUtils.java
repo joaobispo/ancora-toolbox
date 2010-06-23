@@ -135,13 +135,35 @@ public class ParseUtils {
    /**
     * Adds spaces to the beginning of the given string until it has the
     * desired size.
-    * 
+    *
     * @param string a string
     * @param length length the size we want the string to be
     * @return the string, with the desired size
     */
    public static String padLeft(String string, int length) {
       return String.format("%1$#" + length + "s", string);
+   }
+
+   /**
+    * Adds an arbitrary character to the beginning of the given string until it has the
+    * desired size.
+    * 
+    * @param string a string
+    * @param length length the size we want the string to be
+    * @return the string, with the desired size
+    */
+   public static String padLeft(String string, int length, char c) {
+      if(string.length() >= length) {
+         return string;
+      }
+
+      String returnString = string;
+      int missingChars = length - string.length();
+      for(int i=0; i<missingChars; i++) {
+         returnString = c + returnString;
+      }
+
+      return returnString;
    }
 
 }
