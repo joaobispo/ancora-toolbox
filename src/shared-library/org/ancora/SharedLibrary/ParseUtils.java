@@ -17,6 +17,10 @@
 
 package org.ancora.SharedLibrary;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -166,4 +170,9 @@ public class ParseUtils {
       return returnString;
    }
 
+   public static <T> List<T> getSortedList(Collection<T> collection) {
+      List<T> list = new ArrayList<T>(collection);
+      Collections.sort((List)list);
+      return list;
+   }
 }

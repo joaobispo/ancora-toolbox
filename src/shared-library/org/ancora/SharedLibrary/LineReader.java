@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
@@ -43,30 +44,55 @@ public class LineReader {
        this.reader = reader;
     }
 
-   /**
+    /**
     * Builds a LineReader from the given file. If the object could
     * not be created, returns null.
     *
-    * <p>Creating a LineReader involves File operations which can lead
-    * to failure in creation of the object. That is why we use a public
-    * static method instead of a constructor.
+    * <p>Creating a LineReader involves operations which can lead
+    * to failure in creation of the object. That is why a public
+    * static method is used instead of a constructor.
+    *
+    * @return a LineReader If the object could not be created, returns null.
+     */
+   public static LineReader createLineReader(File file) {
+      FileInputStream stream = null;
+      try {
+         stream = new FileInputStream(file);
+         return createLineReader(stream);
+      } catch (FileNotFoundException ex) {
+         Logger.getLogger(LineReader.class.getName()).
+                 log(Level.WARNING, "FileNotFoundException: " + ex.getMessage());
+      }
+
+      return null;
+   }
+
+   /**
+    * Builds a LineReader from the given InputStream. If the object could
+    * not be created, returns null.
+    *
+    * <p>Creating a LineReader involves operations which can lead
+    * to failure in creation of the object. That is why a public
+    * static method is used instead of a constructor.
     *
     * @return a LineReader If the object could not be created, returns null.
     */
-   public static LineReader createLineReader(File file) {
+   //public static LineReader createLineReader(File file) {
+   public static LineReader createLineReader(InputStream inputStream) {
 
-      FileInputStream stream = null;
+      //FileInputStream stream = null;
       InputStreamReader streamReader = null;
 
         try {
             // Try to read the contents of the file into the StringBuilder
-            stream = new FileInputStream(file);
-            streamReader = new InputStreamReader(stream, DEFAULT_CHAR_SET);
+            //stream = new FileInputStream(file);
+            //streamReader = new InputStreamReader(stream, DEFAULT_CHAR_SET);
+            streamReader = new InputStreamReader(inputStream, DEFAULT_CHAR_SET);
             BufferedReader newReader = new BufferedReader(streamReader);
             return new LineReader(newReader);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(LineReader.class.getName()).
-                    log(Level.WARNING, "FileNotFoundException: "+ ex.getMessage());
+      //  } catch (FileNotFoundException ex) {
+      //      Logger.getLogger(LineReader.class.getName()).
+      //              log(Level.WARNING, "FileNotFoundException: "+ ex.getMessage());
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(LineReader.class.getName()).
                     log(Level.WARNING, "UnsupportedEncodingException: "+ ex.getMessage());

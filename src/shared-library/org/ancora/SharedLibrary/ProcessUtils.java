@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 /**
@@ -55,7 +56,7 @@ public class ProcessUtils {
          //output(stdInput, stdError);
 
 
-
+         
          ExecutorService stderrThread = Executors.newSingleThreadExecutor();
          stderrThread.submit(new Runnable() {
 
@@ -117,6 +118,35 @@ public class ProcessUtils {
       return returnValue;
    }
 
+   public static ThreadFactory getDaemonThreadFactory() {
+      return new ThreadFactory() {
+
+         public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+         }
+      };
+   }
+
+   /*
+   public static void getHeapWindow() {
+      //HeapWindow heapWindow = new HeapWindow();
+      ExecutorService heapExecutor = Executors.newSingleThreadExecutor(getDaemonThreadFactory());
+      heapExecutor.submit(new Runnable() {
+
+         public void run() {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new HeapWindow().setVisible(true);
+            }
+        });
+         }
+      });
+
+
+   }
+*/
    /**
     * Transforms a String List representing a command into a single String
     * separated by spaces.

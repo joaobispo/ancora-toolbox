@@ -33,6 +33,15 @@ import org.ancora.SharedLibrary.Logging.LoggingOutputStream;
 public class LoggingUtils {
 
    /**
+    * 
+    * @param object
+    * @return logger specific to the given object
+    */
+   public static Logger getLogger(Object object) {
+      return Logger.getLogger(object.getClass().getName());
+   }
+
+   /**
     * Redirects the System.out stream to the logger.
     *
     * <p>Anything written to System.out is recorded as a log at info level.
@@ -140,6 +149,21 @@ public class LoggingUtils {
       }
       //set the console handler to fine:
       consoleHandler.setLevel(level);
+   }
+
+   public static Level parseLevel(String levelString) {
+      Level defaultLevel = Level.ALL;
+      Level level = defaultLevel;
+      // Parse Logger Level
+      try {
+         level = Level.parse(levelString);
+      } catch(IllegalArgumentException ex) {
+         Logger.getLogger(LoggingUtils.class.getName()).
+                 info("Could not parse logger level '"+levelString+"'. " +
+                 "Setting level to '"+defaultLevel+"'");
+      }
+
+      return level;
    }
 
    // Preserving a reference to original stdout/stderr streams,
