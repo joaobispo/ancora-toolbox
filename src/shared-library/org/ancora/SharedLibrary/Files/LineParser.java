@@ -15,45 +15,64 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.Parsing;
+package org.ancora.SharedLibrary.Files;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.LineReader;
+import java.util.logging.Logger;
+import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
- * Given a string, splits the string into its arguments. 
- * 
- * <p>Detects commented lines.
+ * Given a string, splits the string into a list of arguments, following some
+ * rules.
+ *
+ * <p>The current rules:
+ * <br>- Spliting by a custom string (e.g. space ' ');
+ * <br>- One line comments (e.g. //);
+ * <br>- 'Joiner', to include characters left out by spliting character
+ * (e.g. " -> "something written with spaces")
  *
  * @author Joao Bispo
  */
-public class CommandParser {
+public class LineParser {
 
    /**
     * Returns a new CommandParser where the command separator is a whitespace
     * (' '), the argument 'gatherer' is a quotation mark ('"') and the comment
     * prefix is double slash ('//')
     */
-   public CommandParser() {
+   /*
+   public LineParser() {
       this.commandSeparator = COMMAND_SEPARATOR;
       this.commandGatherer = COMMAND_GATHERER;
       this.commentPrefix = COMMENT_PREFIX;
    }
+    *
+    */
 
-   public CommandParser(String commandSeparator, String commandGatherer, String commandCommentPrefix) {
-      this.commandSeparator = commandSeparator;
-      this.commandGatherer = commandGatherer;
-      this.commentPrefix = commandCommentPrefix;
+   public LineParser(String splittingString, String joinerString, String oneLineComment) {
+      this.commandSeparator = splittingString;
+      this.commandGatherer = joinerString;
+      this.commentPrefix = oneLineComment;
+
+      // Make some checks
+      if(oneLineComment.length() == 0) {
+         Logger.getLogger(LineParser.class.getName()).
+                 warning("OneLineComment is an empty string. This will make all " +
+                 "lines in the file appear as comments.");
+      }
    }
 
 
 
    /**
-    * 
+    * Splits the String into arguments, following the rules of the parser.
+    *
+    * <p>The input string is trimmed before parsing.
+    *
     * @param command
     * @return
     */
@@ -62,9 +81,11 @@ public class CommandParser {
       command = command.trim();
 
       // Check if it starts with comment
+      //if(commentPrefix.length() > 0) {
       if(command.startsWith(commentPrefix)) {
          return new ArrayList<String>();
       }
+      //}
 
       List<String> commands = new ArrayList<String>();
 
@@ -111,43 +132,16 @@ public class CommandParser {
       return commands;
    }
 
-   /**
-    * Reads a Settings file and returns a table with the key-value pairs.
-    *
-    * <p> Any line with two or more parameters, as defined by the settings of this
-    * class, is put in the table. The first parameters is used as the key, and
-    * the second as the value. If a line has more than two parameters, they are
-    * ignored.
-    * 
-    * @param settingsFile
-    * @return a table with key-value pairs.
-    */
-   public Map<String, String> getTableFromFile(File settingsFile) {
-    LineReader lineReader = LineReader.createLineReader(settingsFile);
 
-      String line;
-      Map<String, String> programsTable = new HashMap<String, String>();
-
-      while((line = lineReader.nextLine()) != null) {
-         List<String> arguments = splitCommand(line);
-         if(arguments.size() >= 2) {
-            String key = arguments.get(0);
-            String value = arguments.get(1);
-            programsTable.put(key, value);
-         }
-      }
-
-      return programsTable;
-   }
 
    /**
     * INSTANCE VARIABLES
     */
-   private String commandSeparator;
-   private String commandGatherer;
-   private String commentPrefix;
+   private final String commandSeparator;
+   private final String commandGatherer;
+   private final String commentPrefix;
 
-   public static final String COMMAND_SEPARATOR = " ";
-   public static final String COMMAND_GATHERER = "\"";
-   public static final String COMMENT_PREFIX = "//";
+   //public static final String COMMAND_SEPARATOR = " ";
+   //public static final String COMMAND_GATHERER = "\"";
+   //public static final String COMMENT_PREFIX = "//";
 }

@@ -17,12 +17,17 @@
 
 package org.ancora.SharedLibrary;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Files.LineReader;
 
 /**
  * Utility methods for parsing of values which, instead of throwing an
@@ -174,5 +179,53 @@ public class ParseUtils {
       List<T> list = new ArrayList<T>(collection);
       Collections.sort((List)list);
       return list;
+   }
+
+
+   /**
+    * Reads a Table file and returns a table with the key-value pairs.
+    *
+    * <p> Any line with one or more parameters, as defined by the object LineParser
+    * is put in the table. The first parameters is used as the key, and
+    * the second as the value.
+    * <br>If a line has more than two parameters, they are
+    * ignored.
+    * <br>If a line has only a single parameters, the second parameters is assumed
+    * to be an empty string.
+    *
+    * @param tableFile
+    * @param lineParser
+    * @return a table with key-value pairs.
+    */
+   public Map<String, String> parseTableFromFile(File tableFile, LineParser lineParser) {
+    LineReader lineReader = LineReader.createLineReader(tableFile);
+
+      String line;
+      Map<String, String> table = new HashMap<String, String>();
+
+      while((line = lineReader.nextLine()) != null) {
+         List<String> arguments = lineParser.splitCommand(line);
+         
+         if(arguments.isEmpty()) {
+            continue;
+         }
+         
+         String key = null;
+         String value = null;
+
+         if(arguments.size() > 1) {
+            key = arguments.get(0);
+         }
+
+         if(arguments.size() > 2) {
+            value = arguments.get(1);
+         } else {
+            value = "";
+         }
+
+         table.put(key, value);
+      }
+
+      return table;
    }
 }
