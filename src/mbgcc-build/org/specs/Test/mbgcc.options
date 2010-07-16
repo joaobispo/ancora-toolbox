@@ -1,0 +1,7 @@
+// Settings
+list-separator " "
+
+
+// Enums with options
+org.specs.Test.TestOption
+org.specs.ProgramLauncher.ProgramOption

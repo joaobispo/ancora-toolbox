@@ -1,0 +1,11 @@
+// Programs (properties)
+
+// Base
+exit org.specs.ProgramLauncherBasic.Exit
+help org.specs.ProgramLauncherBasic.Help
+runscript org.specs.ProgramLauncherBasic.RunScript
+set org.specs.ProgramLauncherBasic.Set
+add org.specs.ProgramLauncherBasic.Add
+
+// Custom
+test org.specs.Test.TestProgram
