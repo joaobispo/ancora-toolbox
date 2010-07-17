@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.Parsing.CommandParser;
+import org.ancora.SharedLibrary.Files.LineParser;
 import org.specs.OptionsTable.OptionsTable;
 import org.specs.ProgramLauncher.Program;
 import org.specs.ProgramLauncher.ProgramLauncher;
@@ -41,7 +41,7 @@ public class Help implements Program {
       // Get supported programs
       String filename = state.get(ProgramOption.supportedPrograms);
       File file = new File(filename);
-      Map<String, String> supportedPrograms = (new CommandParser()).getTableFromFile(file);
+      Map<String, String> supportedPrograms = (new LineParser()).getTableFromFile(file);
 
       Logger logger = LoggingUtils.getLogger(this);
 

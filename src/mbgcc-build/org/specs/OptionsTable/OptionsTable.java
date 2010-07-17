@@ -19,13 +19,12 @@ package org.specs.OptionsTable;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 
 /**
@@ -37,7 +36,17 @@ public class OptionsTable {
 
 //   private OptionsTable(Set<String> avaliableOptions, String listSeparator) {
 //   private OptionsTable(Set<OptionName> avaliableOptions, String listSeparator) {
-   private OptionsTable(Map<String, OptionName> avaliableOptions, String listSeparator) {
+   /**
+    * Creates a new OptionsTable.
+    * 
+    * @param avaliableOptions table which maps the name of the option (String) to
+    * the correspondent OptionName object
+    * @param listSeparator OptionsTable can build and retrieve lists, but stores
+    * them as a String. This parameters indicates what is the string which works
+    * as separator. It should be one character which is never used in the values
+    * of the list. The default separator is ";"
+    */
+   public OptionsTable(Map<String, OptionName> avaliableOptions, String listSeparator) {
       this.optionsTable = new HashMap<String, String>();
       this.avaliableOptions = avaliableOptions;
       this.listSeparator = listSeparator;
@@ -51,12 +60,15 @@ public class OptionsTable {
     * @param optionsFile a file containing the names of enums implementing the OptionName interface
     * @return a new OptionsTable
     */
+   /*
    public static OptionsTable newOptionsTable(File enumOptions) {
       // Parse file, get Enum objects
       ParsedData parsedData = Parser.parseEnumFile(enumOptions);
       // Use return to create OptionsTable
       return new OptionsTable(parsedData.getAvaliableOptions(), parsedData.getSeparator());
    }
+    * 
+    */
 
    /*
    public String getKeyString(String key) {
@@ -136,7 +148,17 @@ public class OptionsTable {
     * @param value
     */
    public void add(OptionName key, String value) {
+      // Check if optionTable supports given key
       if (!isValid(key)) {
+         return;
+      }
+
+      // Adding a string to a list; Check if string does not contain the
+      // separator character
+      if(value.contains(listSeparator)) {
+         LoggingUtils.getLogger(this).
+                 warning("Did not add element '"+value+"' to list "+key.getOptionName()+
+                 " because it contains the separator character '"+listSeparator+"'.");
          return;
       }
 
@@ -203,14 +225,20 @@ public class OptionsTable {
       return avaliableOptions.get(optionName);
    }
 
+   public String getListSeparator() {
+      return listSeparator;
+   }
+
+
+
    /**
     * INSTANCE VARIABLES
     */
-   private Map<String, String> optionsTable;
+   private final Map<String, String> optionsTable;
    //private Set<String> avaliableOptions;
    //private Set<OptionName> avaliableOptions;
-   private Map<String, OptionName> avaliableOptions;
-   private String listSeparator;
+   private final Map<String, OptionName> avaliableOptions;
+   private final String listSeparator;
 
-   public static String DEFAULT_LIST_SEPARATOR = " ";
+   //public static final String DEFAULT_LIST_SEPARATOR = ";";
 }

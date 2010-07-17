@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.LineReader;
-import org.ancora.SharedLibrary.Parsing.CommandParser;
+import org.ancora.SharedLibrary.Files.LineReader;
+import org.ancora.SharedLibrary.Files.LineParser;
 
 /**
  * Parses files with information to create OptionsTable objects.
@@ -41,7 +41,7 @@ class Parser {
       ParsedData parsedData = new ParsedData();
 
       LineReader lineReader = LineReader.createLineReader(enumFile);
-      CommandParser commandParser = new CommandParser();
+      LineParser commandParser = new LineParser();
 
       Set<String> addedOptions = new HashSet<String>();
       String line;

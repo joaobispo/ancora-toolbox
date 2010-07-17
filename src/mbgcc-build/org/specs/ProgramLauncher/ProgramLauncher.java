@@ -26,9 +26,9 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.IoUtils;
-import org.ancora.SharedLibrary.LineReader;
+import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.Parsing.CommandParser;
+import org.ancora.SharedLibrary.Files.LineParser;
 import org.specs.OptionsTable.OptionsTable;
 
 /**
@@ -44,7 +44,7 @@ public class ProgramLauncher {
       this.supportedPrograms = supportedPrograms;
 
       this.shellWelcome = DEFAULT_SHELL_WELCOME;
-      this.commandParser = new CommandParser();
+      this.commandParser = new LineParser();
    }
 
 
@@ -74,7 +74,7 @@ public class ProgramLauncher {
       }
 */
 
-      Map<String, String> programsTable = (new CommandParser()).getTableFromFile(supportedPrograms);
+      Map<String, String> programsTable = (new LineParser()).getTableFromFile(supportedPrograms);
       return new ProgramLauncher(programsTable);
    }
 
@@ -217,7 +217,7 @@ public class ProgramLauncher {
    //private OptionsTable state;
    private Map<String, String> supportedPrograms;
 
-   private CommandParser commandParser;
+   private LineParser commandParser;
    private String shellWelcome;
    private static final String DEFAULT_SHELL_WELCOME = "Shell Mode";
 
