@@ -21,6 +21,7 @@ import java.io.File;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.OptionsTable.OptionsTable;
+import org.specs.OptionsTable.OptionsTableFactory;
 
 /**
  *
@@ -39,7 +40,8 @@ public class SimpleProgram {
    public static SimpleProgram newSimpleProgram(File programsFile, File optionsFile)
    {
       ProgramLauncher programLauncher = ProgramLauncher.newProgramLauncher(programsFile);
-      OptionsTable optionsTable = OptionsTable.newOptionsTable(optionsFile);
+      //OptionsTable optionsTable = OptionsTable.newOptionsTable(optionsFile);
+      OptionsTable optionsTable = OptionsTableFactory.fromFile(optionsFile);
 
       return new SimpleProgram(programLauncher, optionsTable, programsFile);
    }

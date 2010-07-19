@@ -86,40 +86,80 @@ public class OptionsTableFactory {
     * successful, maps all its elements to a table. If an error occurs, the
     * motive is logged and null is returned.
     * 
+    * If the given enum is empty, regardless of implementing OptionName or not,
+    * returns an empty Map.
+    *
     * @param enumClassName
     * @return
     */
-   private static Map<String, OptionName> getOptionNamesFromClass(String enumClassName) {
+   public static Map<String, OptionName> getOptionNamesFromClass(String enumClassName) {
       Class<?> c = null;
 
       // Get class
       try {
          c = Class.forName(enumClassName);
       } catch (ClassNotFoundException ex) {
-         Logger.getLogger(Parser.class.getName()).
-                 warning("Enum not found: '" + enumClassName + "'.");
+         Logger.getLogger(OptionsTableFactory.class.getName()).
+                 warning("Class not found: '" + enumClassName + "'.");
+         return null;
+      } catch (NoClassDefFoundError err) {
+          Logger.getLogger(OptionsTableFactory.class.getName()).
+                 warning("Error with class '" + enumClassName + "'. Message: "+err.getMessage());
          return null;
       }
 
       // Check if class is enum
       if (!c.isEnum()) {
-         Logger.getLogger(Parser.class.getName()).
+         Logger.getLogger(OptionsTableFactory.class.getName()).
                  warning("Class '" + enumClassName + "' is not an enum.");
          return null;
       }
 
-      // Check if class implements the OptionName interface
-      if (!c.isInstance(OptionName.class)) {
-         Logger.getLogger(Parser.class.getName()).
+
+
+
+      /*
+      // Check if enum is empty
+      if(enums.length == 0) {
+         return enumOptions;
+      }
+*/
+  /*
+      try {
+         OptionName optionObject = (OptionName) enums[0];
+      } catch (ClassCastException ex) {
+         Logger.getLogger(OptionsTableFactory.class.getName()).
                  warning("Class '" + enumClassName + "' does not implement interface " + OptionName.class + ".");
          return null;
       }
+    */
 
 
+      /*
+      if (!enumObjectClass.isInstance(OptionName.class)) {
+         Logger.getLogger(OptionsTableFactory.class.getName()).
+                 warning("Class '" + enumClassName + "' does not implement interface " + OptionName.class + ".");
+         return null;
+      }
+       *
+       */
+
+      
+      
       Map<String, OptionName> enumOptions = new HashMap<String, OptionName>();
       Object[] enums = c.getEnumConstants();
+
       for (Object option : enums) {
-         OptionName optionObject = (OptionName) option;
+         OptionName optionObject = null;
+
+         // Check 
+         try {
+            optionObject = (OptionName) option;
+         } catch (ClassCastException ex) {
+            Logger.getLogger(OptionsTableFactory.class.getName()).
+                    warning("Class '" + enumClassName + "' does not implement interface " + OptionName.class + ".");
+            return null;
+         }
          String optionName = optionObject.getOptionName();
          enumOptions.put(optionName, optionObject);
       }

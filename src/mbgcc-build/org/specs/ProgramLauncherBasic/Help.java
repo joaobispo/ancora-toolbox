@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.OptionsTable.OptionsTable;
 import org.specs.ProgramLauncher.Program;
 import org.specs.ProgramLauncher.ProgramLauncher;
@@ -37,11 +38,14 @@ import org.specs.ProgramLauncher.ProgramOption;
  */
 public class Help implements Program {
 
+   @Override
    public boolean execute(List<String> arguments, OptionsTable state) {
       // Get supported programs
       String filename = state.get(ProgramOption.supportedPrograms);
       File file = new File(filename);
-      Map<String, String> supportedPrograms = (new LineParser()).getTableFromFile(file);
+      //Map<String, String> supportedPrograms = (new LineParser()).getTableFromFile(file);
+      LineParser lineParser = new LineParser(" ", "\"", "//");
+      Map<String, String> supportedPrograms = ParseUtils.parseTableFromFile(file, lineParser);
 
       Logger logger = LoggingUtils.getLogger(this);
 
@@ -70,6 +74,7 @@ public class Help implements Program {
       return true;
    }
 
+   @Override
    public String getHelpMessage(OptionsTable state) {
       return "Write the command with no arguments to see a list of supported programs, " +
               "or give the name of a program as argument to show its help message.";

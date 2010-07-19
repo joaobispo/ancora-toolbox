@@ -17,6 +17,11 @@
 
 package org.specs.OptionsTable;
 
+import java.util.Collections;
+import org.specs.ProgramLauncher.ProgramOption;
+import java.util.Arrays;
+import java.util.ArrayList;
+import org.specs.Test.TestOption;
 import java.io.File;
 import java.util.List;
 import org.junit.After;
@@ -52,32 +57,20 @@ public class OptionsTableTest {
     }
 
    /**
-    * Test of newOptionsTable method, of class OptionsTable.
-    */
-   @Test
-   public void testNewOptionsTable() {
-      System.out.println("newOptionsTable");
-      File enumOptions = null;
-      OptionsTable expResult = null;
-      OptionsTable result = OptionsTable.newOptionsTable(enumOptions);
-      assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
-   }
-
-   /**
     * Test of get method, of class OptionsTable.
     */
    @Test
    public void testGet() {
       System.out.println("get");
-      OptionName key = null;
-      OptionsTable instance = null;
-      String expResult = "";
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionName key = TestOption.option1;
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+      String expResult = key.getDefaultValue();
+
+
       String result = instance.get(key);
       assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
    }
 
    /**
@@ -86,13 +79,17 @@ public class OptionsTableTest {
    @Test
    public void testGetList() {
       System.out.println("getList");
-      OptionName key = null;
-      OptionsTable instance = null;
-      List expResult = null;
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionName key = TestOption.list;
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+      
+      List expResult = new ArrayList<String>();
+      expResult.add("element1");
+      expResult.add("element2");
+
       List result = instance.getList(key);
       assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
    }
 
    /**
@@ -101,12 +98,15 @@ public class OptionsTableTest {
    @Test
    public void testSet() {
       System.out.println("set");
-      OptionName key = null;
-      String value = "";
-      OptionsTable instance = null;
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionName key = TestOption.option1;
+      String value = "newValue";
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
       instance.set(key, value);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
+
+      // Check if value is the same
+      assertEquals(value, instance.get(key));
    }
 
    /**
@@ -115,12 +115,26 @@ public class OptionsTableTest {
    @Test
    public void testAdd() {
       System.out.println("add");
-      OptionName key = null;
-      String value = "";
-      OptionsTable instance = null;
-      instance.add(key, value);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionName key = TestOption.option1;
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+
+      // An add operation overides the default value. If there was no value before,
+      // the add will be the first element of the list
+
+
+      String[] values = {"value1", "value2"};
+      for(String value : values) {
+         instance.add(key, value);
+      }
+
+      List<String> list = instance.getList(key);
+      assertEquals(values.length, list.size());
+      for(int i=0; i<values.length; i++) {
+         assertEquals(values[i], list.get(i));
+      }
+
    }
 
    /**
@@ -129,12 +143,25 @@ public class OptionsTableTest {
    @Test
    public void testGetAvaliableOptions() {
       System.out.println("getAvaliableOptions");
-      OptionsTable instance = null;
-      List expResult = null;
-      List result = instance.getAvaliableOptions();
-      assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+
+      List<String> expResult = new ArrayList<String>();
+      expResult.addAll(getOptionNameStrings(TestOption.values()));
+      expResult.addAll(getOptionNameStrings(ProgramOption.values()));
+      Collections.sort(expResult);
+ 
+      List<OptionName> result = instance.getAvaliableOptions();
+      List<String> stringResult = new ArrayList<String>();
+      for(OptionName option : result) {
+         stringResult.add(option.getOptionName());
+      }
+
+      Collections.sort(stringResult);
+
+    assertEquals(expResult, stringResult);
+
    }
 
    /**
@@ -143,13 +170,16 @@ public class OptionsTableTest {
    @Test
    public void testGetOption() {
       System.out.println("getOption");
-      String optionName = "";
-      OptionsTable instance = null;
-      OptionName expResult = null;
+      OptionName option = TestOption.list;
+      String optionName = option.getOptionName();
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+
+      OptionName expResult = option;
       OptionName result = instance.getOption(optionName);
       assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
+
    }
 
    /**
@@ -158,12 +188,20 @@ public class OptionsTableTest {
    @Test
    public void testGetListSeparator() {
       System.out.println("getListSeparator");
-      OptionsTable instance = null;
-      String expResult = "";
+
+      File optionsConfig = new File("./test/testOptionsTable.table");
+      OptionsTable instance = OptionsTableFactory.fromFile(optionsConfig);
+      String expResult = TestOption.testListSeparator();
       String result = instance.getListSeparator();
       assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      fail("The test case is a prototype.");
    }
 
+
+   private List<String> getOptionNameStrings(OptionName[] values) {
+      List<String> names = new ArrayList<String>();
+      for(int i=0; i<values.length; i++) {
+         names.add(values[i].getOptionName());
+      }
+      return names;
+   }
 }

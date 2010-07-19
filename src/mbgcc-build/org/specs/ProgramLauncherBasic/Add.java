@@ -33,6 +33,7 @@ import org.specs.ProgramLauncher.Program;
  */
 public class Add implements Program {
 
+   @Override
    public boolean execute(List<String> arguments, OptionsTable state) {
 // Check arguments
 
@@ -83,6 +84,7 @@ public class Add implements Program {
       return true;
    }
 
+   @Override
    public String getHelpMessage(OptionsTable state) {
       StringBuilder builder = new StringBuilder();
       builder.append("Concatenates values to existing options, forming lists. " +

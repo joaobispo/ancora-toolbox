@@ -26,19 +26,30 @@ import org.specs.OptionsTable.OptionName;
 public enum TestOption implements OptionName {
 
  option1("option-1", "default"),
- option2("option-2", "default2");
+ option2("option-2", "default2"),
+ list("list", "element1;element2");
 
    private TestOption(String optionSuffix, String defaultValue) {
       this.optionSuffix = optionSuffix;
       this.defaultValue = defaultValue;
    }
 
+   @Override
    public String getOptionName() {
       return OPTION_PREFIX + SEPARATOR + optionSuffix;
    }
 
+   @Override
    public String getDefaultValue() {
       return defaultValue;
+   }
+
+   public static String testListSeparator() {
+      return ";";
+   }
+
+   public static int numberOfElementsInList() {
+      return 2;
    }
 
    /**

@@ -222,7 +222,14 @@ public class OptionsTable {
     * there is no such mapping
     */
    public OptionName getOption(String optionName) {
-      return avaliableOptions.get(optionName);
+      OptionName option = avaliableOptions.get(optionName);
+      if(option == null) {
+         LoggingUtils.getLogger(this).
+                 warning("Option '"+optionName+"' not found. Returning null.");
+         return null;
+      }
+
+      return option;
    }
 
    public String getListSeparator() {

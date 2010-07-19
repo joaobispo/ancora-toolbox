@@ -19,16 +19,14 @@ package org.specs.ProgramLauncher;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.OptionsTable.OptionsTable;
 
 /**
@@ -44,7 +42,8 @@ public class ProgramLauncher {
       this.supportedPrograms = supportedPrograms;
 
       this.shellWelcome = DEFAULT_SHELL_WELCOME;
-      this.commandParser = new LineParser();
+      //this.commandParser = new LineParser();
+      this.commandParser = new LineParser(" ", "\"", "//");
    }
 
 
@@ -74,7 +73,9 @@ public class ProgramLauncher {
       }
 */
 
-      Map<String, String> programsTable = (new LineParser()).getTableFromFile(supportedPrograms);
+      //Map<String, String> programsTable = (new LineParser()).getTableFromFile(supportedPrograms);
+      LineParser lineParser = new LineParser(" ", "\"", "//");
+      Map<String, String> programsTable = ParseUtils.parseTableFromFile(supportedPrograms, lineParser);
       return new ProgramLauncher(programsTable);
    }
 

@@ -46,7 +46,7 @@ public class MainTest {
          //testProgramLauncher();
          testSimpleProgram(args);
     }
-
+/*
     public static OptionsTable testOptions() {
         File optionsFile = new File("mbgcc.options");
         OptionsTable optionsTable = OptionsTable.newOptionsTable(optionsFile);
@@ -61,7 +61,8 @@ public class MainTest {
 
         return optionsTable;
     }
-
+*/
+    /*
     public static void testProgramLauncher() {
        LoggingUtils.setupConsoleOnly();
        File programsFile = new File("mbgcc.programs");
@@ -75,7 +76,7 @@ public class MainTest {
        
        //launcher.runScript(new File("example_script.txt"), state);
     }
-
+*/
     public static void testSimpleProgram(String[] args) {
       //try {
          LoggingUtils.setupConsoleOnly();
