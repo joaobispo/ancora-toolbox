@@ -17,13 +17,9 @@
 
 package org.ancora.SharedLibrary.Files;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
  * Given a string, splits the string into a list of arguments, following some
@@ -39,19 +35,6 @@ import org.ancora.SharedLibrary.LoggingUtils;
  */
 public class LineParser {
 
-   /**
-    * Returns a new CommandParser where the command separator is a whitespace
-    * (' '), the argument 'gatherer' is a quotation mark ('"') and the comment
-    * prefix is double slash ('//')
-    */
-   /*
-   public LineParser() {
-      this.commandSeparator = COMMAND_SEPARATOR;
-      this.commandGatherer = COMMAND_GATHERER;
-      this.commentPrefix = COMMENT_PREFIX;
-   }
-    *
-    */
 
    public LineParser(String splittingString, String joinerString, String oneLineComment) {
       this.commandSeparator = splittingString;
@@ -141,7 +124,4 @@ public class LineParser {
    private final String commandGatherer;
    private final String commentPrefix;
 
-   //public static final String COMMAND_SEPARATOR = " ";
-   //public static final String COMMAND_GATHERER = "\"";
-   //public static final String COMMENT_PREFIX = "//";
 }

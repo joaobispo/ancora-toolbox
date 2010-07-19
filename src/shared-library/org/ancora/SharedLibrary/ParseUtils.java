@@ -108,7 +108,7 @@ public class ParseUtils {
     * @return a string
     */
    public static String toHexString(long decimalLong, int stringSize) {
-      String longString = Long.toHexString(decimalLong);
+      String longString = Long.toHexString(decimalLong).toUpperCase();
       longString = BitUtils.padHexString(longString, stringSize);
 
       return longString;
@@ -197,7 +197,7 @@ public class ParseUtils {
     * @param lineParser
     * @return a table with key-value pairs.
     */
-   public Map<String, String> parseTableFromFile(File tableFile, LineParser lineParser) {
+   public static Map<String, String> parseTableFromFile(File tableFile, LineParser lineParser) {
     LineReader lineReader = LineReader.createLineReader(tableFile);
 
       String line;
@@ -213,11 +213,11 @@ public class ParseUtils {
          String key = null;
          String value = null;
 
-         if(arguments.size() > 1) {
+         if(arguments.size() > 0) {
             key = arguments.get(0);
          }
 
-         if(arguments.size() > 2) {
+         if(arguments.size() > 1) {
             value = arguments.get(1);
          } else {
             value = "";
