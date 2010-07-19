@@ -17,7 +17,6 @@
 
 package org.specs.OptionsTable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,7 @@ import org.ancora.SharedLibrary.ParseUtils;
  */
 public class OptionsTable {
 
-//   private OptionsTable(Set<String> avaliableOptions, String listSeparator) {
-//   private OptionsTable(Set<OptionName> avaliableOptions, String listSeparator) {
+
    /**
     * Creates a new OptionsTable.
     * 
@@ -54,31 +52,6 @@ public class OptionsTable {
 
 
 
-   /**
-    * Creates a new OptionsTable from an enumOptions file.
-    *
-    * @param optionsFile a file containing the names of enums implementing the OptionName interface
-    * @return a new OptionsTable
-    */
-   /*
-   public static OptionsTable newOptionsTable(File enumOptions) {
-      // Parse file, get Enum objects
-      ParsedData parsedData = Parser.parseEnumFile(enumOptions);
-      // Use return to create OptionsTable
-      return new OptionsTable(parsedData.getAvaliableOptions(), parsedData.getSeparator());
-   }
-    * 
-    */
-
-   /*
-   public String getKeyString(String key) {
-       // Check if table contains value
-      String value = optionsTable.get(key);
-
-      return value;
-   }
-    *
-    */
 
    /**
     * Returns the value to which the specified key is mapped, or 
@@ -176,12 +149,8 @@ public class OptionsTable {
    }
 
    private boolean isValid(OptionName key) {
-//      String optionName = key.getOptionName();
-//      if(!avaliableOptions.contains(optionName)) {
-      //if(!avaliableOptions.contains(key)) {
       if(!avaliableOptions.containsKey(key.getOptionName())) {
          Logger.getLogger(OptionsTable.class.getName()).
-//                 warning("Invalid option:"+optionName);
                  warning("Invalid option:"+key.getOptionName());
          return false;
       }
@@ -194,19 +163,6 @@ public class OptionsTable {
     * @return list with avaliable options
     */
    public List<OptionName> getAvaliableOptions() {
- /*
-      //List<OptionName> sortedOptions = new ArrayList<OptionName>(avaliableOptions);
-      List<OptionName> sortedOptions = new ArrayList<OptionName>(avaliableOptions.values());
-      //Collections.sort(sortedOptions);
-      //List<String> sortedOptions = ParseUtils.getSortedList(avaliableOptions);
-      Collections.sort(sortedOptions, new Comparator<OptionName>() {
-
-         public int compare(OptionName o1, OptionName o2) {
-            return o1.getOptionName().compareTo(o2.getOptionName());
-         }
-      });
-*/
-
       List<OptionName> sortedOptions = new ArrayList<OptionName>();
       Set<String> keySet = avaliableOptions.keySet();
       List<String> keys = ParseUtils.getSortedList(keySet);
@@ -237,15 +193,11 @@ public class OptionsTable {
    }
 
 
-
    /**
     * INSTANCE VARIABLES
     */
    private final Map<String, String> optionsTable;
-   //private Set<String> avaliableOptions;
-   //private Set<OptionName> avaliableOptions;
    private final Map<String, OptionName> avaliableOptions;
    private final String listSeparator;
 
-   //public static final String DEFAULT_LIST_SEPARATOR = ";";
 }

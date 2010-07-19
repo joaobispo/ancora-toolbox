@@ -114,36 +114,6 @@ public class OptionsTableFactory {
                  warning("Class '" + enumClassName + "' is not an enum.");
          return null;
       }
-
-
-
-
-      /*
-      // Check if enum is empty
-      if(enums.length == 0) {
-         return enumOptions;
-      }
-*/
-  /*
-      try {
-         OptionName optionObject = (OptionName) enums[0];
-      } catch (ClassCastException ex) {
-         Logger.getLogger(OptionsTableFactory.class.getName()).
-                 warning("Class '" + enumClassName + "' does not implement interface " + OptionName.class + ".");
-         return null;
-      }
-    */
-
-
-      /*
-      if (!enumObjectClass.isInstance(OptionName.class)) {
-         Logger.getLogger(OptionsTableFactory.class.getName()).
-                 warning("Class '" + enumClassName + "' does not implement interface " + OptionName.class + ".");
-         return null;
-      }
-       *
-       */
-
       
       
       Map<String, OptionName> enumOptions = new HashMap<String, OptionName>();
@@ -185,8 +155,5 @@ public class OptionsTableFactory {
 
    public static final String KEY_OPTION_PREFIX = "option";
    public static final String KEY_LIST_SEPARATOR = "listSeparatorCharacter";
-
-
-
 
 }
