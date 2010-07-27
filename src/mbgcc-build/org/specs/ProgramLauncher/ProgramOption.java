@@ -26,8 +26,8 @@ import org.specs.OptionsTable.OptionName;
  */
 public enum ProgramOption implements OptionName {
 
-   supportedPrograms("supported-programs",""),
-   shellCycleState("shellcyclestate","true"),
+   programsFilename("supported-programs",""),
+   isRunningShell("shellcyclestate","true"),
    loggerLevel("logger-level","ALL");
 
    private ProgramOption(String optionSuffix, String defaultValue) {
@@ -37,10 +37,12 @@ public enum ProgramOption implements OptionName {
 
    
 
+   @Override
    public String getOptionName() {
       return OPTION_PREFIX + SEPARATOR + optionSuffix;
    }
 
+   @Override
    public String getDefaultValue() {
       return defaultValue;
    }
@@ -50,6 +52,6 @@ public enum ProgramOption implements OptionName {
     */
    private final String optionSuffix;
    private final String defaultValue;
-   private static final String OPTION_PREFIX = "program";
+   private static final String OPTION_PREFIX = "scripter";
    private static final String SEPARATOR = ".";
 }

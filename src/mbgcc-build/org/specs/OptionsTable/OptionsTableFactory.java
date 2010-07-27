@@ -74,8 +74,10 @@ public class OptionsTableFactory {
             continue;
          }
 
-         Logger.getLogger(OptionsTableFactory.class.getName()).
-                 warning("Key not supported: '"+key+"'.");
+         Logger logger = Logger.getLogger(OptionsTableFactory.class.getName());
+         logger.warning("Key not supported: '"+key+"'. Supported options:");
+         logger.warning(KEY_LIST_SEPARATOR);
+         logger.warning(KEY_OPTION_PREFIX+"-n");
       }
 
       return new OptionsTable(avaliableOptions, listSeparatorCharacter);

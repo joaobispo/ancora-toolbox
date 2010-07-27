@@ -43,7 +43,7 @@ public class RunScript implements Program {
      String scripFilename = arguments.get(0);
      File scriptFile = new File(scripFilename);
 
-     String supportedProgramsFilename = state.get(ProgramOption.supportedPrograms);
+     String supportedProgramsFilename = state.get(ProgramOption.programsFilename);
      File supportedProgramsFile = new File(supportedProgramsFilename);
 
       // Create ProgramLauncher

@@ -34,7 +34,7 @@ public class SimpleProgram {
       this.optionsTable = optionsTable;
 
       // We need to set the information about where is file with the supported programs
-      optionsTable.set(ProgramOption.supportedPrograms, programsFile.getPath());
+      optionsTable.set(ProgramOption.programsFilename, programsFile.getPath());
    }
 
    public static SimpleProgram newSimpleProgram(File programsFile, File optionsFile)

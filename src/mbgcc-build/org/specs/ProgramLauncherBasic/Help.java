@@ -41,7 +41,7 @@ public class Help implements Program {
    @Override
    public boolean execute(List<String> arguments, OptionsTable state) {
       // Get supported programs
-      String filename = state.get(ProgramOption.supportedPrograms);
+      String filename = state.get(ProgramOption.programsFilename);
       File file = new File(filename);
       //Map<String, String> supportedPrograms = (new LineParser()).getTableFromFile(file);
       LineParser lineParser = new LineParser(" ", "\"", "//");

@@ -90,13 +90,13 @@ public class ProgramLauncher {
                info(shellWelcome);
 
        // Get main cycle state
-       boolean cycleState = Boolean.parseBoolean(state.get(ProgramOption.shellCycleState));
+       boolean cycleState = Boolean.parseBoolean(state.get(ProgramOption.isRunningShell));
 
        // Start cycle
        while(cycleState) {
           String command = scanner.nextLine();
           executeProgramCall(command, state);
-          cycleState = Boolean.parseBoolean(state.get(ProgramOption.shellCycleState));
+          cycleState = Boolean.parseBoolean(state.get(ProgramOption.isRunningShell));
        }
 
        return true;

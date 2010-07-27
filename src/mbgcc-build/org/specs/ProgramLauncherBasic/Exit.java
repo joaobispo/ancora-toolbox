@@ -32,7 +32,7 @@ import org.specs.ProgramLauncher.ProgramOption;
 public class Exit implements Program {
 
    public boolean execute(List<String> arguments, OptionsTable state) {
-      state.set(ProgramOption.shellCycleState, "false");
+      state.set(ProgramOption.isRunningShell, "false");
       LoggingUtils.getLogger(this).
               info("Bye!");
       return true;
