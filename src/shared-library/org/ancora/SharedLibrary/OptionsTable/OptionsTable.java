@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
  * Table which maps OptionName keys to String values.
@@ -112,6 +113,19 @@ public class OptionsTable {
    }
 
    /**
+    * Clears the field correspondent to key.
+    * 
+    * @param key
+    */
+   public void clear(OptionName key) {
+      if(!isValid(key)) {
+         return;
+      }
+
+      optionsTable.put(key.getOptionName(), null);
+   }
+
+   /**
     * Adds a parameters to a "list" variable.
     *
     * <p>If there is no value defined, when adding to a key it will override the
@@ -129,9 +143,13 @@ public class OptionsTable {
       // Adding a string to a list; Check if string does not contain the
       // separator character
       if(value.contains(listSeparator)) {
-         LoggingUtils.getLogger(this).
-                 warning("Did not add element '"+value+"' to list "+key.getOptionName()+
+         StackTraceElement stackElement = ProcessUtils.getCallerMethod();
+         Logger logger = LoggingUtils.getLogger(this);
+         logger.warning("Did not add element '"+value+"' to list "+key.getOptionName()+
                  " because it contains the separator character '"+listSeparator+"'.");
+         logger.warning("The method who made this call was '"+stackElement+"'.");
+
+
          return;
       }
 

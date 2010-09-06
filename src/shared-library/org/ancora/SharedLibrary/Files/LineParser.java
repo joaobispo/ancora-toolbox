@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * Given a string, splits the string into a list of arguments, following some
  * rules.
  *
- * <p>The current rules:
+ * <p>The rules for the default LineParser:
  * <br>- Spliting by a custom string (e.g. space ' ');
  * <br>- One line comments (e.g. //);
  * <br>- 'Joiner', to include characters left out by spliting character
@@ -35,6 +35,18 @@ import java.util.logging.Logger;
  */
 public class LineParser {
 
+   /**
+    * Builds a default LineParser.
+    * <p>The rules for the default LineParser:
+    * <br>- Spliting -> space ' '
+    * <br>- 'Joiner', -> "  (e.g. " -> "something written with spaces")
+    * <br>- One line comments -> //
+    * 
+    * @return a LineParser
+    */
+   public static LineParser getDefaultLineParser() {
+      return new LineParser(" ", "\"", "//");
+   }
 
    public LineParser(String splittingString, String joinerString, String oneLineComment) {
       this.commandSeparator = splittingString;
@@ -49,8 +61,19 @@ public class LineParser {
       }
    }
 
+   public String getOneLineComment() {
+      return commentPrefix;
+   }
 
+   public String getSplittingString() {
+      return commandSeparator;
+   }
 
+   public String getJoinerString() {
+      return commandGatherer;
+   }
+
+   
    /**
     * Splits the String into arguments, following the rules of the parser.
     *

@@ -18,7 +18,9 @@
 package org.ancora.SharedLibrary.OptionsTable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.Files.LineParser;
@@ -55,17 +57,22 @@ public class OptionsTableFactory {
       Map<String, String> configMap = ParseUtils.parseTableFromFile(optionsConfig, lineParser);
 
       // Declare objects needed to build OptionsTable
-      Map<String, OptionName> avaliableOptions = new HashMap<String, OptionName>();
+      //Map<String, OptionName> avaliableOptions = new HashMap<String, OptionName>();
+      List<String> enumClasses = new ArrayList<String>();
       String listSeparatorCharacter = null;
 
       for(String key : configMap.keySet()) {
          // Check if option
          if(key.startsWith(KEY_OPTION_PREFIX)) {
             String className = configMap.get(key);
+            enumClasses.add(className);
+            /*
             Map<String, OptionName> optionNames = getOptionNamesFromClass(className);
             if(optionNames != null) {
                addOptions(avaliableOptions, optionNames);
             }
+             *
+             */
             continue;
          }
 
@@ -74,12 +81,57 @@ public class OptionsTableFactory {
             continue;
          }
 
-         Logger.getLogger(OptionsTableFactory.class.getName()).
-                 warning("Key not supported: '"+key+"'.");
+         //Logger.getLogger(OptionsTableFactory.class.getName()).
+         //        warning("Key not supported: '"+key+"'.");
+         Logger logger = Logger.getLogger(OptionsTableFactory.class.getName());
+         logger.warning("Key not supported: '" + key + "'. Supported options:");
+         logger.warning(KEY_LIST_SEPARATOR);
+         logger.warning(KEY_OPTION_PREFIX + "-n");
       }
 
-      return new OptionsTable(avaliableOptions, listSeparatorCharacter);
+      //return new OptionsTable(avaliableOptions, listSeparatorCharacter);
+      return fromEnumNamesList(enumClasses, listSeparatorCharacter);
    }
+
+   /**
+    * Creates a new OptionsTable from a list of enums which implement the
+    * OptionName interface.
+    * 
+    * @param enumClasses
+    * @param listSeparatorCharacter the string which will serve as separator
+    * character in OptionTable's lists
+    * @return
+    */
+   public static OptionsTable fromEnumList(List<OptionName> enumClasses, String listSeparatorCharacter) {
+      List<String> enumNames = new ArrayList<String>();
+      for (OptionName enumClass : enumClasses) {
+         enumNames.add(enumClass.getClass().getName());
+      }
+
+      return fromEnumNamesList(enumNames, listSeparatorCharacter);
+   }
+
+
+   /**
+    * Creates a new OptionsTable from a list of enums names which implement the
+    * OptionName interface.
+    *
+    * @param enumClasses
+    * @param listSeparatorCharacter the string which will serve as separator
+    * character in OptionTable's lists
+    * @return
+    */
+    public static OptionsTable fromEnumNamesList(List<String> enumClasses, String listSeparatorCharacter) {
+       Map<String, OptionName> avaliableOptions = new HashMap<String, OptionName>();
+       for (String enumClass : enumClasses) {
+          Map<String, OptionName> optionNames = getOptionNamesFromClass(enumClass);
+          if (optionNames != null) {
+             addOptions(avaliableOptions, optionNames);
+          }
+       }
+
+       return new OptionsTable(avaliableOptions, listSeparatorCharacter);
+    }
 
    /**
     * Tries to load an enum class implementing the OptionName interface. If

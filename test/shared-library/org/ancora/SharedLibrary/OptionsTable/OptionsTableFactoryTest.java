@@ -91,20 +91,20 @@ public class OptionsTableFactoryTest {
       assertNull(OptionsTableFactory.getOptionNamesFromClass(enumClassName));
 
       // Class which does not implement enum
-      enumClassName = "org.specs.OptionsTable.OptionsTableFactoryTest";
+      enumClassName = "org.ancora.SharedLibrary.OptionsTable.OptionsTableFactoryTest";
       assertNull(OptionsTableFactory.getOptionNamesFromClass(enumClassName));
 
       // Class implements enum but does not implement OptionName
-      enumClassName = "org.specs.OptionsTable.OneFieldEnum";
+      enumClassName = "org.ancora.SharedLibrary.OptionsTable.OneFieldEnum";
       assertNull(OptionsTableFactory.getOptionNamesFromClass(enumClassName));
 
       // Enum is empty
-      enumClassName = "org.specs.OptionsTable.EmptyEnum";
+      enumClassName = "org.ancora.SharedLibrary.OptionsTable.EmptyEnum";
       Map<String, OptionName> result = OptionsTableFactory.getOptionNamesFromClass(enumClassName);
       assertEquals(0, result.size());
 
       // Malformed Enum name (first letter lower case)
-      enumClassName = "org.specs.OptionsTable.emptyEnum";
+      enumClassName = "org.ancora.SharedLibrary.OptionsTable.emptyEnum";
       assertNull(OptionsTableFactory.getOptionNamesFromClass(enumClassName));
    }
 

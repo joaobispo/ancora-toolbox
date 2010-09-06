@@ -196,4 +196,22 @@ public class ProcessUtils {
          System.err.println("IOException during program execution:" + e.getMessage());
       }
    }
+
+   /**
+    *
+    * @return the StackTraceElement of the previous method of the method calling
+    * this method
+    */
+   public static StackTraceElement getCallerMethod() {
+      StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+      int callerMethodIndex = 3;
+      if(stackTraceElements.length <= callerMethodIndex) {
+         Logger.getLogger(ProcessUtils.class.getName()).
+                 warning("StackTrace size ("+stackTraceElements.length+") is to "
+                 + "small. Should have at least "
+                 +(callerMethodIndex+1)+" elements. Returning null.");
+         return null;
+      }
+      return stackTraceElements[callerMethodIndex];
+   }
 }
