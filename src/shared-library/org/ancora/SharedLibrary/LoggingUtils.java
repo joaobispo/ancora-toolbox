@@ -33,12 +33,28 @@ import org.ancora.SharedLibrary.Logging.LoggingOutputStream;
 public class LoggingUtils {
 
    /**
-    * 
+    *
     * @param object
     * @return logger specific to the given object
     */
    public static Logger getLogger(Object object) {
       return Logger.getLogger(object.getClass().getName());
+   }
+
+   /**
+    * Helper method to automatically get the Logger correspondent to the class
+    * which calls this method.
+    *
+    * <p>Thes method uses the "heavy" StackTrace to determine what object called
+    * it. This should only be used for logging "warnings" which are not called
+    * often.
+    *
+    * @param object
+    * @return logger specific to the given object
+    */
+   public static Logger getLogger() {
+      StackTraceElement stackElement = ProcessUtils.getCallerMethod();
+      return Logger.getLogger(stackElement.getClassName());
    }
 
    /**
