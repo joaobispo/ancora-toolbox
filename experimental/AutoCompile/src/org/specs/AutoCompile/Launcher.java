@@ -17,6 +17,9 @@
 
 package org.specs.AutoCompile;
 
+import org.ancora.SharedLibrary.AppBase.Frontend.Frontend;
+import org.ancora.SharedLibrary.LoggingUtils;
+
 /**
  *
  * @author Ancora Group <ancora.codigo@gmail.com>
@@ -27,8 +30,14 @@ public class Launcher {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       LoggingUtils.setupConsoleOnly();
+
         AutoCompile aComp = new AutoCompile();
-        aComp.execute(null);
+        Frontend frontend = new Frontend(aComp);
+
+        //aComp.execute(null);
+        frontend.run(args);
+
     }
 
 }
