@@ -35,7 +35,6 @@ public class Launcher {
         AutoCompile aComp = new AutoCompile();
         Frontend frontend = new Frontend(aComp);
 
-        //aComp.execute(null);
         frontend.run(args);
 
     }

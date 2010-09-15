@@ -32,9 +32,7 @@ import org.specs.AutoCompile.Target.TargetOption;
 public class AutoCompile implements App {
 
    public int execute(Map<String, AppOption> options) {
-      //System.out.println(AppUtils.generateFile(TargetOption.class));
-      //System.out.println(AppUtils.parseFile(new File("./targets/microblaze.mbgcc.txt")));
-      //throw new UnsupportedOperationException("Not supported yet.");
+
       System.out.println(options);
       return 0;
    }
