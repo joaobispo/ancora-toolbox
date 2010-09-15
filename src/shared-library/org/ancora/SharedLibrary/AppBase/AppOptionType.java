@@ -27,4 +27,13 @@ public enum AppOptionType {
    bool,
    integer,
    stringList;
+
+   public boolean isList() {
+      if (this == stringList) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
 }

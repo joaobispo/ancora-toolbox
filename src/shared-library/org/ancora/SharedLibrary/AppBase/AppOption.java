@@ -34,7 +34,7 @@ public class AppOption {
    private AppOption(String value, AppOptionType type) {
       
       
-      if (type == AppOptionType.stringList) {
+      if (type.isList()) {
          LoggingUtils.getLogger().
                  warning("This constructor does not support List types. Building"
                  + "a String type instead.");
@@ -104,7 +104,7 @@ public class AppOption {
     * @param value
     */
    public void set(String value) {
-      if(type == AppOptionType.stringList) {
+      if(type.isList()) {
          LoggingUtils.getLogger().
                  warning("This method is not defined for List types");
          return;
@@ -117,7 +117,7 @@ public class AppOption {
     * @return the value stored in the option. Does not work for list types.
     */
    public String get() {
-      if(type == AppOptionType.stringList) {
+      if(type.isList()) {
          LoggingUtils.getLogger().
                  warning("This method is not defined for List types. Returning null.");
          return null;
@@ -127,7 +127,7 @@ public class AppOption {
    }
 
    public List<String> getList() {
-      if(type != AppOptionType.stringList) {
+      if(!type.isList()) {
          LoggingUtils.getLogger().
                  warning("This method is only defined for List types. Returning null.");
          return null;
@@ -137,7 +137,7 @@ public class AppOption {
    }
 
    public void setList(List<String> list) {
-     if(type != AppOptionType.stringList) {
+     if(!type.isList()) {
          LoggingUtils.getLogger().
                  warning("This method is only defined for List types.");
       }
