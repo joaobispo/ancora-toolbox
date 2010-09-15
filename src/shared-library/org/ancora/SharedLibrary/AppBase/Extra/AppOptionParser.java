@@ -22,11 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppOption;
-import org.ancora.SharedLibrary.AppBase.AppOptionType;
-import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Parsing.ParsingConstants;
@@ -37,7 +33,7 @@ import org.ancora.SharedLibrary.Parsing.ParsingConstants;
  *
  * @author Joao Bispo
  */
-public class AppOptionParser {
+class AppOptionParser {
 
    /**
     * Parses a file created by AppUtils.generateFile into a String-AppOption map.
@@ -91,15 +87,6 @@ public class AppOptionParser {
       Map<String, AppOption> map = buildMap(lineReader, enumMap);
 
       
-/*
-
-      String line = null;
-      while((line = lineReader.nextLine()) != null) {
-         // Parse line
-         AppOption appOption = parseAppOptionLine(line);
-
-      }
-*/
       return map;
    }
 
@@ -107,9 +94,7 @@ public class AppOptionParser {
     * Cleans this object state.
     */
    private void reset() {
-      lists = new HashMap<String, List<String>>();
-      //lists = new HashMap<AppOptionEnum, List<String>>();
-      
+      lists = new HashMap<String, List<String>>();      
    }
 
    /**
@@ -182,7 +167,6 @@ public class AppOptionParser {
     * @param key
     * @param value
     */
-   //private void addValueToList(AppOptionEnum key, String value) {
    private void addValueToList(String key, String value) {
       // Check if List already exists
       if(!lists.containsKey(key)) {
@@ -193,7 +177,6 @@ public class AppOptionParser {
    }
 
    private Map<String, List<String>> lists;
-   //private Map<AppOptionEnum, List<String>> lists;
 
 
 

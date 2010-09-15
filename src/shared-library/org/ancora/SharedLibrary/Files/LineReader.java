@@ -86,14 +86,9 @@ public class LineReader {
 
         try {
             // Try to read the contents of the file into the StringBuilder
-            //stream = new FileInputStream(file);
-            //streamReader = new InputStreamReader(stream, DEFAULT_CHAR_SET);
             streamReader = new InputStreamReader(inputStream, DEFAULT_CHAR_SET);
             BufferedReader newReader = new BufferedReader(streamReader);
             return new LineReader(newReader);
-      //  } catch (FileNotFoundException ex) {
-      //      Logger.getLogger(LineReader.class.getName()).
-      //              log(Level.WARNING, "FileNotFoundException: "+ ex.getMessage());
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(LineReader.class.getName()).
                     log(Level.WARNING, "UnsupportedEncodingException: "+ ex.getMessage());

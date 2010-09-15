@@ -17,7 +17,6 @@
 
 package org.ancora.SharedLibrary.AppBase;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -42,10 +41,9 @@ public class AppOption {
       }
 
       this.type = type;
-      //else {
-         this.value = value;
-         this.list = null;
-      //}
+      this.value = value;
+      this.list = null;
+
    }
 
    public AppOption(int integer) {
@@ -159,8 +157,7 @@ public class AppOption {
       }
    }
 
-
-
+   
    private String value;
    private List<String> list;
    private AppOptionType type;
