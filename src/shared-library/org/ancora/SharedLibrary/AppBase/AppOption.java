@@ -98,6 +98,11 @@ public class AppOption {
       }
    }
 
+   public AppOptionType getType() {
+      return type;
+   }
+
+
    /**
     * Sets the value of the option. Does not work for list types.
     * 
@@ -144,6 +149,17 @@ public class AppOption {
 
      this.list = list;
    }
+
+   @Override
+   public String toString() {
+      if(type.isList()) {
+         return list.toString();
+      } else {
+         return value;
+      }
+   }
+
+
 
    private String value;
    private List<String> list;

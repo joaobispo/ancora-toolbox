@@ -42,6 +42,7 @@ public class LineReader {
     */
     private LineReader(BufferedReader reader) {
        this.reader = reader;
+       this.currentLine = 0;
     }
 
     /**
@@ -101,6 +102,11 @@ public class LineReader {
       return null;
    }
 
+   public int getLastLineIndex() {
+      return currentLine;
+   }
+
+
 
     /**
      * @return the next line in the file, or
@@ -109,7 +115,11 @@ public class LineReader {
     public String nextLine() {
            try {
                // Read next line
-              return reader.readLine();
+              String line = reader.readLine();
+              if(line != null) {
+                 this.currentLine++;
+              }
+              return line;
            } catch (IOException ex) {
               Logger.getLogger(LineReader.class.getName()).
                       log(Level.WARNING, "IOException: "+ ex.getMessage());
@@ -117,10 +127,34 @@ public class LineReader {
            }
     }
 
+    /**
+     * @return the next line which is not empty, or
+     * null if the end of the stream has been reached.
+     */
+    public String nextNonEmptyLine() {
+       boolean foundAnswer = false;
+       while(!foundAnswer) {
+         String line = nextLine();
+
+         if(line == null) {
+            return line;
+         }
+
+         if(line.length() > 0) {
+            return line;
+         }
+         
+       }
+
+
+       return null;
+    }
+
    /**
     * INSTANCE VARIABLES
     */
     private final BufferedReader reader;
+    private int currentLine;
 
    /**
     * Default CharSet used in file operations.

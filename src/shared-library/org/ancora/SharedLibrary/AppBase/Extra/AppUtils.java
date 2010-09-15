@@ -17,8 +17,18 @@
 
 package org.ancora.SharedLibrary.AppBase.Extra;
 
+
+
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.AppOptionType;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.Parsing.ParsingConstants;
+
+
 
 /**
  * Several utility methods related to the classes inside the 'Extras' package.
@@ -46,6 +56,9 @@ public class AppUtils {
       // Get enum constants and start building file
       Object[] enums = c.getEnumConstants();
       StringBuilder builder = new StringBuilder();
+      builder.append(CLASS_PREFIX);
+      builder.append(c.getName());
+      builder.append(ParsingConstants.NEWLINE);
 
       // Add a line in the file for each enum
       for (Object option : enums) {
@@ -61,14 +74,76 @@ public class AppUtils {
             return null;
          }
 
-         String line = generateLine(optionObject);
+         String line = generateAppOptionLine(optionObject);
          builder.append(line);
-         builder.append(NEWLINE);
+         builder.append(ParsingConstants.NEWLINE);
       }
       
       return builder.toString();
    }
 
+   /**
+    * Parses the given file into a Map of AppOption objects.
+    * @return
+    */
+   
+   public static Map<String, AppOption> parseFile(File file) {
+
+      AppOptionParser parser = new AppOptionParser();
+      return parser.parse(file);
+
+      //return null;
+      /*
+      LineReader lineReader = LineReader.createLineReader(file);
+      if(lineReader == null) {
+         LoggingUtils.getLogger().
+                 warning("LineReader is null.");
+         return null;
+      }
+      
+      // Build map
+      Map<String, AppOption> map = new HashMap<String, AppOption>();
+      // Maintain table with lists
+
+      
+      String line = null;
+      while((line = lineReader.nextLine()) != null) {
+         // Parse line
+         AppOption appOption = parseAppOptionLine(line);
+
+      }
+       
+      
+      return null;
+       *
+       */
+   }
+
+   /**
+    * Builds an unmmodifiable table which maps the name of the AppOptionEnum to
+    * the object itself.
+    *
+    * <p>This table can be useful to get the enum correspondent to a particular
+    * option in String format which was collected from, for example, a config file.
+    *
+    * @param values
+    * @return
+    */
+   public static Map<String, AppOptionEnum> buildMap(AppOptionEnum[] values) {
+      Map<String, AppOptionEnum> aMap = new HashMap<String, AppOptionEnum>();
+
+      for (AppOptionEnum enume : values) {
+         aMap.put(enume.getName(), enume);
+      }
+
+      return Collections.unmodifiableMap(aMap);
+   }
+
+   //
+   // PRIVATE METHODS
+   //
+
+   /*
    private static String getSeparator(AppOptionType appOptionType) {
       if(appOptionType.isList()) {
          return LIST_SEPARATOR;
@@ -76,18 +151,19 @@ public class AppUtils {
          return SET_SEPARATOR;
       }
    }
+    *
+    */
 
 
-   private static String generateLine(AppOptionEnum optionObject) {
+   private static String generateAppOptionLine(AppOptionEnum optionObject) {
       StringBuilder builder = new StringBuilder();
 
       // Add line for enum
       builder.append(optionObject.getName());
-      builder.append(SPACE);
+      builder.append(ParsingConstants.SPACE);
 
-      String separator = getSeparator(optionObject.getType());
-      builder.append(separator);
-      builder.append(SPACE);
+      builder.append(optionObject.getType().getAttributionString());
+      builder.append(ParsingConstants.SPACE);
 
       String defaultValue = getDefaultValue(optionObject.getType());
       builder.append(defaultValue);
@@ -106,12 +182,26 @@ public class AppUtils {
 
       return "";
    }
+/*
+   private static AppOption parseAppOptionLine(String line) {
+      int endIndex = line.indexOf(SPACE);
+      String appOptionName = line.substring(0, endIndex);
+      System.out.println("Name:"+appOptionName);
+      // Get type from name
+
+      line = line.substring(endIndex+1);
+      line = line.trim();
+      endIndex = line.indexOf(SPACE);
+      String attribution = line.substring(0, endIndex);
+      // Get
+   }
+*/
+   //private static final String SET_SEPARATOR = "=";
+   //private static final String LIST_SEPARATOR = "+=";
+
+   public static final String CLASS_PREFIX = "class = ";
 
 
-   private static final String SET_SEPARATOR = "=";
-   private static final String LIST_SEPARATOR = "+=";
-   private static final String SPACE = " ";
-   private static final String NEWLINE = "\n";
 
 
 
