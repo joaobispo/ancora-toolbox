@@ -23,73 +23,46 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.AutoCompile.Options.Config;
 import org.specs.AutoCompile.Options.TargetOption;
 
 /**
- * Automates compilation of benchmarks.
+ * Represents the available targets for compilation.
  *
  * @author Joao Bispo
  */
-public class AutoCompile implements App {
+public class Targets {
 
-   public AutoCompile() {
-   }
-
-
-   /**
-    *
-    * @param options
-    * @return
-    */
-   public int execute(Map<String, AppOption> options) {
-      // Build target tables
-      String targetFolder = AppUtils.getString(options, Config.targetFolder);
-      Targets targets = Targets.buildTargets(targetFolder);
-
-      //buildTargetTables(targetFolder);
-
-      // Parse Command Line
-      /*
-      List<String> args = AppUtils.getStringList(options, Config.arguments);
-      Map<String, AppOption> jobOptions = parseArguments(args);
-
-      if(jobOptions == null) {
-         LoggingUtils.getLogger().
-                 warning("Could not find a job.");
-         return 1;
-      }
-       * 
-       */
-
-      // Perform job
-      String jobFilepath = AppUtils.getString(options, Config.jobFile);
-      Map<String,AppOption> jobOptions = AppUtils.parseFile(new File(jobFilepath));
-
-      
-
-      System.out.println(options);
-      System.out.println(targets.getTargets());
-      System.out.println(targets.getTargetFiles());
-      System.out.println(jobOptions);
-      return 0;
-   }
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   /*
-   private void buildTargetTables(String targetFolderpath) {
+   private Targets() {
       targets = new HashMap<String, Set<String>>();
       targetFiles = new HashMap<String, String>();
 
+   }
+
+   public Map<String, String> getTargetFiles() {
+      return targetFiles;
+   }
+
+   public Map<String, Set<String>> getTargets() {
+      return targets;
+   }
+
+   
+
+
+   public static Targets buildTargets(String targetFolderpath) {
       // Read target folder and load targets
       File targetFolder = IoUtils.safeFolder(targetFolderpath);
+      if(targetFolder == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not access folder '"+targetFolder.getPath()+"'");
+         return null;
+      }
+
+      Targets targets = new Targets();
       List<File> tFiles = IoUtils.getFilesRecursive(targetFolder);
 
       // For each found file, add to the tables
@@ -104,14 +77,12 @@ public class AutoCompile implements App {
           String target = AppUtils.getString(map, TargetOption.target);
           String compiler = AppUtils.getString(map, TargetOption.compiler);
 
-          addTargetCompiler(target, compiler, tFile.getPath());
+          targets.addTargetCompiler(target, compiler, tFile.getPath());
       }
+
+      return targets;
    }
-    *
-    */
 
-
-   /*
    private void addTargetCompiler(String target, String compiler, String path) {
       Set<String> compilerNames = targets.get(target);
       if(compilerNames == null) {
@@ -126,29 +97,25 @@ public class AutoCompile implements App {
 
       targetFiles.put(buildTargetCompilerName(target, compiler), path);
    }
-    * 
-    */
 
-   /*
+
    private String buildTargetCompilerName(String target, String compiler) {
       return target + "." + compiler;
    }
-    * 
-    */
 
+
+
+   /**
+    * INSTANCE VARIABLES
+    */
 
    /**
     * Indexed by the target name, returns compiler names.
     */
-   //Map<String, Set<String>> targets;
+   Map<String, Set<String>> targets;
    /**
     * Indexed by the full qualified name (e.g.: MicroBlaze.mb-gcc), returns
     * files.
     */
-   //Map<String, String> targetFiles;
-
-
-
-
-
+   Map<String, String> targetFiles;
 }
