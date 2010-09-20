@@ -18,6 +18,7 @@
 package org.ancora.SharedLibrary.AppBase.Frontend;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +27,10 @@ import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.Parsing.ParsingConstants;
 
 /**
- * Acts as a command-line and GUI (yet to implement) front-end for applications
+ * Acts as a command-line front-end for applications
  * which use the AppBase classes.
  *
  * @author Joao Bispo
@@ -37,8 +39,17 @@ public class CommandLine {
 
    public CommandLine(App app) {
       this.app = app;
-      mode = Mode.commandLine;
       optionFilesExtension = DEFAULT_OPTION_FILE_EXTENSION;
+      optionClasses = new ArrayList<Class>();
+   }
+
+   /**
+    * List of option classes associated with this object.
+    *
+    * @return
+    */
+   public List<Class> getOptionClasses() {
+      return optionClasses;
    }
 
    /**
@@ -55,6 +66,12 @@ public class CommandLine {
     * @return
     */
    public int run(String[] args) {
+
+      // PreParse some simple options
+      boolean preParseResult = preParseAguments(args);
+      if(preParseResult) {
+         return 0;
+      }
 
       Map<String, AppOption> options = parseArguments(args);
 
@@ -122,20 +139,60 @@ public class CommandLine {
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
+      private boolean preParseAguments(String[] args) {
+      if(args.length == 0) {
+         return false;
+      }
+
+      if(args[0].equals(helpFlag)) {
+         LoggingUtils.getLogger().
+                 info(HELP_MESSAGE);
+         return true;
+      }
+
+      if(args[0].equals(generateFlag)) {
+         generateOptions();
+         return true;
+      }
+
+      return false;
+   }
+
+   /**
+    * Options for this program:
+    * - Target.TargetOption
+    */
+   private void generateOptions() {
+      if(optionClasses.isEmpty()) {
+         LoggingUtils.getLogger().
+                 info("This application has no option files.");
+         return;
+      }
+
+      for (Class c : optionClasses) {
+         String optionFilename = c.getSimpleName() + ParsingConstants.EXTENSION_SEPARATOR
+                 + optionFilesExtension;
+         IoUtils.write(new File(optionFilename), AppUtils.generateFile(c));
+      }
+
+   }
+
+
    /**
     * INSTANCE VARIABLES
     */
    private App app;
-   private Mode mode;
    private String optionFilesExtension;
+   private List<Class> optionClasses;
 
+   private static final String helpFlag = "-help";
+   private static final String generateFlag = "-generate";
    public static final String DEFAULT_OPTION_FILE_EXTENSION = "option";
+   public static final String HELP_MESSAGE =
+           helpFlag + " - Shows this help message\n"
+           + generateFlag + " - Creates a skeleton of the option files needed for this program\n"
+           + "<nothing> - Uses current folder as source folder\n"
+           + "<optionsFile, optionsFile...> - Loads the given option files\n"
+           + "<folder> - Recursively reads all option files inside the given folder\n";
 
-
-
-
-   enum Mode {
-      commandLine,
-      gui;
-   }
 }
