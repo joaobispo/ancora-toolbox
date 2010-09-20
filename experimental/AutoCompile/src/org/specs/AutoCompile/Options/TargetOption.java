@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.AutoCompile.Target;
+package org.specs.AutoCompile.Options;
 
 import org.ancora.SharedLibrary.AppBase.AppOptionType;
 import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
