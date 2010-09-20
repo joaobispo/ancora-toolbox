@@ -17,8 +17,9 @@
 
 package org.specs.AutoCompile;
 
-import org.ancora.SharedLibrary.AppBase.Frontend.Frontend;
+import org.ancora.SharedLibrary.AppBase.Frontend.CommandLine;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.AutoCompile.Target.TargetOption;
 
 /**
  *
@@ -32,11 +33,28 @@ public class Launcher {
     public static void main(String[] args) {
        LoggingUtils.setupConsoleOnly();
 
+       // Check if there is option "-generate" or "-help"
+       /*
+       boolean foundArgument = preparseAguments(args);
+       if(foundArgument) {
+          return;
+       }
+        *
+        */
+
         AutoCompile aComp = new AutoCompile();
-        Frontend frontend = new Frontend(aComp);
+        CommandLine frontend = new CommandLine(aComp);
+
+        // Link this program options to frontend
+        frontend.getOptionClasses().add(TargetOption.class);
 
         frontend.run(args);
 
     }
+
+
+
+
+
 
 }

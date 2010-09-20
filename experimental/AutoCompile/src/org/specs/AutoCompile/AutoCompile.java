@@ -17,12 +17,9 @@
 
 package org.specs.AutoCompile;
 
-import java.io.File;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOption;
-import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
-import org.specs.AutoCompile.Target.TargetOption;
 
 /**
  * Automates compilation of benchmarks.
