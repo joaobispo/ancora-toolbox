@@ -33,9 +33,9 @@ import org.ancora.SharedLibrary.LoggingUtils;
  *
  * @author Joao Bispo
  */
-public class Frontend {
+public class CommandLine {
 
-   public Frontend(App app) {
+   public CommandLine(App app) {
       this.app = app;
       mode = Mode.commandLine;
       optionFilesExtension = DEFAULT_OPTION_FILE_EXTENSION;
