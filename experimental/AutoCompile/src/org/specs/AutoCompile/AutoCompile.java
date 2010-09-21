@@ -18,11 +18,17 @@
 package org.specs.AutoCompile;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.LoggingMXBean;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
+import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.AutoCompile.Job.Job;
+import org.specs.AutoCompile.Job.JobUtils;
 import org.specs.AutoCompile.Options.Config;
+import org.specs.AutoCompile.Options.JobOption;
 
 /**
  * Automates compilation of benchmarks.
@@ -45,11 +51,37 @@ public class AutoCompile implements App {
       String targetFolder = AppUtils.getString(options, Config.targetFolder);
       Targets targets = Targets.buildTargets(targetFolder);
 
-      // Perform job
+
+      // Get Job options
       String jobFilepath = AppUtils.getString(options, Config.jobFile);
       Map<String,AppOption> jobOptions = AppUtils.parseFile(new File(jobFilepath));
 
 
+      // Get Target Options
+      String target = AppUtils.getString(jobOptions, JobOption.target);
+      String compiler = AppUtils.getString(jobOptions, JobOption.compiler);
+      File targetConfig = targets.getTargetConfig(target, compiler);
+      Map<String,AppOption> targetOptions = AppUtils.parseFile(targetConfig);
+
+
+      // Get jobs
+      List<Job> jobs = JobUtils.buildJobs(jobOptions, targetOptions);
+      //List<Job> jobs = JobUtils.buildJobs(jobOptions, targets);
+      if(jobs == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not build jobs.");
+         return -1;
+      }
+
+      // Run each Job
+      for(Job job : jobs) {
+         int returnValue = job.run();
+         if(returnValue != 0) {
+            LoggingUtils.getLogger().
+                    warning("Problems while running job: returned value '"+returnValue+"'.\n"
+                    + "Job:"+job.toString());
+         }
+      }
 
       /*
       if(!JobUtils.validateJob(jobOptions, targets)) {
@@ -59,10 +91,10 @@ public class AutoCompile implements App {
        * 
        */
 
-      System.out.println(options);
-      System.out.println(targets.getTargets());
-      System.out.println(targets.getTargetFiles());
-      System.out.println(jobOptions);
+      //System.out.println(options);
+      //System.out.println(targets.getTargets());
+      //System.out.println(targets.getTargetFiles());
+      //System.out.println(jobOptions);
       return 0;
    }
 

@@ -50,6 +50,22 @@ public class Targets {
       return targets;
    }
 
+   /**
+    * @param targetName
+    * @param compiler
+    * @return a file representing a configuration for a specific target-compiler
+    * pair (e.g.: MicroBlaze-mbgcc)
+    */
+   public File getTargetConfig(String targetName, String compiler) {
+      // Get target
+
+      // Get compiler
+
+      // Confirm if file exists
+
+      return null;
+   }
+
    
 
 
