@@ -37,7 +37,8 @@ import org.specs.AutoCompile.Options.JobOption;
  */
 public class AutoCompile implements App {
 
-   public AutoCompile() {
+   public AutoCompile(String targetFolder) {
+      targets = Targets.buildTargets(targetFolder);
    }
 
 
@@ -47,10 +48,6 @@ public class AutoCompile implements App {
     * @return
     */
    public int execute(Map<String, AppOption> options) {
-      // Build target tables
-      String targetFolder = AppUtils.getString(options, Config.targetFolder);
-      Targets targets = Targets.buildTargets(targetFolder);
-
 
       // Get Job options
       String jobFilepath = AppUtils.getString(options, Config.jobFile);
@@ -61,12 +58,15 @@ public class AutoCompile implements App {
       String target = AppUtils.getString(jobOptions, JobOption.target);
       String compiler = AppUtils.getString(jobOptions, JobOption.compiler);
       File targetConfig = targets.getTargetConfig(target, compiler);
+      if(targetConfig == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not get configuration for '"+Targets.getTargetName(target, compiler)+"'");
+         return -1;
+      }
       Map<String,AppOption> targetOptions = AppUtils.parseFile(targetConfig);
-
 
       // Get jobs
       List<Job> jobs = JobUtils.buildJobs(jobOptions, targetOptions);
-      //List<Job> jobs = JobUtils.buildJobs(jobOptions, targets);
       if(jobs == null) {
          LoggingUtils.getLogger().
                  warning("Could not build jobs.");
@@ -83,14 +83,6 @@ public class AutoCompile implements App {
          }
       }
 
-      /*
-      if(!JobUtils.validateJob(jobOptions, targets)) {
-         LoggingUtils.getLogger().
-                 warning("Problem while validating job.");
-      }
-       * 
-       */
-
       //System.out.println(options);
       //System.out.println(targets.getTargets());
       //System.out.println(targets.getTargetFiles());
@@ -98,4 +90,8 @@ public class AutoCompile implements App {
       return 0;
    }
 
+   /**
+    * INSTANCE VARIABLES
+    */
+   private Targets targets;
 }

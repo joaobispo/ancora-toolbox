@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
@@ -30,7 +32,8 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Options.TargetOption;
 
 /**
- * Represents the available targets for compilation.
+ * Represents the available targets for compilation. A target is a pair composed
+ * by a processor and a compiler for that processor.
  *
  * @author Joao Bispo
  */
@@ -42,28 +45,56 @@ public class Targets {
 
    }
 
+   /*
    public Map<String, String> getTargetFiles() {
       return targetFiles;
    }
-
+    *
+    */
+/*
    public Map<String, Set<String>> getTargets() {
       return targets;
    }
+ * 
+ */
 
    /**
-    * @param targetName
+    * @param processor
     * @param compiler
-    * @return a file representing a configuration for a specific target-compiler
+    * @return a file representing a configuration for a specific processor-compiler
     * pair (e.g.: MicroBlaze-mbgcc)
     */
-   public File getTargetConfig(String targetName, String compiler) {
+   public File getTargetConfig(String processor, String compiler) {
       // Get target
+      Set<String> compilerSet = targets.get(processor);
+      if(compilerSet == null) {
+         LoggingUtils.getLogger().
+                 info("Could not find processor '"+processor+"'. Available processors:");
+         printProcessors(Level.INFO);
+         return null;
+      }
 
       // Get compiler
+      if(!compilerSet.contains(compiler)) {
+         LoggingUtils.getLogger().
+                 info("Could not find compiler '"+compiler+
+                 "'. Available compilers for processor '"+processor+"':");
+         printCompilers(processor, Level.INFO);
+         return null;
+      }
 
       // Confirm if file exists
+      String targetName = getTargetName(processor, compiler);
+      String targetFilename = targetFiles.get(targetName);
+      File targetFile = new File(targetFilename);
+      if(!targetFile.isFile()) {
+         LoggingUtils.getLogger().
+                 warning("Could not find file '" + targetFilename
+                 + "' for target '" + getTargetName(processor, compiler) + "'.");
+         return null;
+      }
 
-      return null;
+      return targetFile;
    }
 
    
@@ -93,33 +124,59 @@ public class Targets {
           String target = AppUtils.getString(map, TargetOption.target);
           String compiler = AppUtils.getString(map, TargetOption.compiler);
 
-          targets.addTargetCompiler(target, compiler, tFile.getPath());
+          targets.addProcessorCompiler(target, compiler, tFile.getPath());
       }
 
       return targets;
    }
 
-   private void addTargetCompiler(String target, String compiler, String path) {
-      Set<String> compilerNames = targets.get(target);
+   private void addProcessorCompiler(String processor, String compiler, String path) {
+      Set<String> compilerNames = targets.get(processor);
       if(compilerNames == null) {
          compilerNames = new HashSet<String>();
-         targets.put(target, compilerNames);
+         targets.put(processor, compilerNames);
       }
 
       if(!compilerNames.add(compiler)) {
          LoggingUtils.getLogger().
-                 warning("Duplicate entry for target '"+target+"' - compiler '"+compiler+"'.");
+                 warning("Duplicate entry for target '"+processor+"' - compiler '"+compiler+"'.");
       }
 
-      targetFiles.put(buildTargetCompilerName(target, compiler), path);
+      targetFiles.put(getTargetName(processor, compiler), path);
    }
 
 
-   private String buildTargetCompilerName(String target, String compiler) {
-      return target + "." + compiler;
+   /**
+    * Given the name of the target processor and the compiler, returns a String
+    * which can be used as an identifier.
+    * 
+    * @param target
+    * @param compiler
+    * @return
+    */
+   public static String getTargetName(String processor, String compiler) {
+      return processor + "." + compiler;
    }
 
 
+   /*
+    * Prints the available processors.
+    */
+   private void printProcessors(Level level) {
+      Logger logger = LoggingUtils.getLogger();
+      for(String key : targets.keySet()) {
+         logger.log(level, " -> "+key);
+      }
+   }
+
+
+   private void printCompilers(String processor, Level level) {
+      Logger logger = LoggingUtils.getLogger();
+      Set<String> compilers = targets.get(processor);
+      for(String compiler : compilers) {
+         logger.log(level, " -> "+compiler);
+      }
+   }
 
    /**
     * INSTANCE VARIABLES
@@ -134,4 +191,6 @@ public class Targets {
     * files.
     */
    Map<String, String> targetFiles;
+
+
 }

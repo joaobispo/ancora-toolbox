@@ -58,16 +58,9 @@ public class Launcher {
        config.put(Config.jobFile.getName(), new AppOption(jobFile));
 
        // Create and launch application object
-        AutoCompile aComp = new AutoCompile();
+       String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
+        AutoCompile aComp = new AutoCompile(targetsFolderpath);
         aComp.execute(config);
-
-
-        //CommandLine frontend = new CommandLine(aComp);
-
-        // Link this program options to frontend
-        //frontend.getOptionClasses().add(TargetOption.class);
-
-        //frontend.run(args);
 
     }
 
