@@ -32,10 +32,10 @@ public class Job {
    public Job(String programExecutable, String outputFile, List<String> inputFiles,
            String optimization, List<String> otherFlags, String outputFlag, String workingDir) {
       this.outputFile = outputFile;
-      this.inputFiles = inputFiles;
+      this.inputFilenames = inputFiles;
       this.optimization = optimization;
       this.otherFlags = otherFlags;
-      this.workingDir = workingDir;
+      this.workingFoldername = workingDir;
       this.outputFlag = outputFlag;
       this.programExecutable = programExecutable;
    }
@@ -49,6 +49,7 @@ public class Job {
       // Create Folder for outputfile
       File outputFil = new File(outputFile);
       File outputFol = outputFil.getParentFile();
+      /*
       if (!outputFol.exists()) {
          boolean success = outputFol.mkdirs();
          if (!success) {
@@ -56,20 +57,23 @@ public class Job {
                     warning("Could not create output folder '" + outputFol + "'");
          }
       }
+       *
+       */
 
 
 
       List<String> command = new ArrayList<String>();
       command.add(getProgram());
-      command.addAll(inputFiles);
+      command.addAll(inputFilenames);
 
-      command.add(getOutputFlag());
-      command.add(outputFile);
+
       command.add(optimization);
       command.addAll(otherFlags);
+            command.add(getOutputFlag());
+      command.add(outputFile);
 
 
-        return ProcessUtils.runProcess(command, workingDir);
+        return ProcessUtils.runProcess(command, workingFoldername);
    }
 
    @Override
@@ -81,7 +85,7 @@ public class Job {
       builder.append("\n");
 
       builder.append("Input:\n");
-      for(String input : inputFiles) {
+      for(String input : inputFilenames) {
       builder.append(input);
       builder.append("\n");
       }
@@ -91,10 +95,15 @@ public class Job {
       builder.append("\n");
 
       builder.append("Flags:\n");
+      builder.append(otherFlags);
+      builder.append("\n");
+      /*
       for(String flag : otherFlags) {
       builder.append(flag);
       builder.append("\n");
       }
+       *
+       */
 
 
 
@@ -120,7 +129,7 @@ public class Job {
    }
 
    public List<String> getInputFiles() {
-      return inputFiles;
+      return inputFilenames;
    }
 
    public String getOptimization() {
@@ -140,10 +149,10 @@ public class Job {
     * INSTANCE VARIABLES
     */
    String outputFile;
-   List<String> inputFiles;
+   List<String> inputFilenames;
    String optimization;
    List<String> otherFlags;
-   String workingDir;
+   String workingFoldername;
    String programExecutable;
    String outputFlag;
 }

@@ -30,6 +30,7 @@ public enum TargetOption implements AppOptionEnum {
    target("target", AppOptionType.string),
    compiler("compiler", AppOptionType.string),
    optimizationFlags("optimizationFlags", AppOptionType.stringList),
+   inputExtensions("inputExtensions", AppOptionType.stringList),
    outputFlag("outputFlag", AppOptionType.string),
    launchCommand("launchCommand", AppOptionType.string),
    outputExtension("outputExtension", AppOptionType.string);
