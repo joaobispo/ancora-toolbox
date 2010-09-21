@@ -27,7 +27,12 @@ import org.ancora.SharedLibrary.AppBase.AppOption;
  */
 public class JobUtils {
 
-   public static boolean validateJob(Map<String,AppOption> jobOptions) {
+   /*
+    * NOT Sure if I should validate first, or while variables are used.
+   public static boolean validateJob(Map<String,AppOption> jobOptions, Targets targets) {
+      //JobOption.
       return false;
    }
+    * 
+    */
 }
