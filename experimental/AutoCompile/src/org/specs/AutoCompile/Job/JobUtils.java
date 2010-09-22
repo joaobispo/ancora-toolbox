@@ -19,7 +19,6 @@ package org.specs.AutoCompile.Job;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +49,7 @@ public class JobUtils {
       String outputFlag = AppUtils.getString(targetOptions, TargetOption.outputFlag);
 
       // Get compiler flags
-      String otherFlags = AppUtils.getString(jobOptions, JobOption.compilerFlags);
-      // Separate the flags
-      String[] otherFlagsArray = otherFlags.split(" ");
+      List<String> otherFlags = AppUtils.getStringList(jobOptions, JobOption.compilerFlags);
 
       // Get list of programs to compile
       List<ProgramSource> sources = getProgramSources(jobOptions, targetOptions);
@@ -94,7 +91,7 @@ public class JobUtils {
             List<String> inputFiles = source.getSourceFilenames();
             String workingDir = source.getSourceFolder();
 
-            Job job = new Job(programExecutable, outputFilename, inputFiles, optimizationFlag, Arrays.asList(otherFlagsArray),outputFlag, workingDir);
+            Job job = new Job(programExecutable, outputFilename, inputFiles, optimizationFlag, otherFlags,outputFlag, workingDir);
             jobs.add(job);
          }
       }
@@ -171,7 +168,16 @@ public class JobUtils {
       // Ideally, should be any non-alphanumerical character.
       String optimizationFoldername = optimizationFlag.replaceAll("-", "");
       File optimizationFolder = new File(outputFolder, optimizationFoldername);
-      
+      optimizationFolder = IoUtils.safeFolder(optimizationFolder.getPath());
+
+      if(optimizationFolder == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not open folder '"
+                 + optimizationFolder.getPath() + "'.");
+         return null;
+      }
+
+      /*
       optimizationFolder.mkdirs();
       if (!optimizationFolder.isDirectory()) {
          LoggingUtils.getLogger().
@@ -179,6 +185,8 @@ public class JobUtils {
                  + optimizationFolder.getPath() + "'.");
          return null;
       }
+       *
+       */
       
 
       return optimizationFolder;

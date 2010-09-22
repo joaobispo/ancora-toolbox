@@ -32,7 +32,7 @@ public enum JobOption implements AppOptionEnum {
    inputFolderMode("inputFolderMode", AppOptionType.string),
    target("target", AppOptionType.string),
    compiler("compiler", AppOptionType.string),
-   compilerFlags("compilerOptions", AppOptionType.string),
+   compilerFlags("compilerFlags", AppOptionType.stringList),
    optimizationFlags("optimizationLevels", AppOptionType.stringList);
 
    private JobOption(String name, AppOptionType type) {

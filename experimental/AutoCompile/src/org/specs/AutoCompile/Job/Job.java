@@ -47,8 +47,8 @@ public class Job {
     */
    public int run() {
       // Create Folder for outputfile
-      File outputFil = new File(outputFile);
-      File outputFol = outputFil.getParentFile();
+      //File outputFil = new File(outputFile);
+      //File outputFol = outputFil.getParentFile();
       /*
       if (!outputFol.exists()) {
          boolean success = outputFol.mkdirs();
