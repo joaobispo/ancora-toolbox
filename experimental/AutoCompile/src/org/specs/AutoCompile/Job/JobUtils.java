@@ -85,7 +85,8 @@ public class JobUtils {
             // Get complete path for output file
             
             File outputFile = new File(outputOptFolder, buildOutputfilename(source, optimizationFlag, targetOptions));
-            String outputFilename = "\""+outputFile.getPath()+"\"";
+            String outputFilename = outputFile.getPath();
+            //String outputFilename = "\""+outputFile.getPath()+"\"";
             
 
             List<String> inputFiles = source.getSourceFilenames();
@@ -215,7 +216,41 @@ public class JobUtils {
    }
 
    private static List<ProgramSource> getSourcesFolderMode(Map<String, AppOption> jobOptions, Map<String, AppOption> targetOptions) {
-      throw new UnsupportedOperationException("Not yet implemented");
+      // Get extensions
+      List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
+      // Get source folder
+      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.sourceFilesFolder);
+      File sourceFolder = new File(sourceFoldername);
+      if (!sourceFolder.isDirectory()) {
+         LoggingUtils.getLogger().
+                 warning("Could not open '" + sourceFolder.getPath() + "' as folder.");
+         return null;
+      }
+
+      List<ProgramSource> programSources = new ArrayList<ProgramSource>();
+
+      // Get folders
+      File[] contents = sourceFolder.listFiles();
+      for (File folder : contents) {
+         if (!folder.isDirectory()) {
+            LoggingUtils.getLogger().
+                    info("Ignoring file '" + folder.getPath() + "' in source folders path.");
+            continue;
+         }
+
+         // Get source files for program
+         List<File> files = IoUtils.getFilesRecursive(folder, new HashSet<String>(extensions));
+         List<String> sourceFilenames = new ArrayList<String>();
+         for (File file : files) {
+            sourceFilenames.add(file.getPath());
+         }
+
+         String baseFilename = folder.getName();
+         programSources.add(new ProgramSource(sourceFilenames, sourceFoldername, baseFilename));
+
+      }
+
+      return programSources;
    }
 
    /**
@@ -244,7 +279,8 @@ public class JobUtils {
       List<ProgramSource> programSources = new ArrayList<ProgramSource>();
       for (File file : files) {
          List<String> sourceFilenames = new ArrayList<String>();
-         sourceFilenames.add(file.getName());
+         //sourceFilenames.add(file.getName());
+         sourceFilenames.add(file.getPath());
          
          String baseFilename = IoUtils.removeExtension(file.getName());
          programSources.add(new ProgramSource(sourceFilenames, sourceFoldername, baseFilename));

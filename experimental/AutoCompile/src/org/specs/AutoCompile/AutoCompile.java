@@ -20,6 +20,7 @@ package org.specs.AutoCompile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
@@ -50,7 +51,8 @@ public class AutoCompile implements App {
 
       // Get Job options
       String jobFilepath = AppUtils.getString(options, Config.jobFile);
-      Map<String,AppOption> jobOptions = AppUtils.parseFile(new File(jobFilepath));
+      File jobFile = new File(jobFilepath);
+      Map<String,AppOption> jobOptions = AppUtils.parseFile(jobFile);
 
 
       // Get Target Options
@@ -72,8 +74,11 @@ public class AutoCompile implements App {
          return -1;
       }
 
-      // Run each Job
+      JobProgress jobProgress = new JobProgress(jobFile.getName(), jobs.size());
+      jobProgress.initialMessage();
+
       for(Job job : jobs) {
+         jobProgress.nextMessage();
          int returnValue = job.run();
          if(returnValue != 0) {
             LoggingUtils.getLogger().
