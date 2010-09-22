@@ -21,12 +21,11 @@ import java.io.File;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
-import org.ancora.SharedLibrary.AppBase.Frontend.CommandLine;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.AutoCompile.Gui.Main;
 import org.specs.AutoCompile.Options.JobOption;
 import org.specs.AutoCompile.Options.Config;
-import org.specs.AutoCompile.Options.TargetOption;
 
 /**
  *
@@ -40,27 +39,15 @@ public class Launcher {
     public static void main(String[] args) {
        LoggingUtils.setupConsoleOnly();
 
-       // Load configuration file
-       Map<String, AppOption> config = loadConfig();
-       if(config == null) {
-          LoggingUtils.getLogger().
-                  warning("Could not load configuration file.");
+       // Launch GUI
+       if(args.length == 0) {
+          launchGui();
           return;
        }
 
-       // Parse command line and find a job to put on the table
-       String jobFile = parseArguments(args);
-       if(jobFile == null) {
-          LoggingUtils.getLogger().
-                  warning("Could not find a job.");
-          return;
-       }
-       config.put(Config.jobFile.getName(), new AppOption(jobFile));
+       // Launch command line
+       launchCommandLine(args);
 
-       // Create and launch application object
-       String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
-        AutoCompile aComp = new AutoCompile(targetsFolderpath);
-        aComp.execute(config);
 
     }
 
@@ -113,8 +100,53 @@ public class Launcher {
       return jobFile.getPath();
    }
 
+
+   public static int launchAutoCompile(String jobFile) {
+      // Load configuration file
+      Map<String, AppOption> config = loadConfig();
+      if (config == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not load configuration file.");
+         return -1;
+      }
+
+      config.put(Config.jobFile.getName(), new AppOption(jobFile));
+
+      // Create and launch application object
+      String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
+      AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
+      //new AutoCompile(targetsFolderpath);
+      if (aComp == null) {
+         return -1;
+      }
+
+      return aComp.execute(config);
+   }
+
+   private static int launchCommandLine(String[] args) {
+      // Parse command line and find a job to put on the table
+      String jobFile = parseArguments(args);
+
+      if (jobFile == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find a job.");
+         return -1;
+      }
+
+      return launchAutoCompile(jobFile);
+   }
+
+
+   private static void launchGui() {
+      Main.main(null);
+   }
+
    // VARIABLES
    private final static String CONFIG_FILE = "config.dat";
+
+
+
+
 
 
 

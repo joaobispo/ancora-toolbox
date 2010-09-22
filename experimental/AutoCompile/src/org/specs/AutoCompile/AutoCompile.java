@@ -37,8 +37,21 @@ import org.specs.AutoCompile.Options.JobOption;
  */
 public class AutoCompile implements App {
 
-   public AutoCompile(String targetFolder) {
-      targets = Targets.buildTargets(targetFolder);
+//   public AutoCompile(String targetFolder) {
+   private AutoCompile(Targets targets) {
+      //targets = Targets.buildTargets(targetFolder);
+      this.targets = targets;
+   }
+
+   public static AutoCompile newAutoCompile(String targetFolder) {
+      Targets targets = Targets.buildTargets(targetFolder);
+      if(targets == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not create application object.");
+         return null;
+      }
+
+      return new AutoCompile(targets);
    }
 
 

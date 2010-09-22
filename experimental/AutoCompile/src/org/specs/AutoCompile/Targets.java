@@ -113,6 +113,12 @@ public class Targets {
       List<File> tFiles = IoUtils.getFilesRecursive(targetFolder);
 
       // For each found file, add to the tables
+      if(tFiles.isEmpty()) {
+         LoggingUtils.getLogger().
+                 warning("There are no target definitions on the folder '"+targetFolder.getPath()+"'!");
+         return null;
+      }
+
       for(File tFile : tFiles) {
           Map<String,AppOption> map = AppUtils.parseFile(tFile);
           if(map == null) {
