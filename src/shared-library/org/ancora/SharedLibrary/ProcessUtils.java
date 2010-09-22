@@ -21,11 +21,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -214,4 +216,14 @@ public class ProcessUtils {
       }
       return stackTraceElements[callerMethodIndex];
    }
+
+   public static void runOnSwing(Runnable r)  {
+      if (SwingUtilities.isEventDispatchThread()) {
+         r.run();
+      } else {
+         SwingUtilities.invokeLater(r);
+      }
+   }
+
+
 }

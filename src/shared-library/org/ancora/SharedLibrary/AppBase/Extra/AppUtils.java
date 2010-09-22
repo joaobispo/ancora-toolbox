@@ -95,6 +95,13 @@ public class AppUtils {
    }
 
    public static String getString(Map<String, AppOption> map, AppOptionEnum option) {
+      if(!map.containsKey(option.getName())) {
+         LoggingUtils.getLogger().
+                 warning("Could not find a value for option '"+option.getName()+"'. "
+                 + "Check if the option was set.");
+         return null;
+      }
+
       return map.get(option.getName()).get();
    }
 
