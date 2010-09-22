@@ -26,5 +26,4 @@ public interface ParsingConstants {
 
    public static final String SPACE = " ";
    public static final String NEWLINE = "\n";
-   public static final String EXTENSION_SEPARATOR = ".";
 }

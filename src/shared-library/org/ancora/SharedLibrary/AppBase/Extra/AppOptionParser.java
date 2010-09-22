@@ -110,6 +110,13 @@ class AppOptionParser {
 
       String line = null;
       while((line = lineReader.nextNonEmptyLine()) != null) {
+
+         // Ignore comment
+         if(line.trim().startsWith(AppUtils.COMMENT_PREFIX)) {
+            continue;
+         }
+
+
          // Get option name and value
          String[] values = parseLine(line);
 

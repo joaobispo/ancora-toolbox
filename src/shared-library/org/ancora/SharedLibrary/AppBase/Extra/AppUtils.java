@@ -22,6 +22,7 @@ package org.ancora.SharedLibrary.AppBase.Extra;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.AppOptionType;
@@ -93,6 +94,14 @@ public class AppUtils {
 
    }
 
+   public static String getString(Map<String, AppOption> map, AppOptionEnum option) {
+      return map.get(option.getName()).get();
+   }
+
+   public static List<String> getStringList(Map<String, AppOption> map, AppOptionEnum option) {
+      return map.get(option.getName()).getList();
+   }
+
    /**
     * Builds an unmmodifiable table which maps the name of the AppOptionEnum to
     * the object itself.
@@ -147,6 +156,7 @@ public class AppUtils {
    }
 
    public static final String CLASS_PREFIX = "class = ";
+   public static final String COMMENT_PREFIX = "//";
 
 
 }

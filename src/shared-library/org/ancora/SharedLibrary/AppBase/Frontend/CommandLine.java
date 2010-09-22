@@ -27,7 +27,6 @@ import org.ancora.SharedLibrary.AppBase.AppOption;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.Parsing.ParsingConstants;
 
 /**
  * Acts as a command-line front-end for applications
@@ -170,7 +169,7 @@ public class CommandLine {
       }
 
       for (Class c : optionClasses) {
-         String optionFilename = c.getSimpleName() + ParsingConstants.EXTENSION_SEPARATOR
+         String optionFilename = c.getSimpleName() + IoUtils.DEFAULT_EXTENSION_SEPARATOR
                  + optionFilesExtension;
          IoUtils.write(new File(optionFilename), AppUtils.generateFile(c));
       }

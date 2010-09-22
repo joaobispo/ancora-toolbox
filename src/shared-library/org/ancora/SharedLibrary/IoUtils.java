@@ -387,6 +387,22 @@ public class IoUtils {
       return filename.substring(0, extIndex);
    }
 
+   /**
+    * Given a filename, removes the extension suffix and the separator.
+    * 
+    * <p>Uses '.' as default separator 
+    *
+    * <p>Example:
+    * <br>filename: 'readme.txt'
+    * <br>result: 'readme'
+    *
+    * @param filename a string
+    * @return the name of the file without the extension and the separator
+    */
+   public static String removeExtension(String filename) {
+      return removeExtension(filename, DEFAULT_EXTENSION_SEPARATOR);
+   }
+
       /**
        * @param folder a File representing a folder.
        * @param extensions a set of strings
