@@ -67,7 +67,7 @@ public class LoggingUtils {
       Logger logger = Logger.getLogger("");
 
       // Build Printstream for System.out
-      LoggingOutputStream los = new LoggingOutputStream(logger, Level.INFO);
+      LoggingOutputStream los = new LoggingOutputStream(logger, Level.FINEST);
       PrintStream outPrint = new PrintStream(los, true);
 
       // Set System.out

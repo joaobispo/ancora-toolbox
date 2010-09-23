@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,7 +40,7 @@ public class ProcessUtils {
 
       try {
          String commandString = getCommandString(command);
-         logger.info("Running: " + commandString);
+         //logger.info("Running: " + commandString);
          
 
          ProcessBuilder builder = new ProcessBuilder(command);
@@ -62,6 +61,7 @@ public class ProcessUtils {
          ExecutorService stderrThread = Executors.newSingleThreadExecutor();
          stderrThread.submit(new Runnable() {
 
+            @Override
             public void run() {
                try {
                   String stdline = null;
@@ -77,6 +77,7 @@ public class ProcessUtils {
          ExecutorService stdoutThread = Executors.newSingleThreadExecutor();
          stdoutThread.submit(new Runnable() {
 
+            @Override
             public void run() {
                try {
                   String stdline = null;
@@ -109,7 +110,7 @@ public class ProcessUtils {
 
 
          returnValue = process.waitFor();
-         logger.info("Program terminated.");
+         //logger.info("Program terminated.");
 
       } catch (InterruptedException ex) {
          logger.warning("Program interrupted:"+ex.getMessage());
@@ -123,6 +124,7 @@ public class ProcessUtils {
    public static ThreadFactory getDaemonThreadFactory() {
       return new ThreadFactory() {
 
+         @Override
          public Thread newThread(Runnable r) {
             Thread thread = new Thread(r);
             thread.setDaemon(true);
