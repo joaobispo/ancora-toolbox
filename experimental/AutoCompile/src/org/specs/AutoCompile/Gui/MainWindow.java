@@ -27,21 +27,21 @@ import java.io.File;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
-import org.specs.AutoCompile.AutoCompile;
-import org.specs.AutoCompile.Launcher;
+import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 
 /**
  *
  * @author Ancora Group <ancora.codigo@gmail.com>
  */
-public class Main extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame {
 
     /** Creates new form Main */
-    public Main() {
+    public MainWindow(App application) {
         initComponents();
 
         // Set last used file
-        Preferences prefs = Preferences.userNodeForPackage(Main.class);
+        Preferences prefs = Preferences.userNodeForPackage(MainWindow.class);
         String lastFile =prefs.get(OPTION_LAST_USED_FILE, "");
 
         filenameTextField.setText(lastFile);
@@ -53,6 +53,7 @@ public class Main extends javax.swing.JFrame {
         Logger logger = Logger.getLogger("");
         logger.addHandler(new JTextAreaHandler(outputArea));
 
+        this.application = application;
     }
 
     /** This method is called from within the constructor to
@@ -143,10 +144,19 @@ public class Main extends javax.swing.JFrame {
        }
 
        // Save accessed file
-       Preferences prefs = Preferences.userNodeForPackage(Main.class);
+       Preferences prefs = Preferences.userNodeForPackage(MainWindow.class);
        prefs.put(OPTION_LAST_USED_FILE, filename);
 
-       AutoCompileRunner runner = new AutoCompileRunner(this, filename);
+       // Get Options from file
+       AppOptionFile optionFile = AppOptionFile.parseFile(file, application.getAppOptionEnum());
+       if(optionFile == null) {
+          outputArea.append("Could not load options from '"+filename+"'.");
+          return;
+       }
+
+       ApplicationWorker runner = new ApplicationWorker(this, optionFile.getMap());
+       //ApplicationWorker runner = new ApplicationWorker(this, filename);
+       //runner.execute();
        runner.execute();
 
     }//GEN-LAST:event_startButtonActionPerformed
@@ -163,21 +173,32 @@ public class Main extends javax.swing.JFrame {
 
     }//GEN-LAST:event_browseButtonActionPerformed
 
+
+
     /**
     * @param args the command line arguments
     */
+    /*
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new SimpleGui().setVisible(true);
             }
         });
     }
+     *
+     */
 
     public void setButtonsEnable(boolean enable) {
        browseButton.setEnabled(enable);
        startButton.setEnabled(enable);
     }
+
+   public App getApplication() {
+      return application;
+   }
+
+
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton browseButton;
@@ -190,6 +211,7 @@ public class Main extends javax.swing.JFrame {
 
    // Other variables
    private JFileChooser fc;
+   final private App application;
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
 }

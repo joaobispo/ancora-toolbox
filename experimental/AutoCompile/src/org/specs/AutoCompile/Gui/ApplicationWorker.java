@@ -17,23 +17,26 @@
 
 package org.specs.AutoCompile.Gui;
 
+import java.util.Map;
 import javax.swing.SwingWorker;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.ProcessUtils;
-import org.specs.AutoCompile.Launcher;
 
 /**
  *
  * @author Joao Bispo
  */
-public class AutoCompileRunner extends SwingWorker<String, String> {
+public class ApplicationWorker extends SwingWorker<Integer, String> {
 
-   public AutoCompileRunner(Main mainWindow, String filename) {
+   public ApplicationWorker(MainWindow mainWindow,  Map<String,AppValue> options) {
+   //public ApplicationWorker(MainWindow mainWindow, String filename) {
       this.mainWindow = mainWindow;
-      this.filename = filename;
+      this.options = options;
+      //this.filename = filename;
    }
 
    @Override
-   protected String doInBackground() throws Exception {
+   protected Integer doInBackground() throws Exception {
       // Disable buttons
       ProcessUtils.runOnSwing(new Runnable() {
          public void run() {
@@ -42,11 +45,12 @@ public class AutoCompileRunner extends SwingWorker<String, String> {
       });
        
 
+      return mainWindow.getApplication().execute(options);
        // Launch AutoCompiler
-       Launcher.launchAutoCompile(filename);
+       //Launcher.launchAutoCompile(filename);
 
 
-       return "";
+       //return "";
    }
 
    @Override
@@ -60,8 +64,9 @@ public class AutoCompileRunner extends SwingWorker<String, String> {
    }
 
 
-   private Main mainWindow;
-   private  String filename;
+   private MainWindow mainWindow;
+   private Map<String,AppValue> options;
+   //private  String filename;
 
 
 }

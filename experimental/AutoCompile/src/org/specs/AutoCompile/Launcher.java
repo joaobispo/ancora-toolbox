@@ -25,7 +25,8 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.AutoCompile.Gui.Main;
+import org.specs.AutoCompile.Gui.MainWindow;
+import org.specs.AutoCompile.Gui.SimpleGui;
 import org.specs.AutoCompile.Job.JobOption;
 
 /**
@@ -48,7 +49,9 @@ public class Launcher {
 
        // Launch GUI
        if(args.length == 0) {
-          launchGui();
+          SimpleGui gui = new SimpleGui(autoCompile);
+          //MainWindow gui = new MainWindow(autoCompile);
+          gui.execute();
           return;
        }
 
@@ -166,9 +169,12 @@ public class Launcher {
    }
 
 
+   /*
    private static void launchGui() {
-      Main.main(null);
+      SimpleGui.main(null);
    }
+    *
+    */
 
    /**
     * Builds an AutoCompile application object.
