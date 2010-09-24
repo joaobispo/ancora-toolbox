@@ -43,6 +43,9 @@ public class EntryList {
       return entries;
    }
 
+   public Entry getEntry(String optionName) {
+      return entriesMapping.get(optionName);
+   }
 
 
 /**
@@ -141,6 +144,34 @@ public class EntryList {
 
       // Just add value to list
       duplicatedEntry.getOptionValue().getList().add(listValue);
+   }
+
+   /**
+    * Updates a single entry.
+    *
+    * @param optionName
+    * @param value
+    */
+   public void updateEntry(String optionName, AppValue value) {
+      Entry entry = entriesMapping.get(optionName);
+      if(entry == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find option '"+optionName+"'.");
+         return;
+      }
+
+      entry.getOptionValue().set(value);
+   }
+
+   /**
+    * Updates a number of entries.
+    *
+    * @param optionValues
+    */
+   public void updateEntries(Map<String, AppValue> optionValues) {
+      for(String optionName : optionValues.keySet()) {
+         updateEntry(optionName, optionValues.get(optionName));
+      }
    }
 
    @Override

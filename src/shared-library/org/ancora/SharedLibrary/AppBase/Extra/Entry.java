@@ -44,11 +44,6 @@ public class Entry {
          return optionName;
       }
 
-      @Override
-      public String toString() {
-         return super.toString();
-      }
-
 
 
       final private List<String> comments;

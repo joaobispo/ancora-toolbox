@@ -18,13 +18,13 @@
 package org.ancora.SharedLibrary.AppBase.Extra;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.Files.LineReader;
+import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -66,7 +66,10 @@ public class AppOptionFile {
                  warning("LineReader is null.");
          return null;
       }
-      
+
+
+
+      /*
       // Check class
       if (!appOptionEnum.isEnum()) {
          LoggingUtils.getLogger().
@@ -76,7 +79,11 @@ public class AppOptionFile {
 
       // Get map of enums
        Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
+       *
+       */
 
+      Map<String, AppOptionEnum> enumMap = Utils.getEnumMap(appOptionEnum);
+      
        // Get list of entries
        //List<Entry> entries = buildEntries(lineReader, enumMap);
        EntryList entryList = Utils.buildEntries(lineReader, enumMap);
@@ -87,29 +94,64 @@ public class AppOptionFile {
        return appOptionFile;
    }
 
+   /**
+    * Generates an empty file for all the available option in the given
+    * AppOptionEnum class.
+    *
+    * @param optionFile
+    * @param appOptionEnum
+    */
    public static void writeEmptyFile(File optionFile, Class appOptionEnum) {
-      //return false;
+      StringBuilder builder = new StringBuilder();
+
+      Map<String, AppOptionEnum> options = Utils.getEnumMap(appOptionEnum);
+      for(AppOptionEnum option : options.values()) {
+         builder.append(Utils.buildLine(option.getName(), "", option.getType()));
+         builder.append(Utils.NEWLINE);
+      }
+
+      IoUtils.write(optionFile, builder.toString());
    }
 
    /**
     * @return a map with the options inside this AppOptionFile.
     */
    public Map<String, AppValue> getMap() {
-      return null;
+      Map<String, AppValue> newMap = new HashMap<String, AppValue>();
+
+      for(Entry entry : entryList.getEntries()) {
+         newMap.put(entry.getOptionName(), entry.getOptionValue());
+      }
+
+      return newMap;
    }
 
    /**
     * Updates the values of this object.
     */
    public void update(Map<String, AppValue> options) {
-
+      entryList.updateEntries(options);
    }
 
    /**
     * Saves the contents of this object to a file.
     */
    public void write() {
+      // Check if there is a file
+      if(optionFile == null) {
+         LoggingUtils.getLogger().
+                 warning("The option file is not defined.");
+         return;
+      }
 
+      // Build file
+      StringBuilder builder = new StringBuilder();
+
+      for(Entry entry : entryList.getEntries()) {
+         builder.append(Utils.toString(entry));
+      }
+
+      IoUtils.write(optionFile, builder.toString());
    }
 
    public List<Entry> getEntries() {
@@ -123,35 +165,5 @@ public class AppOptionFile {
     */
    private File optionFile;
    private EntryList entryList;
-   // Ordered list, to maintain reading order of entries
-   //private List<Entry> entries;
-   // Mapping of entries, to quickly locate them
-   //private Map<String, Entry> entriesMapping;
-
-
-   //public static final String COMMENT_PREFIX = "//";
-   //public static final String SPACE = " ";
-   //public static final String NEWLINE = "\n";
-
-   /*
-   class Entry {
-
-      public Entry(List<String> comments, AppOption option) {
-         this.comments = comments;
-         this.option = option;
-      }
-
-      public List<String> getComments() {
-         return comments;
-      }
-
-      public AppOption getOption() {
-         return option;
-      }
-
-      private List<String> comments;
-      private AppOption option;
-   }
-    *
-    */
+  
 }

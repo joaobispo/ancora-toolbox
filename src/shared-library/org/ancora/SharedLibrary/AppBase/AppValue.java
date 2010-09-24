@@ -119,6 +119,18 @@ public class AppValue {
    }
 
    /**
+    * Sets the value of the option to the same value in the given AppValue.
+    * @param appValue
+    */
+   public void set(AppValue appValue) {
+      if(type.isList()) {
+         list = appValue.getList();
+      } else {
+         this.value = appValue.get();
+      }
+   }
+
+   /**
     * @return the value stored in the option. Does not work for list types.
     */
    public String get() {

@@ -17,6 +17,7 @@
 
 package org.ancora.SharedLibrary.AppBase.Extra;
 
+import java.util.HashMap;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import java.io.File;
 import java.util.Map;
@@ -104,6 +105,39 @@ public class AppOptionFileTest {
       //assertEquals(expResult, result);
       // TODO review the generated test code and remove the default call to fail.
       //fail("The test case is a prototype.");
+   }
+
+   //@Test
+   public void testWriteEmptyFile() {
+      File file = new File("./test/AppBase/empty.option");
+      Class appOptionEnum = SampleOption.class;
+
+      AppOptionFile.writeEmptyFile(file, appOptionEnum);
+   }
+
+   //@Test
+   public void testWriteFile() {
+      File file = new File("./test/AppBase/sample.option");
+      Class appOptionEnum = SampleOption.class;
+
+      AppOptionFile appFile = AppOptionFile.parseFile(file, appOptionEnum);
+      appFile.setOptionFile(new File("./test/AppBase/sample.option.copy"));
+      appFile.write();
+   }
+
+   @Test
+   public void testUpdate() {
+      File file = new File("./test/AppBase/sample.option");
+      Class appOptionEnum = SampleOption.class;
+
+      Map<String, AppValue> otherMap = new HashMap<String, AppValue>();
+      otherMap.put(SampleOption.compiler.getName(), new AppValue("experimentalCompiler"));
+      otherMap.put(SampleOption.target.getName(), new AppValue("experimentalTarget"));
+
+      AppOptionFile appFile = AppOptionFile.parseFile(file, appOptionEnum);
+      appFile.update(otherMap);
+      appFile.setOptionFile(new File("./test/AppBase/sample.option.updated"));
+      appFile.write();
    }
 
    @Test

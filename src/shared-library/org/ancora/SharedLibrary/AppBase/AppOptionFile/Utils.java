@@ -18,12 +18,16 @@
 package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.AppBase.Extra.Entry;
 import org.ancora.SharedLibrary.AppBase.Extra.EntryList;
 import org.ancora.SharedLibrary.Files.LineReader;
@@ -71,7 +75,15 @@ public class Utils {
    }
 
 
-   private static String buildLine(String optionName, String singleValue, AppValueType appValueType) {
+   /**
+    * Builds a string representation of an option line.
+    * 
+    * @param optionName
+    * @param singleValue
+    * @param appValueType
+    * @return
+    */
+   public static String buildLine(String optionName, String singleValue, AppValueType appValueType) {
       StringBuilder builder = new StringBuilder();
             builder.append(optionName);
             builder.append(SPACE);
@@ -199,6 +211,35 @@ public class Utils {
       for(String key : enumMap.keySet()) {
          logger.info(" -> "+key);
       }
+   }
+
+   /**
+    * Transforms 
+    * @param appOptionEnum
+    * @return
+    */
+   public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
+       // Check class
+      if (!appOptionEnum.isEnum()) {
+         LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not represent an enum.");
+         return null;
+      }
+
+      // Build set with interfaces of the given class
+      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(appOptionEnum.getInterfaces()));
+      Class appOption = AppOptionEnum.class;
+      if(!interfaces.contains(appOption)){
+           LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not implement "
+                 + "interface '"+appOption+"'.");
+         return null;
+      }
+
+      // Get map of enums
+       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
+
+       return enumMap;
    }
 
    public static final String COMMENT_PREFIX = "//";
