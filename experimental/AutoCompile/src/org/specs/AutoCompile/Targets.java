@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -120,7 +120,7 @@ public class Targets {
       }
 
       for(File tFile : tFiles) {
-          Map<String,AppOption> map = AppUtils.parseFile(tFile);
+          Map<String,AppValue> map = AppUtils.parseFile(tFile);
           if(map == null) {
              LoggingUtils.getLogger().
                      warning("Skipping file '"+tFile.getPath()+"'.");

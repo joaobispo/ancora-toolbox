@@ -18,7 +18,6 @@
 package org.specs.AutoCompile;
 
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
  * Shows information about progress of jobs.
@@ -27,14 +26,16 @@ import org.ancora.SharedLibrary.LoggingUtils;
  */
 public class JobProgress {
 
-   public JobProgress(String jobFilename, int numJobs) {
-      this.jobFilename = jobFilename;
+   //public JobProgress(String jobFilename, int numJobs) {
+   public JobProgress(int numJobs) {
+      //this.jobFilename = jobFilename;
       this.numJobs = numJobs;
       counter = 0;
    }
 
    void initialMessage() {
-            logger.info("Found "+numJobs+" jobs for JobFile '"+jobFilename+"'.");
+            //logger.info("Found "+numJobs+" jobs for JobFile '"+jobFilename+"'.");
+            logger.info("Found "+numJobs+" jobs.");
    }
 
 
@@ -44,13 +45,14 @@ public class JobProgress {
       }
 
       counter++;
-      logger.info("("+jobFilename+") Job "+counter+" of "+numJobs+".");
+      //logger.info("("+jobFilename+") Job "+counter+" of "+numJobs+".");
+      logger.info("Job "+counter+" of "+numJobs+".");
    }
 
    /**
     * INSTANCE VARIABLES
     */
-   private String jobFilename;
+   //private String jobFilename;
    private int numJobs;
    private int counter;
    private final static Logger logger = Logger.getLogger(JobProgress.class.getName());

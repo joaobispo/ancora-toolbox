@@ -19,7 +19,7 @@ package org.specs.AutoCompile;
 
 import java.io.File;
 import java.util.Map;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -58,7 +58,7 @@ public class Launcher {
 
 
 
-   private static Map<String, AppOption> loadConfig() {
+   private static Map<String, AppValue> loadConfig() {
       // Check if config file exists
       File configFile = new File(CONFIG_FILE);
       if(!configFile.exists()) {
@@ -67,7 +67,7 @@ public class Launcher {
          return null;
       }
 
-      Map<String, AppOption> map = AppUtils.parseFile(configFile);
+      Map<String, AppValue> map = AppUtils.parseFile(configFile);
 
       if (map == null) {
          LoggingUtils.getLogger().
@@ -101,16 +101,16 @@ public class Launcher {
    }
 
 
-   public static int launchAutoCompile(String jobFile) {
+   public static int launchAutoCompile(String jobFilename) {
       // Load configuration file
-      Map<String, AppOption> config = loadConfig();
+      Map<String, AppValue> config = loadConfig();
       if (config == null) {
          LoggingUtils.getLogger().
                  warning("Could not load configuration file.");
          return -1;
       }
 
-      config.put(Config.jobFile.getName(), new AppOption(jobFile));
+      config.put(Config.jobFile.getName(), new AppValue(jobFilename));
 
       // Create and launch application object
       String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
@@ -120,7 +120,12 @@ public class Launcher {
          return -1;
       }
 
-      return aComp.execute(config);
+      String jobFilepath = AppUtils.getString(config, Config.jobFile);
+      File jobFile = new File(jobFilepath);
+      Map<String,AppValue> jobOptions = AppUtils.parseFile(jobFile);
+
+      //return aComp.execute(config);
+      return aComp.execute(jobOptions);
    }
 
    private static int launchCommandLine(String[] args) {

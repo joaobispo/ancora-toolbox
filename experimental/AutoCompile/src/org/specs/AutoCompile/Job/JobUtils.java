@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
@@ -38,8 +38,8 @@ import org.specs.AutoCompile.Options.TargetOption;
  */
 public class JobUtils {
 
-   public static List<Job> buildJobs(Map<String,AppOption> jobOptions,
-           Map<String,AppOption> targetOptions) {
+   public static List<Job> buildJobs(Map<String,AppValue> jobOptions,
+           Map<String,AppValue> targetOptions) {
 
       List<Job> jobs = new ArrayList<Job>();
 
@@ -100,7 +100,7 @@ public class JobUtils {
       return jobs;
    }
 
-   private static List<ProgramSource> getProgramSources(Map<String, AppOption> jobOptions, Map<String, AppOption> targetOptions) {
+   private static List<ProgramSource> getProgramSources(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
       // Get mode
       String modeString = AppUtils.getString(jobOptions, JobOption.inputFolderMode);
       SourceMode mode = EnumUtils.valueOf(SourceMode.class, modeString);
@@ -131,7 +131,7 @@ public class JobUtils {
     * @param targetOptions
     * @return
     */
-   private static List<String> getOptimizationFlags(Map<String, AppOption> jobOptions, Map<String, AppOption> targetOptions) {
+   private static List<String> getOptimizationFlags(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
       // Get available optimizations
       List<String> availableOpts = AppUtils.getStringList(targetOptions, TargetOption.optimizationFlags);
       // Get job optimizations
@@ -193,7 +193,7 @@ public class JobUtils {
       return optimizationFolder;
    }
 
-   private static String buildOutputfilename(ProgramSource source, String optimizationFlag, Map<String, AppOption> targetOptions) {
+   private static String buildOutputfilename(ProgramSource source, String optimizationFlag, Map<String, AppValue> targetOptions) {
       String outputExtension = AppUtils.getString(targetOptions, TargetOption.outputExtension);
       return source.getBaseOutputFilename() + optimizationFlag
               + IoUtils.DEFAULT_EXTENSION_SEPARATOR + outputExtension;
@@ -215,7 +215,7 @@ public class JobUtils {
       }
    }
 
-   private static List<ProgramSource> getSourcesFolderMode(Map<String, AppOption> jobOptions, Map<String, AppOption> targetOptions) {
+   private static List<ProgramSource> getSourcesFolderMode(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
       // Get extensions
       List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
       // Get source folder
@@ -260,7 +260,7 @@ public class JobUtils {
     * @param targetOptions
     * @return
     */
-   private static List<ProgramSource> getSourcesFileMode(Map<String, AppOption> jobOptions, Map<String, AppOption> targetOptions) {
+   private static List<ProgramSource> getSourcesFileMode(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
       // Get extensions
       List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
       // Get source folder

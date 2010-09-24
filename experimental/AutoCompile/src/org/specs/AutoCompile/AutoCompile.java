@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Job.Job;
@@ -55,18 +55,24 @@ public class AutoCompile implements App {
    }
 
 
+
+   public Class getAppOptionEnum() {
+      return JobOption.class;
+   }
+
    /**
     *
     * @param options
     * @return
     */
-   public int execute(Map<String, AppOption> options) {
+   public int execute(Map<String, AppValue> jobOptions) {
 
       // Get Job options
+      /*
       String jobFilepath = AppUtils.getString(options, Config.jobFile);
       File jobFile = new File(jobFilepath);
       Map<String,AppOption> jobOptions = AppUtils.parseFile(jobFile);
-
+*/
 
       // Get Target Options
       String target = AppUtils.getString(jobOptions, JobOption.target);
@@ -77,7 +83,7 @@ public class AutoCompile implements App {
                  warning("Could not get configuration for '"+Targets.getTargetName(target, compiler)+"'");
          return -1;
       }
-      Map<String,AppOption> targetOptions = AppUtils.parseFile(targetConfig);
+      Map<String,AppValue> targetOptions = AppUtils.parseFile(targetConfig);
 
       // Get jobs
       List<Job> jobs = JobUtils.buildJobs(jobOptions, targetOptions);
@@ -87,7 +93,8 @@ public class AutoCompile implements App {
          return -1;
       }
 
-      JobProgress jobProgress = new JobProgress(jobFile.getName(), jobs.size());
+      //JobProgress jobProgress = new JobProgress(jobFile.getName(), jobs.size());
+      JobProgress jobProgress = new JobProgress(jobs.size());
       jobProgress.initialMessage();
 
       for(Job job : jobs) {
@@ -111,4 +118,5 @@ public class AutoCompile implements App {
     * INSTANCE VARIABLES
     */
    private Targets targets;
+
 }

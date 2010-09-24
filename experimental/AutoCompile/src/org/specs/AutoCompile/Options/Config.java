@@ -17,7 +17,7 @@
 
 package org.specs.AutoCompile.Options;
 
-import org.ancora.SharedLibrary.AppBase.AppOptionType;
+import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
 
 /**
@@ -27,10 +27,10 @@ import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
  */
 public enum Config implements AppOptionEnum {
 
-   targetFolder("targetFolder", AppOptionType.string),
-   jobFile("jobFile", AppOptionType.string);
+   targetFolder("targetFolder", AppValueType.string),
+   jobFile("jobFile", AppValueType.string);
 
-   private Config(String name, AppOptionType type) {
+   private Config(String name, AppValueType type) {
       this.name = name;
       this.type = type;
    }
@@ -39,12 +39,12 @@ public enum Config implements AppOptionEnum {
       return prefix + name;
    }
 
-   public AppOptionType getType() {
+   public AppValueType getType() {
       return type;
    }
 
    final private String name;
-   final private AppOptionType type;
+   final private AppValueType type;
 
    final private static String prefix = "config.";
 }
