@@ -24,9 +24,7 @@ import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
-import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.AppBase.SimpleGui.MainWindow;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.specs.AutoCompile.Job.JobOption;
 
@@ -52,6 +50,7 @@ public class Launcher {
        if(args.length == 0) {
           SimpleGui gui = new SimpleGui(autoCompile);
           //MainWindow gui = new MainWindow(autoCompile);
+          gui.setTitle("AutoCompile v1.2");
           gui.execute();
           return;
        }
@@ -117,7 +116,7 @@ public class Launcher {
       return jobFile.getPath();
    }
 
-
+/*
    public static int launchAutoCompile(String jobFilename) {
       // Load configuration file
       Map<String, AppValue> config = loadConfig();
@@ -135,17 +134,17 @@ public class Launcher {
          return -1;
       }
 
-      /*
+      
       //config.put(Config.jobFile.getName(), new AppValue(jobFilename));
 
       // Create and launch application object
       //String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
-      AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
+      //AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
       //new AutoCompile(targetsFolderpath);
-      if (aComp == null) {
-         return -1;
-      }
-*/
+    //  if (aComp == null) {
+  //       return -1;
+//      }
+
       //String jobFilepath = AppUtils.getString(config, Config.jobFile);
       //File jobFile = new File(jobFilepath);
       File jobFile = new File(jobFilename);
@@ -155,7 +154,8 @@ public class Launcher {
       //return aComp.execute(config);
       return aComp.execute(jobOptions);
    }
-
+*/
+   /*
    private static int launchCommandLine(String[] args) {
       // Parse command line and find a job to put on the table
       String jobFile = parseArguments(args);
@@ -169,7 +169,7 @@ public class Launcher {
       return launchAutoCompile(jobFile);
    }
 
-
+*/
    /*
    private static void launchGui() {
       SimpleGui.main(null);

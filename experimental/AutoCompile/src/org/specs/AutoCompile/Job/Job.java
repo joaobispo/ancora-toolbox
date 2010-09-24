@@ -17,7 +17,6 @@
 
 package org.specs.AutoCompile.Job;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -38,6 +37,8 @@ public class Job {
       this.workingFoldername = workingDir;
       this.outputFlag = outputFlag;
       this.programExecutable = programExecutable;
+
+      interrupted = false;
    }
 
    /**
@@ -46,21 +47,6 @@ public class Job {
     * @return
     */
    public int run() {
-      // Create Folder for outputfile
-      //File outputFil = new File(outputFile);
-      //File outputFol = outputFil.getParentFile();
-      /*
-      if (!outputFol.exists()) {
-         boolean success = outputFol.mkdirs();
-         if (!success) {
-            LoggingUtils.getLogger().
-                    warning("Could not create output folder '" + outputFol + "'");
-         }
-      }
-       *
-       */
-
-
 
       List<String> command = new ArrayList<String>();
       command.add(getProgram());
@@ -72,8 +58,16 @@ public class Job {
             command.add(getOutputFlag());
       command.add(outputFile);
 
-
-        return ProcessUtils.runProcess(command, workingFoldername);
+      int result = -1;
+      try {
+         result = ProcessUtils.runProcess(command, workingFoldername);
+      } catch (InterruptedException ex) {
+         LoggingUtils.getLogger().
+                 info("Job cancelled.");
+         interrupted = true;
+         return 0;
+      }
+      return result;
    }
 
    @Override
@@ -97,15 +91,6 @@ public class Job {
       builder.append("Flags:\n");
       builder.append(otherFlags);
       builder.append("\n");
-      /*
-      for(String flag : otherFlags) {
-      builder.append(flag);
-      builder.append("\n");
-      }
-       *
-       */
-
-
 
       return builder.toString();
    }
@@ -144,6 +129,11 @@ public class Job {
       return outputFile;
    }
 
+   public boolean isInterrupted() {
+      return interrupted;
+   }
+
+   
 
    /**
     * INSTANCE VARIABLES
@@ -155,4 +145,6 @@ public class Job {
    String workingFoldername;
    String programExecutable;
    String outputFlag;
+
+   private boolean interrupted;
 }

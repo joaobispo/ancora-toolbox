@@ -111,13 +111,17 @@ public class AutoCompile implements App {
                     warning("Problems while running job: returned value '"+returnValue+"'.\n"
                     + "Job:"+job.toString());
          }
+
+         // Check if we cancel other jobs.
+         if(job.isInterrupted()) {
+            LoggingUtils.getLogger().
+                    info("Cancelling remaining jobs.");
+            break;
+         }
       }
 
-      //System.out.println(options);
-      //System.out.println(targets.getTargets());
-      //System.out.println(targets.getTargetFiles());
-      //System.out.println(jobOptions);
       return 0;
+
    }
 
    /**
