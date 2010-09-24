@@ -18,7 +18,10 @@
 package org.specs.AutoCompile;
 
 import java.io.File;
+import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -54,8 +57,10 @@ public class SingleArgumentCommandLine {
       }
 
       // Load optionFile into Map
+      Class optionClass = application.getAppOptionEnum();
+      Map<String, AppValue> map = AppOptionFile.parseFile(optionFile, optionClass).getMap();
 
-      return application.execute(null);
+      return application.execute(map);
    }
 
    /**

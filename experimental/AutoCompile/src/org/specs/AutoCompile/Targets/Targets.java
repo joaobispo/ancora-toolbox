@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.AutoCompile;
+package org.specs.AutoCompile.Targets;
 
 import java.io.File;
 import java.util.HashMap;
@@ -29,7 +29,6 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.AutoCompile.Options.TargetOption;
 
 /**
  * Represents the available targets for compilation. A target is a pair composed

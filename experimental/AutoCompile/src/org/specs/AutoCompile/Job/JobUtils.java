@@ -29,7 +29,7 @@ import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Options.JobOption;
-import org.specs.AutoCompile.Options.TargetOption;
+import org.specs.AutoCompile.Targets.TargetOption;
 
 /**
  * Utility methods related to job options.

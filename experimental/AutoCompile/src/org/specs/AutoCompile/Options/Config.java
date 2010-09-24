@@ -27,8 +27,10 @@ import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
  */
 public enum Config implements AppOptionEnum {
 
-   targetFolder("targetFolder", AppValueType.string),
-   jobFile("jobFile", AppValueType.string);
+   targetFolder("targetFolder", AppValueType.string);
+   //jobFile("jobFile", AppValueType.string);
+   //targetOptions("targetOptions", AppValueType.stringList),
+   //targetFiles("targetFiles", AppValueType.stringList);
 
    private Config(String name, AppValueType type) {
       this.name = name;

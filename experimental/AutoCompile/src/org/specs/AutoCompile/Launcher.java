@@ -19,6 +19,8 @@ package org.specs.AutoCompile;
 
 import java.io.File;
 import java.util.Map;
+import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
@@ -52,8 +54,10 @@ public class Launcher {
     }
 
    public static void writeOptionFiles() {
-      IoUtils.write(new File("job.txt"), AppUtils.generateFile(JobOption.class));
-      IoUtils.write(new File("config.dat"), AppUtils.generateFile(Config.class));
+      AppOptionFile.writeEmptyFile(new File("job.txt"), JobOption.class);
+      AppOptionFile.writeEmptyFile(new File("config.dat"), Config.class);
+//      IoUtils.write(new File("job.txt"), AppUtils.generateFile(JobOption.class));
+//      IoUtils.write(new File("config.dat"), AppUtils.generateFile(Config.class));
    }
 
 
@@ -67,7 +71,10 @@ public class Launcher {
          return null;
       }
 
-      Map<String, AppValue> map = AppUtils.parseFile(configFile);
+      Class optionClass = Config.class;
+
+//      Map<String, AppValue> map = AppUtils.parseFile(configFile);
+      Map<String, AppValue> map = AppOptionFile.parseFile(configFile, optionClass).getMap();
 
       if (map == null) {
          LoggingUtils.getLogger().
@@ -110,18 +117,28 @@ public class Launcher {
          return -1;
       }
 
-      config.put(Config.jobFile.getName(), new AppValue(jobFilename));
+
+      // Get Config values
+      String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
+      AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
+      if (aComp == null) {
+         return -1;
+      }
+
+      /*
+      //config.put(Config.jobFile.getName(), new AppValue(jobFilename));
 
       // Create and launch application object
-      String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
+      //String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
       AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
       //new AutoCompile(targetsFolderpath);
       if (aComp == null) {
          return -1;
       }
-
-      String jobFilepath = AppUtils.getString(config, Config.jobFile);
-      File jobFile = new File(jobFilepath);
+*/
+      //String jobFilepath = AppUtils.getString(config, Config.jobFile);
+      //File jobFile = new File(jobFilepath);
+      File jobFile = new File(jobFilename);
       Map<String,AppValue> jobOptions = AppUtils.parseFile(jobFile);
 
       //return aComp.execute(config);
@@ -144,6 +161,32 @@ public class Launcher {
 
    private static void launchGui() {
       Main.main(null);
+   }
+
+   /**
+    * Builds an AutoCompile application object.
+    *
+    * @return
+    */
+   public static App buildAutoCompileApp() {
+      // Load configuration file
+      Map<String, AppValue> config = loadConfig();
+      if (config == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not load configuration file.");
+         return null;
+      }
+
+      // Get Config values
+      String targetsFolderpath = AppUtils.getString(config, Config.targetFolder);
+      AutoCompile aComp = AutoCompile.newAutoCompile(targetsFolderpath);
+      if (aComp == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not load AutoCompile application.");
+         return null;
+      }
+      
+      return aComp;
    }
 
    // VARIABLES

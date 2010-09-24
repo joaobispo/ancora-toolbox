@@ -17,6 +17,7 @@
 
 package org.specs.AutoCompile;
 
+import org.specs.AutoCompile.Targets.Targets;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
