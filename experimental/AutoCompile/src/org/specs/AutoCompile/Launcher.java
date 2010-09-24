@@ -17,16 +17,17 @@
 
 package org.specs.AutoCompile;
 
+import org.ancora.SharedLibrary.AppBase.SimpleCommandLine.SimpleCommandLine;
 import java.io.File;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.AutoCompile.Gui.MainWindow;
-import org.specs.AutoCompile.Gui.SimpleGui;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.MainWindow;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.specs.AutoCompile.Job.JobOption;
 
 /**
@@ -56,7 +57,7 @@ public class Launcher {
        }
 
        // Launch command line
-       SingleArgumentCommandLine command = new SingleArgumentCommandLine(autoCompile);
+       SimpleCommandLine command = new SimpleCommandLine(autoCompile);
        command.execute(args);
 
 

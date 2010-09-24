@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Job.Job;
 import org.specs.AutoCompile.Job.JobUtils;

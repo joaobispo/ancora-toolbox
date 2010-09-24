@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
