@@ -17,6 +17,7 @@
 
 package org.specs.AutoCompile;
 
+import org.specs.AutoCompile.Job.JobProgress;
 import org.specs.AutoCompile.Targets.Targets;
 import java.io.File;
 import java.util.List;
@@ -29,8 +30,7 @@ import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Job.Job;
 import org.specs.AutoCompile.Job.JobUtils;
-import org.specs.AutoCompile.Options.Config;
-import org.specs.AutoCompile.Options.JobOption;
+import org.specs.AutoCompile.Job.JobOption;
 import org.specs.AutoCompile.Targets.TargetOption;
 
 /**

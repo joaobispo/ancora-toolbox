@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.AutoCompile;
+package org.specs.AutoCompile.Job;
 
 import java.util.logging.Logger;
 
@@ -33,13 +33,13 @@ public class JobProgress {
       counter = 0;
    }
 
-   void initialMessage() {
+   public void initialMessage() {
             //logger.info("Found "+numJobs+" jobs for JobFile '"+jobFilename+"'.");
             logger.info("Found "+numJobs+" jobs.");
    }
 
 
-   void nextMessage() {
+   public void nextMessage() {
       if(counter >= numJobs) {
          logger.warning("Already showed the total number of steps.");
       }

@@ -26,8 +26,7 @@ import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Gui.Main;
-import org.specs.AutoCompile.Options.JobOption;
-import org.specs.AutoCompile.Options.Config;
+import org.specs.AutoCompile.Job.JobOption;
 
 /**
  *

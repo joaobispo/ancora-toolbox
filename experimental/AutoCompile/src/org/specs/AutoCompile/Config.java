@@ -15,27 +15,24 @@
  *  under the License.
  */
 
-package org.specs.AutoCompile.Options;
+package org.specs.AutoCompile;
 
 import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 
 /**
  * Options available for targets
  *
  * @author Joao Bispo
  */
-public enum JobOption implements AppOptionEnum {
+public enum Config implements AppOptionEnum {
 
-   outputFolder("outputFolder", AppValueType.string),
-   sourceFilesFolder("sourceFilesFolder", AppValueType.string),
-   inputFolderMode("inputFolderMode", AppValueType.string),
-   target("target", AppValueType.string),
-   compiler("compiler", AppValueType.string),
-   compilerFlags("compilerFlags", AppValueType.stringList),
-   optimizationFlags("optimizationLevels", AppValueType.stringList);
+   targetFolder("targetFolder", AppValueType.string);
+   //jobFile("jobFile", AppValueType.string);
+   //targetOptions("targetOptions", AppValueType.stringList),
+   //targetFiles("targetFiles", AppValueType.stringList);
 
-   private JobOption(String name, AppValueType type) {
+   private Config(String name, AppValueType type) {
       this.name = name;
       this.type = type;
    }
@@ -51,5 +48,5 @@ public enum JobOption implements AppOptionEnum {
    final private String name;
    final private AppValueType type;
 
-   final private static String prefix = "job.";
+   final private static String prefix = "config.";
 }

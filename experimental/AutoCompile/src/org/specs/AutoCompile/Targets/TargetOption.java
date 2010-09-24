@@ -18,7 +18,7 @@
 package org.specs.AutoCompile.Targets;
 
 import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 
 /**
  * Options available for targets
