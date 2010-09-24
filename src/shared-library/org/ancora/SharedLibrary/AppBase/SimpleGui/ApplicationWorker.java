@@ -26,15 +26,42 @@ import org.ancora.SharedLibrary.ProcessUtils;
  *
  * @author Joao Bispo
  */
-public class ApplicationWorker extends SwingWorker<Integer, String> {
+//public class ApplicationWorker extends SwingWorker<Integer, String> {
+public class ApplicationWorker implements Runnable {
 
    public ApplicationWorker(MainWindow mainWindow,  Map<String,AppValue> options) {
    //public ApplicationWorker(MainWindow mainWindow, String filename) {
       this.mainWindow = mainWindow;
       this.options = options;
+      this.returnValue = null;
       //this.filename = filename;
    }
 
+
+   @Override
+   public void run() {
+      // Disable buttons
+      ProcessUtils.runOnSwing(new Runnable() {
+
+         @Override
+         public void run() {
+            mainWindow.setButtonsEnable(false);
+         }
+      });
+
+
+      returnValue = mainWindow.getApplication().execute(options);
+
+      // Enable buttons again
+       ProcessUtils.runOnSwing(new Runnable() {
+
+         @Override
+         public void run() {
+            mainWindow.setButtonsEnable(true);
+         }
+      });
+   }
+   /*
    @Override
    protected Integer doInBackground() throws Exception {
       // Disable buttons
@@ -62,10 +89,18 @@ public class ApplicationWorker extends SwingWorker<Integer, String> {
          }
       });
    }
+   */
+
+   public Integer getReturnValue() {
+      return returnValue;
+   }
+
 
 
    private MainWindow mainWindow;
    private Map<String,AppValue> options;
+   private Integer returnValue;
+
    //private  String filename;
 
 

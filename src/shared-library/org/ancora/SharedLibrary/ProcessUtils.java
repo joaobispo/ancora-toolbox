@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
  */
 public class ProcessUtils {
 
-   public static int runProcess(List<String> command, String workingDir) {
+   public static int runProcess(List<String> command, String workingDir) throws InterruptedException {
       int returnValue = -1;
       final Logger logger = Logger.getLogger(ProcessUtils.class.getName());
 
@@ -112,8 +112,8 @@ public class ProcessUtils {
          returnValue = process.waitFor();
          //logger.info("Program terminated.");
 
-      } catch (InterruptedException ex) {
-         logger.warning("Program interrupted:"+ex.getMessage());
+//      } catch (InterruptedException ex) {
+//         logger.warning("Program interrupted:"+ex.getMessage());
       } catch (IOException e) {
          logger.warning("IOException during program execution:"+e.getMessage());
       }

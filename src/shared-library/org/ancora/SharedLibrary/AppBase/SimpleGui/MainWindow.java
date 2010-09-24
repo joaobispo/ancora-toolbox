@@ -24,6 +24,9 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.io.File;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
@@ -54,6 +57,10 @@ public class MainWindow extends javax.swing.JFrame {
         logger.addHandler(new JTextAreaHandler(outputArea));
 
         this.application = application;
+
+        // Init buttons
+        setButtonsEnable(true);
+        worker = null;
     }
 
     /** This method is called from within the constructor to
@@ -71,6 +78,7 @@ public class MainWindow extends javax.swing.JFrame {
       filenameTextField = new javax.swing.JTextField();
       browseButton = new javax.swing.JButton();
       startButton = new javax.swing.JButton();
+      cancelButton = new javax.swing.JButton();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
       setResizable(false);
@@ -96,6 +104,13 @@ public class MainWindow extends javax.swing.JFrame {
          }
       });
 
+      cancelButton.setText("Cancel");
+      cancelButton.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            cancelButtonActionPerformed(evt);
+         }
+      });
+
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
       layout.setHorizontalGroup(
@@ -111,7 +126,9 @@ public class MainWindow extends javax.swing.JFrame {
          .addGroup(layout.createSequentialGroup()
             .addContainerGap()
             .addComponent(startButton)
-            .addContainerGap(371, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(cancelButton)
+            .addContainerGap(298, Short.MAX_VALUE))
          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
       );
       layout.setVerticalGroup(
@@ -123,7 +140,9 @@ public class MainWindow extends javax.swing.JFrame {
                .addComponent(filenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(browseButton))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(startButton)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+               .addComponent(startButton)
+               .addComponent(cancelButton))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
       );
@@ -154,10 +173,13 @@ public class MainWindow extends javax.swing.JFrame {
           return;
        }
 
-       ApplicationWorker runner = new ApplicationWorker(this, optionFile.getMap());
+       worker = new ApplicationWorker(this, optionFile.getMap());
+       //ApplicationWorker runner = new ApplicationWorker(this, optionFile.getMap());
        //ApplicationWorker runner = new ApplicationWorker(this, filename);
        //runner.execute();
-       runner.execute();
+       workerExecutor = Executors.newSingleThreadExecutor();
+       workerExecutor.submit(worker);
+       
 
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -172,6 +194,20 @@ public class MainWindow extends javax.swing.JFrame {
        }
 
     }//GEN-LAST:event_browseButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+       // Check if there is a worker
+       if(worker == null) {
+          outputArea.append("Application is not running.");
+          return;
+       }
+
+       //boolean interruptIfRunning = true;
+       //worker.cancel(interruptIfRunning);
+
+       workerExecutor.shutdownNow();
+       setButtonsEnable(true);
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
 
 
@@ -189,9 +225,10 @@ public class MainWindow extends javax.swing.JFrame {
      *
      */
 
-    public void setButtonsEnable(boolean enable) {
+    public final void setButtonsEnable(boolean enable) {
        browseButton.setEnabled(enable);
        startButton.setEnabled(enable);
+       cancelButton.setEnabled(!enable);
     }
 
    public App getApplication() {
@@ -202,6 +239,7 @@ public class MainWindow extends javax.swing.JFrame {
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton browseButton;
+   private javax.swing.JButton cancelButton;
    private javax.swing.JTextField filenameTextField;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JScrollPane jScrollPane1;
@@ -212,6 +250,8 @@ public class MainWindow extends javax.swing.JFrame {
    // Other variables
    private JFileChooser fc;
    final private App application;
+   private ApplicationWorker worker;
+   private ExecutorService workerExecutor;
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
 }

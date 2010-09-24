@@ -40,10 +40,15 @@ public class SimpleGui {
      */
     public void execute() {
        java.awt.EventQueue.invokeLater(new Runnable() {
+         @Override
             public void run() {
                 mainWindow.setVisible(true);
             }
         });
+    }
+
+    public void setTitle(String windowTitle) {
+       mainWindow.setTitle(windowTitle);
     }
 
    private MainWindow mainWindow;
