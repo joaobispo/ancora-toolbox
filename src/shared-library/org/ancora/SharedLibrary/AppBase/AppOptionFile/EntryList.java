@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**

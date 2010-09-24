@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;

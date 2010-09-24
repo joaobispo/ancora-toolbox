@@ -17,6 +17,7 @@
 
 package org.ancora.SharedLibrary.AppBase.Extra;
 
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 
 /**

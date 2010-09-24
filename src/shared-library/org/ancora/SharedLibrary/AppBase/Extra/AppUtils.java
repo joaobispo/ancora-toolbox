@@ -19,15 +19,13 @@ package org.ancora.SharedLibrary.AppBase.Extra;
 
 
 
-import java.io.File;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.Parsing.ParsingConstants;
 
 
 
@@ -37,65 +35,6 @@ import org.ancora.SharedLibrary.Parsing.ParsingConstants;
  * @author Joao Bispo
  */
 public class AppUtils {
-
-   /**
-    * Given the class of an enum which implements AppOptionEnum, builds a String
-    * which represents the contents of a file with the options represented by the
-    * enum.
-    * 
-    * @param c
-    * @return null if there was an error
-    */
-   /*
-   public static String generateFile(Class c) {
-      // Check if class is enum
-      if (!c.isEnum()) {
-         LoggingUtils.getLogger().
-                 warning("Class '" + c.getName() + "' is not an enum.");
-         return null;
-      }
-
-      // Get enum constants and start building file
-      Object[] enums = c.getEnumConstants();
-      StringBuilder builder = new StringBuilder();
-      builder.append(CLASS_PREFIX);
-      builder.append(c.getName());
-      builder.append(ParsingConstants.NEWLINE);
-
-      // Add a line in the file for each enum
-      for (Object option : enums) {
-         AppOptionEnum optionObject = null;
-
-         // Check
-         try {
-            optionObject = (AppOptionEnum) option;
-         } catch (ClassCastException ex) {
-            LoggingUtils.getLogger().
-                    warning("Class '" + c.getName() + "' does not implement interface " +
-                    AppOptionEnum.class + ".");
-            return null;
-         }
-
-         String line = generateAppOptionLine(optionObject);
-         builder.append(line);
-         builder.append(ParsingConstants.NEWLINE);
-      }
-      
-      return builder.toString();
-   }
-*/
-   /**
-    * Parses the given file into a Map of AppOption objects.
-    * @return
-    */
-   /*
-   public static Map<String, AppValue> parseFile(File file) {
-      AppOptionParser parser = new AppOptionParser();
-      return parser.parse(file);
-
-   }
-    * 
-    */
 
    public static String getString(Map<String, AppValue> map, AppOptionEnum option) {
       if(!map.containsKey(option.getName())) {
@@ -148,34 +87,6 @@ public class AppUtils {
 
       return Collections.unmodifiableMap(aMap);
    }
-
-   //
-   // PRIVATE METHODS
-   //
-
-/*
-   private static String generateAppOptionLine(AppOptionEnum optionObject) {
-      StringBuilder builder = new StringBuilder();
-
-      // Add line for enum
-      builder.append(optionObject.getName());
-      builder.append(ParsingConstants.SPACE);
-
-      builder.append(optionObject.getType().getAttributionString());
-      builder.append(ParsingConstants.SPACE);
-
-      String defaultValue = getDefaultValue(optionObject.getType());
-      builder.append(defaultValue);
-
-      return builder.toString();
-   }
-*/
-
-
-   
-
-   public static final String CLASS_PREFIX = "class = ";
-   public static final String COMMENT_PREFIX = "//";
 
 
 }
