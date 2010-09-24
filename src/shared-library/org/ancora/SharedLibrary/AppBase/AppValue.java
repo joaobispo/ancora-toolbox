@@ -22,22 +22,22 @@ import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
- * Represents an option of the program. 
+ * Represents the value of an option of the program.
  * 
  * <p>Stores current value, type and default value of an option.
  * 
  * @author Joao Bispo
  */
-public class AppOption {
+public class AppValue {
 
-   private AppOption(String value, AppOptionType type) {
+   private AppValue(String value, AppValueType type) {
       
       
       if (type.isList()) {
          LoggingUtils.getLogger().
                  warning("This constructor does not support List types. Building"
                  + "a String type instead.");
-         type = AppOptionType.string;
+         type = AppValueType.string;
       }
 
       this.type = type;
@@ -46,25 +46,25 @@ public class AppOption {
 
    }
 
-   public AppOption(int integer) {
-      this(Integer.toString(integer), AppOptionType.integer);
+   public AppValue(int integer) {
+      this(Integer.toString(integer), AppValueType.integer);
    }
 
-   public AppOption(boolean bool) {
-      this(Boolean.toString(bool), AppOptionType.bool);
+   public AppValue(boolean bool) {
+      this(Boolean.toString(bool), AppValueType.bool);
    }
 
-   public AppOption(String string) {
-      this(string, AppOptionType.string);
+   public AppValue(String string) {
+      this(string, AppValueType.string);
    }
 
-   public AppOption(List<String> list) {
-      this.type = AppOptionType.stringList;
+   public AppValue(List<String> list) {
+      this.type = AppValueType.stringList;
       this.list = list;
       this.value = null;
    }
 
-   public AppOption(String[] stringArray) {
+   public AppValue(String[] stringArray) {
       this(Arrays.asList(stringArray));
    }
 
@@ -79,16 +79,16 @@ public class AppOption {
     * 
     * @param type
     */
-   public static AppOption newAppOption(AppOptionType type) {
+   public static AppValue newAppOption(AppValueType type) {
       switch(type) {
          case bool:
-            return new AppOption(false);
+            return new AppValue(false);
          case integer:
-            return new AppOption(0);
+            return new AppValue(0);
          case string:
-            return new AppOption("");
+            return new AppValue("");
          case stringList:
-            return new AppOption(new String[0]);
+            return new AppValue(new String[0]);
          default:
             LoggingUtils.getLogger().
                     warning("Case not defined: '"+type+"'. Returning null.");
@@ -96,7 +96,7 @@ public class AppOption {
       }
    }
 
-   public AppOptionType getType() {
+   public AppValueType getType() {
       return type;
    }
 
@@ -160,5 +160,5 @@ public class AppOption {
    
    private String value;
    private List<String> list;
-   private AppOptionType type;
+   private AppValueType type;
 }

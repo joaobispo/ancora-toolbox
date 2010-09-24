@@ -59,16 +59,16 @@ public class AppOptionTest {
    @Test
    public void testNewAppOption() {
       System.out.println("newAppOption");
-      AppOptionType type;
+      AppValueType type;
       //AppOption expResult;
-      AppOption result;
+      AppValue result;
 
-      type = AppOptionType.bool;
-      result = AppOption.newAppOption(type);
+      type = AppValueType.bool;
+      result = AppValue.newAppOption(type);
       assertEquals(Boolean.FALSE.toString(), result.get());
 
-      type = AppOptionType.stringList;
-      result = AppOption.newAppOption(type);
+      type = AppValueType.stringList;
+      result = AppValue.newAppOption(type);
       
       assertEquals(0, result.getList().size());
 

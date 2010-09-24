@@ -22,13 +22,24 @@ import java.util.Map;
 /**
  * Represents the entry point of an application.
  *
- * The contract for any class implementing “App” is that any AppOption that was
- * defined may be used by the program. It is not guaranteed that the program
- * will check if a given AppOption exists in the Map.
+ * The contract for any class implementing “App” is that the program defines
+ * an enum class implementing AppOptionEnum with the options it wants to use,
+ * which may be access in the map that is passed to the application.
  *
  * @author Joao Bispo
  */
 public interface App {
 
-   int execute(Map<String, AppOption> options);
+   /**
+    * Executes the application with the options in the given map.
+    * @param options
+    * @return
+    */
+   int execute(Map<String, AppValue> options);
+
+   /**
+    *
+    * @return the enum class implementing AppOptionEnum associated with this App.
+    */
+   Class getAppOptionEnum();
 }

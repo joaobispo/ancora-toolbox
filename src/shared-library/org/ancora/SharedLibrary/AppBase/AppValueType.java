@@ -24,13 +24,13 @@ import org.ancora.SharedLibrary.LoggingUtils;
  *
  * @author Joao Bispo
  */
-public enum AppOptionType {
+public enum AppValueType {
    string("="),
    bool("="),
    integer("="),
    stringList("+=");
 
-   private AppOptionType(String attribution) {
+   private AppValueType(String attribution) {
       this.attribution = attribution;
    }
 
@@ -55,7 +55,7 @@ public enum AppOptionType {
     * @param value
     * @return
     */
-   public AppOption parseValue(String value) {
+   public AppValue parseValue(String value) {
       if(isList()) {
          LoggingUtils.getLogger().
                  warning("This method is not available for list-type options.");
@@ -63,18 +63,18 @@ public enum AppOptionType {
       }
 
       if(this == string) {
-         return new AppOption(value);
+         return new AppValue(value);
       }
 
       if(this == bool) {
-         return new AppOption(Boolean.parseBoolean(value));
+         return new AppValue(Boolean.parseBoolean(value));
       }
 
       if(this == integer) {
          // Parse int
          try {
             int number = Integer.parseInt(value);
-            return new AppOption(number);
+            return new AppValue(number);
          } catch(NumberFormatException ex) {
             LoggingUtils.getLogger().
                     warning("Could not parse integer '"+value+"'");

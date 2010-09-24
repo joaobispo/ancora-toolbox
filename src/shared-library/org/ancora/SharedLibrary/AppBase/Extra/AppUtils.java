@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.AppBase.AppOption;
-import org.ancora.SharedLibrary.AppBase.AppOptionType;
+import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Parsing.ParsingConstants;
 
@@ -88,13 +88,13 @@ public class AppUtils {
     * @return
     */
    
-   public static Map<String, AppOption> parseFile(File file) {
+   public static Map<String, AppValue> parseFile(File file) {
       AppOptionParser parser = new AppOptionParser();
       return parser.parse(file);
 
    }
 
-   public static String getString(Map<String, AppOption> map, AppOptionEnum option) {
+   public static String getString(Map<String, AppValue> map, AppOptionEnum option) {
       if(!map.containsKey(option.getName())) {
          LoggingUtils.getLogger().
                  warning("Could not find a value for option '"+option.getName()+"'. "
@@ -105,7 +105,7 @@ public class AppUtils {
       return map.get(option.getName()).get();
    }
 
-   public static List<String> getStringList(Map<String, AppOption> map, AppOptionEnum option) {
+   public static List<String> getStringList(Map<String, AppValue> map, AppOptionEnum option) {
       return map.get(option.getName()).getList();
    }
 
@@ -150,8 +150,8 @@ public class AppUtils {
       return builder.toString();
    }
 
-   private static String getDefaultValue(AppOptionType appOptionType) {
-      if(appOptionType == AppOptionType.bool) {
+   private static String getDefaultValue(AppValueType appOptionType) {
+      if(appOptionType == AppValueType.bool) {
          return "false";
       }
 

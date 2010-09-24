@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.App;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -72,7 +72,7 @@ public class CommandLine {
          return 0;
       }
 
-      Map<String, AppOption> options = parseArguments(args);
+      Map<String, AppValue> options = parseArguments(args);
 
       if(options == null) {
          LoggingUtils.getLogger().
@@ -84,7 +84,7 @@ public class CommandLine {
 
    }
 
-   private Map<String, AppOption> parseArguments(String[] args) {
+   private Map<String, AppValue> parseArguments(String[] args) {
       if(args.length == 0) {
           LoggingUtils.getLogger(this).
                  info("No arguments given. Using current folder as source path"
@@ -110,15 +110,15 @@ public class CommandLine {
    }
 
 
-   private Map<String, AppOption> parseFolder(File file) {
+   private Map<String, AppValue> parseFolder(File file) {
       // Find options files inside folder
       List<File> optionFiles = IoUtils.getFilesRecursive(file, optionFilesExtension);
 
       // For each option file, get the table and merge contents with the mastertable
-      Map<String, AppOption> masterTable = new HashMap<String, AppOption>();
+      Map<String, AppValue> masterTable = new HashMap<String, AppValue>();
 
       for(File optionFile : optionFiles) {
-         Map<String, AppOption> currentTable = AppUtils.parseFile(optionFile);
+         Map<String, AppValue> currentTable = AppUtils.parseFile(optionFile);
 
          if(currentTable == null) {
             LoggingUtils.getLogger().
@@ -134,7 +134,7 @@ public class CommandLine {
    }
 
 
-   private Map<String, AppOption> parseFiles(String[] args) {
+   private Map<String, AppValue> parseFiles(String[] args) {
       throw new UnsupportedOperationException("Not yet implemented");
    }
 

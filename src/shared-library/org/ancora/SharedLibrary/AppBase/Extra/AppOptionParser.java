@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.AppBase.AppOption;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Parsing.ParsingConstants;
@@ -41,7 +41,7 @@ class AppOptionParser {
     * @param file
     * @return
     */
-   public Map<String, AppOption> parse(File file) {
+   public Map<String, AppValue> parse(File file) {
       // Reset state
       reset();
 
@@ -84,7 +84,7 @@ class AppOptionParser {
       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) enumClass.getEnumConstants());
 
       // Build map
-      Map<String, AppOption> map = buildMap(lineReader, enumMap);
+      Map<String, AppValue> map = buildMap(lineReader, enumMap);
 
       
       return map;
@@ -105,8 +105,8 @@ class AppOptionParser {
     * @param enumMap
     * @return
     */
-  private Map<String, AppOption> buildMap(LineReader lineReader, Map<String, AppOptionEnum> enumMap) {
-      Map<String, AppOption> map = new HashMap<String, AppOption>();
+  private Map<String, AppValue> buildMap(LineReader lineReader, Map<String, AppOptionEnum> enumMap) {
+      Map<String, AppValue> map = new HashMap<String, AppValue>();
 
       String line = null;
       while((line = lineReader.nextNonEmptyLine()) != null) {
@@ -128,7 +128,7 @@ class AppOptionParser {
             continue;
          }
 
-         AppOption appOption = optionEnum.getType().parseValue(values[1]);
+         AppValue appOption = optionEnum.getType().parseValue(values[1]);
          if(map.put(values[0], appOption) != null) {
             LoggingUtils.getLogger().
                     warning("Duplicated key '"+values[0]+"' on line "+
@@ -138,7 +138,7 @@ class AppOptionParser {
 
       // If table with lists is not empty, add those lists
       for(String key : lists.keySet()) {
-         if(map.put(key, new AppOption(lists.get(key))) != null)  {
+         if(map.put(key, new AppValue(lists.get(key))) != null)  {
             LoggingUtils.getLogger().
                     warning("Found duplicated list '"+key+"' on table.");
          }

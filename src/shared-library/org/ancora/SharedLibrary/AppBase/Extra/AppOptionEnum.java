@@ -17,7 +17,7 @@
 
 package org.ancora.SharedLibrary.AppBase.Extra;
 
-import org.ancora.SharedLibrary.AppBase.AppOptionType;
+import org.ancora.SharedLibrary.AppBase.AppValueType;
 
 /**
  * We suggest storing information about options inside an enumeration file
@@ -31,7 +31,7 @@ public interface AppOptionEnum {
 
    String getName();
 
-   AppOptionType getType();
+   AppValueType getType();
 
 
 }
