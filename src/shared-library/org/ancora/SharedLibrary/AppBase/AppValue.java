@@ -17,6 +17,7 @@
 
 package org.ancora.SharedLibrary.AppBase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -65,7 +66,8 @@ public class AppValue {
    }
 
    public AppValue(String[] stringArray) {
-      this(Arrays.asList(stringArray));
+      this(new ArrayList(Arrays.asList(stringArray)));
+      //this(Arrays.asList(stringArray));
    }
 
    /**

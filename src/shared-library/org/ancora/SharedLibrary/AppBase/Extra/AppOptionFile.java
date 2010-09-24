@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -33,6 +34,20 @@ import org.ancora.SharedLibrary.LoggingUtils;
  */
 public class AppOptionFile {
 
+   private AppOptionFile(EntryList entryList) {
+      this.optionFile = null;
+      this.entryList = entryList;
+   }
+
+   public void setOptionFile(File optionFile) {
+      this.optionFile = optionFile;
+   }
+
+   public File getOptionFile() {
+      return optionFile;
+   }
+
+   
 
 
    /**
@@ -64,128 +79,17 @@ public class AppOptionFile {
 
        // Get list of entries
        //List<Entry> entries = buildEntries(lineReader, enumMap);
-       EntryList entryList = buildEntries(lineReader, enumMap);
+       EntryList entryList = Utils.buildEntries(lineReader, enumMap);
 
-      return null;
-   }
-
-   /**
-    * Builds the Entry list.
-    *
-    * @param lineReader
-    * @param enumMap
-    * @return
-    */
-   //private static List<Entry> buildEntries(LineReader lineReader, Map<String, AppOptionEnum> enumMap) {
-   private static EntryList buildEntries(LineReader lineReader, Map<String, AppOptionEnum> enumMap) {
-      //List<Entry> entries = new ArrayList<Entry>();
-      EntryList entries = new EntryList();
-
-      // Start a new comment list
-      List<String> comments = new ArrayList<String>();
-
-      String line = null;
-      boolean incorrectOption = false;
-      while((line = lineReader.nextLine()) != null) {
-         // Check if line is comment
-         if(isComment(line)) {
-            comments.add(line);
-            continue;
-         }
-
-         // Check if line is option
-         String[] parsedLine = parseLine(line);
-         if(parsedLine == null) {
-            LoggingUtils.getLogger().
-                    warning("Ignoring line "+lineReader.getLastLineIndex()+".");
-            continue;
-         }
-
-         String optionName = parsedLine[0];
-         String optionValue = parsedLine[1];
-
-         // Check if option is part of the options class
-         AppOptionEnum optionEnum = enumMap.get(optionName);
-         if(optionEnum == null) {
-            LoggingUtils.getLogger().
-                    warning("Option '"+optionName+"' does not belong to the application list of options. "
-                    + "Ignoring line "+lineReader.getLastLineIndex()+".");
-            incorrectOption = true;
-            continue;
-         }
-
-         // Add new entry
-         entries.addEntry(optionName, optionValue, optionEnum, comments);
-         comments = new ArrayList<String>();
-
-      }
-
-      if(incorrectOption) {
-         showOptions(enumMap);
-      }
-
-      return entries;
-   }
-
-   /**
-    * @param line
-    * @return true if line is either empty after trimming spaces, or if it
-    * starts with comment prefix
-    */
-   private static boolean isComment(String line) {
-      String trimmedLine = line.trim();
-      if(trimmedLine.isEmpty()) {
-         return true;
-      }
+       AppOptionFile appOptionFile = new AppOptionFile(entryList);
+       appOptionFile.setOptionFile(optionFile);
       
-      if(trimmedLine.startsWith(COMMENT_PREFIX)) {
-         return true;
-      }
-
-      return false;
+       return appOptionFile;
    }
 
-  /**
-   *
-   * @param line
-   * @return String array with two elements; the first is the name of the option,
-   * the second is the value.
-   */
-   private static String[] parseLine(String line) {
-      String[] values = new String[2];
-
-      int spaceIndex = line.indexOf(SPACE);
-      if(spaceIndex == -1) {
-         LoggingUtils.getLogger().
-                 warning("Could not find a space separating the name of the option from the "
-                 + "operator in line '"+line+"'.");
-         return null;
-      }
-      values[0] = line.substring(0, spaceIndex).trim();
-
-      line = line.substring(spaceIndex+1);
-      spaceIndex = line.indexOf(SPACE);
-      if(spaceIndex == -1) {
-         LoggingUtils.getLogger().
-                 warning("Could not find a second space separating the operator "
-                 + "from the value in line '"+line+"'.");
-         return null;
-      }
-
-      // Ignore separator. Is only "decoration"
-      values[1] = line.substring(spaceIndex+1).trim();
-
-      return values;
+   public static void writeEmptyFile(File optionFile, Class appOptionEnum) {
+      //return false;
    }
-
-   private static void showOptions(Map<String, AppOptionEnum> enumMap) {
-      Logger logger = LoggingUtils.getLogger();
-      logger.info("Available options for this program:");
-      for(String key : enumMap.keySet()) {
-         logger.info(" -> "+key);
-      }
-   }
-
 
    /**
     * @return a map with the options inside this AppOptionFile.
@@ -208,6 +112,12 @@ public class AppOptionFile {
 
    }
 
+   public List<Entry> getEntries() {
+      return entryList.getEntries();
+   }
+
+
+
    /**
     * INSTANCE VARIABLES
     */
@@ -219,9 +129,9 @@ public class AppOptionFile {
    //private Map<String, Entry> entriesMapping;
 
 
-   public static final String COMMENT_PREFIX = "//";
-   public static final String SPACE = " ";
-   public static final String NEWLINE = "\n";
+   //public static final String COMMENT_PREFIX = "//";
+   //public static final String SPACE = " ";
+   //public static final String NEWLINE = "\n";
 
    /*
    class Entry {

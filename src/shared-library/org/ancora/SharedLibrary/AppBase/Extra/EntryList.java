@@ -39,6 +39,11 @@ public class EntryList {
       entriesMapping = new HashMap<String, Entry>();
    }
 
+   public List<Entry> getEntries() {
+      return entries;
+   }
+
+
 
 /**
  *  Adds a new entry to the list.
@@ -48,11 +53,12 @@ public class EntryList {
  * @param optionEnum
  * @param comments
  */
-   void addEntry(String optionName, String optionValue, AppOptionEnum optionEnum, List<String> comments) {
+   public void addEntry(String optionName, String optionValue, AppOptionEnum optionEnum, List<String> comments) {
      // Create AppValue
-
       AppValue appValue = AppValue.newAppOption(optionEnum.getType());
       if(optionEnum.getType().isList()) {
+         //System.out.println("List:"+appValue.getList());
+         //System.out.println("Option Value:"+optionValue);
          appValue.getList().add(optionValue);
       } else {
          appValue.set(optionValue);
@@ -125,7 +131,7 @@ public class EntryList {
 
       // Check if previous entry is a list
       Entry previousEntry = entries.get(entries.size() - 1);
-      if (previousEntry.getOptionName().equals(newEntryOptionName)) {
+      if (!previousEntry.getOptionName().equals(newEntryOptionName)) {
          LoggingUtils.getLogger().
                  warning("Addition to list '" + newEntryOptionName + "' with value '" + listValue + "' far from previous addition. "
                  + "Additions must be next to each other. Any non-options lines between "
@@ -134,7 +140,16 @@ public class EntryList {
       }
 
       // Just add value to list
-      duplicatedEntry.optionValue.getList().add(listValue);
+      duplicatedEntry.getOptionValue().getList().add(listValue);
+   }
+
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("List:");
+
+      return builder.toString();
    }
 
 
@@ -146,31 +161,11 @@ public class EntryList {
 
 
 
-
-   
+   /*
    class Entry {
 
-      public Entry(List<String> comments, String optionName, AppValue optionValue) {
-         this.comments = comments;
-         this.optionValue = optionValue;
-         this.optionName = optionName;
-      }
-
-      public List<String> getComments() {
-         return comments;
-      }
-
-      public AppValue getOptionValue() {
-         return optionValue;
-      }
-
-      public String getOptionName() {
-         return optionName;
-      }
-
-
-      final private List<String> comments;
-      final private String optionName;
-      final private AppValue optionValue;
+     
    }
+    *
+    */
 }
