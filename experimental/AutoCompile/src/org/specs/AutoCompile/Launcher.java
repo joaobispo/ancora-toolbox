@@ -41,6 +41,12 @@ public class Launcher {
     public static void main(String[] args) {
        LoggingUtils.setupConsoleOnly();
 
+       // Create autocompile application
+       App autoCompile = buildAutoCompileApp();
+       if(autoCompile == null) {
+          return;
+       }
+
        // Launch GUI
        if(args.length == 0) {
           launchGui();
@@ -48,7 +54,8 @@ public class Launcher {
        }
 
        // Launch command line
-       launchCommandLine(args);
+       SingleArgumentCommandLine command = new SingleArgumentCommandLine(autoCompile);
+       command.execute(args);
 
 
     }
@@ -139,7 +146,8 @@ public class Launcher {
       //String jobFilepath = AppUtils.getString(config, Config.jobFile);
       //File jobFile = new File(jobFilepath);
       File jobFile = new File(jobFilename);
-      Map<String,AppValue> jobOptions = AppUtils.parseFile(jobFile);
+//      Map<String,AppValue> jobOptions = AppUtils.parseFile(jobFile);
+      Map<String,AppValue> jobOptions = AppOptionFile.parseFile(jobFile, JobOption.class).getMap();
 
       //return aComp.execute(config);
       return aComp.execute(jobOptions);

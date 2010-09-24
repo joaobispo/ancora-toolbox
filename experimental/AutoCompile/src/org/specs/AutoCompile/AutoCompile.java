@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -30,6 +31,7 @@ import org.specs.AutoCompile.Job.Job;
 import org.specs.AutoCompile.Job.JobUtils;
 import org.specs.AutoCompile.Options.Config;
 import org.specs.AutoCompile.Options.JobOption;
+import org.specs.AutoCompile.Targets.TargetOption;
 
 /**
  * Automates compilation of benchmarks.
@@ -84,7 +86,10 @@ public class AutoCompile implements App {
                  warning("Could not get configuration for '"+Targets.getTargetName(target, compiler)+"'");
          return -1;
       }
-      Map<String,AppValue> targetOptions = AppUtils.parseFile(targetConfig);
+
+      Class targetClass = TargetOption.class;
+      Map<String,AppValue> targetOptions = AppOptionFile.parseFile(targetConfig, targetClass).getMap();
+      //Map<String,AppValue> targetOptions = AppUtils.parseFile(targetConfig);
 
       // Get jobs
       List<Job> jobs = JobUtils.buildJobs(jobOptions, targetOptions);
