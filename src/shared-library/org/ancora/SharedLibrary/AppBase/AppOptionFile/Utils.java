@@ -28,8 +28,6 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
-import org.ancora.SharedLibrary.AppBase.Extra.Entry;
-import org.ancora.SharedLibrary.AppBase.Extra.EntryList;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 
@@ -240,6 +238,23 @@ public class Utils {
        Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
 
        return enumMap;
+   }
+
+   /**
+    * 
+    * @param appOptionType
+    * @return default values for the given AppValueType
+    */
+   public static String getDefaultValue(AppValueType appOptionType) {
+      if(appOptionType == AppValueType.bool) {
+         return "false";
+      }
+
+      if(appOptionType == appOptionType.integer) {
+         return "0";
+      }
+
+      return "";
    }
 
    public static final String COMMENT_PREFIX = "//";

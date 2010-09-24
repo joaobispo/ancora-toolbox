@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.Extra.AppUtils;
 import org.ancora.SharedLibrary.IoUtils;
@@ -118,7 +119,9 @@ public class CommandLine {
       Map<String, AppValue> masterTable = new HashMap<String, AppValue>();
 
       for(File optionFile : optionFiles) {
-         Map<String, AppValue> currentTable = AppUtils.parseFile(optionFile);
+         //Map<String, AppValue> currentTable = AppUtils.parseFile(optionFile);
+         // Introduced null on purpose, this object is deprecated and did this to not acuse errors.
+         Map<String, AppValue> currentTable = null;
 
          if(currentTable == null) {
             LoggingUtils.getLogger().
@@ -171,7 +174,8 @@ public class CommandLine {
       for (Class c : optionClasses) {
          String optionFilename = c.getSimpleName() + IoUtils.DEFAULT_EXTENSION_SEPARATOR
                  + optionFilesExtension;
-         IoUtils.write(new File(optionFilename), AppUtils.generateFile(c));
+         AppOptionFile.writeEmptyFile(new File(optionFilename), c);
+         //IoUtils.write(new File(optionFilename), AppUtils.generateFile(c));
       }
 
    }

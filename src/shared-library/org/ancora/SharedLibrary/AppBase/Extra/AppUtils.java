@@ -46,6 +46,7 @@ public class AppUtils {
     * @param c
     * @return null if there was an error
     */
+   /*
    public static String generateFile(Class c) {
       // Check if class is enum
       if (!c.isEnum()) {
@@ -82,31 +83,50 @@ public class AppUtils {
       
       return builder.toString();
    }
-
+*/
    /**
     * Parses the given file into a Map of AppOption objects.
     * @return
     */
-   
+   /*
    public static Map<String, AppValue> parseFile(File file) {
       AppOptionParser parser = new AppOptionParser();
       return parser.parse(file);
 
    }
+    * 
+    */
 
    public static String getString(Map<String, AppValue> map, AppOptionEnum option) {
       if(!map.containsKey(option.getName())) {
          LoggingUtils.getLogger().
                  warning("Could not find a value for option '"+option.getName()+"'. "
-                 + "Check if the option was set.");
+                 + "Check if the option is set.");
          return null;
       }
 
       return map.get(option.getName()).get();
    }
 
+   /**
+    * Given a map and an AppOptionEnum, returns the corresponding list.
+    *
+    * @param map
+    * @param option
+    * @return
+    */
    public static List<String> getStringList(Map<String, AppValue> map, AppOptionEnum option) {
-      return map.get(option.getName()).getList();
+      AppValue value = map.get(option.getName());
+      if (value == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find a list for option '" + option.getName() + "'. "
+                 + "Check if the option is set.");
+         //LoggingUtils.getLogger().
+         //        warning("Option '"+option.getName()+"' not found in the given map.");
+         return null;
+      }
+
+      return value.getList();
    }
 
    /**
@@ -133,7 +153,7 @@ public class AppUtils {
    // PRIVATE METHODS
    //
 
-
+/*
    private static String generateAppOptionLine(AppOptionEnum optionObject) {
       StringBuilder builder = new StringBuilder();
 
@@ -149,18 +169,10 @@ public class AppUtils {
 
       return builder.toString();
    }
+*/
 
-   private static String getDefaultValue(AppValueType appOptionType) {
-      if(appOptionType == AppValueType.bool) {
-         return "false";
-      }
 
-      if(appOptionType == appOptionType.integer) {
-         return "0";
-      }
-
-      return "";
-   }
+   
 
    public static final String CLASS_PREFIX = "class = ";
    public static final String COMMENT_PREFIX = "//";

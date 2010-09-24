@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase.Extra;
+package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.ancora.SharedLibrary.AppBase.Extra.AppOptionEnum;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -106,7 +108,10 @@ public class AppOptionFile {
 
       Map<String, AppOptionEnum> options = Utils.getEnumMap(appOptionEnum);
       for(AppOptionEnum option : options.values()) {
-         builder.append(Utils.buildLine(option.getName(), "", option.getType()));
+         String optionName = option.getName();
+         AppValueType type = option.getType();
+         String value = Utils.getDefaultValue(type);
+         builder.append(Utils.buildLine(optionName, value, type));
          builder.append(Utils.NEWLINE);
       }
 

@@ -17,6 +17,8 @@
 
 package org.ancora.SharedLibrary.AppBase.Extra;
 
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import java.util.HashMap;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import java.io.File;
