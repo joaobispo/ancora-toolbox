@@ -93,5 +93,5 @@ public class AppFrame {
     //private int preferredWidth;
 
     public static final int PREFERRED_HEIGHT = 236;
-    public static final int PREFERRED_WIDTH = 440;
+    public static final int PREFERRED_WIDTH = 480;
 }

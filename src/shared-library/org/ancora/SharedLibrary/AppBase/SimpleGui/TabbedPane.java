@@ -20,6 +20,7 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -49,31 +50,10 @@ public class TabbedPane extends JPanel {
 
       this.optionsPanel = new OptionsPanel(application.getAppOptionEnum());
 
-      //JScrollPane scrollPane = new JScrollPane(optionsPanel);
-      //tabbedPane.addTab("Options", scrollPane);
       tabbedPane.addTab("Options", optionsPanel);
       
       tabbedPane.setMnemonicAt(OPTIONS_PANEL, KeyEvent.VK_2);
 
-      /*
-      tabbedPane.addFocusListener(new java.awt.event.FocusAdapter() {
-
-
-         @Override
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            jTabbedPane2FocusGained(evt);
-         }
-      });
-          *
-          */
-/*
-      tabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
-         @Override
-         public void mouseClicked(java.awt.event.MouseEvent evt) {
-            jTabbedPane2MouseClicked(evt);
-         }
-      });
-*/
 
       // Register a change listener
       tabbedPane.addChangeListener(new ChangeListener() {
@@ -87,6 +67,18 @@ public class TabbedPane extends JPanel {
             if(sel == OPTIONS_PANEL) {
                String optionsFilename = programPanel.getFilenameTextField().getText();
                optionsPanel.updateValues(optionsFilename);
+            }
+
+            if(sel == PROGRAM_PANEL) {
+               File file = optionsPanel.getOptionFile().getOptionFile();
+               if(file == null) {
+                  return;
+               }
+               programPanel.getFilenameTextField().setText(file.getPath());
+               programPanel.update();
+
+//               String optionsFilename = programPanel.getFilenameTextField().getText();
+//               optionsPanel.updateValues(optionsFilename);
             }
          }
       });

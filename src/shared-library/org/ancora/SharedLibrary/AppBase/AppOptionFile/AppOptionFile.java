@@ -18,6 +18,7 @@
 package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,22 @@ public class AppOptionFile {
       this.entryList = entryList;
    }
 
+   public AppOptionFile(Class appOptionEnum) {
+      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
+      EntryList entries = new EntryList();
+
+       // Add new entry
+      for(String key : enumMap.keySet()) {
+         AppOptionEnum type = enumMap.get(key);
+         entries.addEntry(key, Utils.getDefaultValue(type.getType()), type, new ArrayList<String>());
+      }
+
+   }
+
    public void setOptionFile(File optionFile) {
       this.optionFile = optionFile;
    }
+
 
    public File getOptionFile() {
       return optionFile;
@@ -161,6 +175,10 @@ public class AppOptionFile {
 
    public List<Entry> getEntries() {
       return entryList.getEntries();
+   }
+
+   public EntryList getEntryList() {
+      return entryList;
    }
 
 

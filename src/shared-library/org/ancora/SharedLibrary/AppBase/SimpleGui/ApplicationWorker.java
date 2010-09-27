@@ -18,7 +18,6 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.Map;
-import javax.swing.SwingWorker;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.ProcessUtils;
 
@@ -48,7 +47,6 @@ public class ApplicationWorker implements Runnable {
             mainWindow.setButtonsEnable(false);
          }
       });
-
 
       returnValue = mainWindow.getApplication().execute(options);
 

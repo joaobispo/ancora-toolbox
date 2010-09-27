@@ -53,7 +53,7 @@ public class ProgramPanel extends javax.swing.JPanel {
 
    private void customInit() {
               // Set last used file
-        Preferences prefs = Preferences.userNodeForPackage(MainWindow.class);
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String lastFile =prefs.get(OPTION_LAST_USED_FILE, "");
 
         filenameTextField.setText(lastFile);
@@ -97,6 +97,8 @@ public class ProgramPanel extends javax.swing.JPanel {
       startButton = new javax.swing.JButton();
       jScrollPane1 = new javax.swing.JScrollPane();
       outputArea = new javax.swing.JTextArea();
+
+      setPreferredSize(new java.awt.Dimension(480, 236));
 
       jLabel1.setText("Input file:");
 
@@ -201,7 +203,7 @@ public class ProgramPanel extends javax.swing.JPanel {
        }
 
        // Save accessed file
-       Preferences prefs = Preferences.userNodeForPackage(MainWindow.class);
+       Preferences prefs = Preferences.userNodeForPackage(this.getClass());
        prefs.put(OPTION_LAST_USED_FILE, filename);
 
        // Get Options from file
@@ -235,6 +237,9 @@ public class ProgramPanel extends javax.swing.JPanel {
    }
 
 
+   public void update() {
+      System.out.println("TextField:"+filenameTextField.getText());
+   }
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton browseButton;
@@ -254,5 +259,6 @@ public class ProgramPanel extends javax.swing.JPanel {
    private ExecutorService workerExecutor;
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
+
 
 }

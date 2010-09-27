@@ -45,6 +45,12 @@ public class EntryList {
       return entries;
    }
 
+   public Map<String, Entry> getEntriesMapping() {
+      return entriesMapping;
+   }
+
+   
+
    public Entry getEntry(String optionName) {
       return entriesMapping.get(optionName);
    }
