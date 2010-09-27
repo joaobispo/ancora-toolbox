@@ -62,7 +62,7 @@ public class ProgramPanel extends javax.swing.JPanel {
         fc = new JFileChooser();
 
         // Redirect output to jtextfiled
-        Handler[] handlersTemp = LoggingUtils.getRootHandlers();
+        Handler[] handlersTemp = LoggingUtils.getRootLogger().getHandlers();
         Handler[] newHandlers = new Handler[handlersTemp.length+1];
         System.arraycopy(handlersTemp, 0, newHandlers, 0, handlersTemp.length);
         newHandlers[handlersTemp.length] = new JTextAreaHandler(outputArea);

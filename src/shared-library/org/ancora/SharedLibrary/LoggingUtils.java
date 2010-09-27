@@ -105,10 +105,7 @@ public class LoggingUtils {
       System.setErr(outPrint);
    }
 
-   public static Handler[] getRootHandlers() {
-      Logger logger = Logger.getLogger("");
-      return logger.getHandlers();
-   }
+
 
    /**
     * Removes current handlers and adds the given Handlers to the root logger.
@@ -116,7 +113,8 @@ public class LoggingUtils {
     * @param handlers the Handlers we want to set as the root Handlers.
     */
    public static void setRootHandlers(Handler[] handlers) {
-      Logger logger = Logger.getLogger("");
+      //Logger logger = Logger.getLogger("");
+      Logger logger = getRootLogger();
 
       // Remove all previous handlers
       Handler[] handlersTemp = logger.getHandlers();
@@ -135,8 +133,7 @@ public class LoggingUtils {
     *
     * @return a Console Hanlder formatted by ConsoleFormatter.
     */
-   public static Handler buildConsoleHandler() {
-      
+   public static Handler buildConsoleHandler() {    
          ConsoleHandler cHandler = new ConsoleHandler();
          cHandler.setFormatter(new ConsoleFormatter());
          cHandler.setLevel(Level.ALL);
@@ -161,40 +158,6 @@ public class LoggingUtils {
       redirectSystemErr();
    }
 
-   public static Level getRootLevel() {
-      Logger topLogger = Logger.getLogger("");
-      return topLogger.getLevel();
-   }
-
-   public static void setLevel(Level level) {
-      /// From StackOverflow
-      //http://stackoverflow.com/questions/470430/java-util-logging-logger-doesnt-respect-java-util-logging-level
-      //get the top Logger:
-      Logger topLogger = Logger.getLogger("");
-      topLogger.setLevel(level);
-      /*
-      // Handler for console (reuse it if it already exists)
-      Handler consoleHandler = null;
-      //see if there is already a console handler
-      for (Handler handler : topLogger.getHandlers()) {
-         if (handler instanceof ConsoleHandler) {
-            //found the console handler
-            consoleHandler = handler;
-            break;
-         }
-      }
-
-
-      if (consoleHandler == null) {
-         //there was no console handler found, create a new one
-         consoleHandler = new ConsoleHandler();
-         topLogger.addHandler(consoleHandler);
-      }
-      //set the console handler to fine:
-      consoleHandler.setLevel(level);
-       *
-       */
-   }
 
    public static Level parseLevel(String levelString) {
       Level defaultLevel = Level.ALL;
