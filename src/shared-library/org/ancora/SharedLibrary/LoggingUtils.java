@@ -33,7 +33,9 @@ import org.ancora.SharedLibrary.Logging.LoggingOutputStream;
 public class LoggingUtils {
 
    /**
-    *
+    * Helper method to automatically get the Logger correspondent to the class
+    * of the given object.
+    * 
     * @param object
     * @return logger specific to the given object
     */
@@ -42,12 +44,21 @@ public class LoggingUtils {
    }
 
    /**
+    * 
+    * @return
+    */
+   public static Logger getRootLogger() {
+      return Logger.getLogger("");
+   }
+
+   /**
     * Helper method to automatically get the Logger correspondent to the class
     * which calls this method.
     *
     * <p>Thes method uses the "heavy" StackTrace to determine what object called
     * it. This should only be used for logging "warnings" which are not called
-    * often.
+    * often, or in situation such as constructors, were we do not want to leak
+    * the object reference before it exists.
     *
     * @param object
     * @return logger specific to the given object
@@ -64,10 +75,12 @@ public class LoggingUtils {
     */
    public static void redirectSystemOut() {
       // Get Root Logger
-      Logger logger = Logger.getLogger("");
+      //Logger logger = Logger.getLogger("");
+      Logger logger = getRootLogger();
 
       // Build Printstream for System.out
-      LoggingOutputStream los = new LoggingOutputStream(logger, Level.FINEST);
+      LoggingOutputStream los = new LoggingOutputStream(logger, Level.INFO);
+      //LoggingOutputStream los = new LoggingOutputStream(logger, Level.FINEST);
       PrintStream outPrint = new PrintStream(los, true);
 
       // Set System.out
@@ -81,7 +94,8 @@ public class LoggingUtils {
     */
    public static void redirectSystemErr() {
       // Get Root Logger
-      Logger logger = Logger.getLogger("");
+//      Logger logger = Logger.getLogger("");
+      Logger logger = getRootLogger();
 
       // Build Printstream for System.out
       LoggingOutputStream los = new LoggingOutputStream(logger, Level.WARNING);
@@ -89,6 +103,11 @@ public class LoggingUtils {
 
       // Set System.out
       System.setErr(outPrint);
+   }
+
+   public static Handler[] getRootHandlers() {
+      Logger logger = Logger.getLogger("");
+      return logger.getHandlers();
    }
 
    /**
@@ -117,8 +136,10 @@ public class LoggingUtils {
     * @return a Console Hanlder formatted by ConsoleFormatter.
     */
    public static Handler buildConsoleHandler() {
+      
          ConsoleHandler cHandler = new ConsoleHandler();
          cHandler.setFormatter(new ConsoleFormatter());
+         cHandler.setLevel(Level.ALL);
 
          return cHandler;
    }
@@ -140,12 +161,18 @@ public class LoggingUtils {
       redirectSystemErr();
    }
 
+   public static Level getRootLevel() {
+      Logger topLogger = Logger.getLogger("");
+      return topLogger.getLevel();
+   }
+
    public static void setLevel(Level level) {
       /// From StackOverflow
       //http://stackoverflow.com/questions/470430/java-util-logging-logger-doesnt-respect-java-util-logging-level
       //get the top Logger:
       Logger topLogger = Logger.getLogger("");
-
+      topLogger.setLevel(level);
+      /*
       // Handler for console (reuse it if it already exists)
       Handler consoleHandler = null;
       //see if there is already a console handler
@@ -165,6 +192,8 @@ public class LoggingUtils {
       }
       //set the console handler to fine:
       consoleHandler.setLevel(level);
+       *
+       */
    }
 
    public static Level parseLevel(String levelString) {
