@@ -17,10 +17,12 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -46,7 +48,11 @@ public class TabbedPane extends JPanel {
         tabbedPane.setMnemonicAt(PROGRAM_PANEL, KeyEvent.VK_1);
 
       this.optionsPanel = new OptionsPanel(application.getAppOptionEnum());
+
+      //JScrollPane scrollPane = new JScrollPane(optionsPanel);
+      //tabbedPane.addTab("Options", scrollPane);
       tabbedPane.addTab("Options", optionsPanel);
+      
       tabbedPane.setMnemonicAt(OPTIONS_PANEL, KeyEvent.VK_2);
 
       /*

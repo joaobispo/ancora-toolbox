@@ -19,11 +19,14 @@ package org.ancora.SharedLibrary.AppBase;
 
 
 
+import java.util.Arrays;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 
@@ -89,4 +92,33 @@ public class AppUtils {
    }
 
 
+      /**
+    * Reads the elements in an enum class implementing the AppOptionEnum interface,
+    * and returns a mapping of the name of the options to the enum objects.
+    * @param appOptionEnum
+    * @return
+    */
+   public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
+       // Check class
+      if (!appOptionEnum.isEnum()) {
+         LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not represent an enum.");
+         return null;
+      }
+
+      // Build set with interfaces of the given class
+      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(appOptionEnum.getInterfaces()));
+      Class appOption = AppOptionEnum.class;
+      if(!interfaces.contains(appOption)){
+           LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not implement "
+                 + "interface '"+appOption+"'.");
+         return null;
+      }
+
+      // Get map of enums
+       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
+
+       return enumMap;
+   }
 }

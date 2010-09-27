@@ -17,8 +17,6 @@
 
 package org.ancora.SharedLibrary.AppBase;
 
-import org.ancora.SharedLibrary.AppBase.AppValueType;
-
 /**
  * We suggest storing information about options inside an enumeration file
  * implementing this interface. It gives convenient access to the options and

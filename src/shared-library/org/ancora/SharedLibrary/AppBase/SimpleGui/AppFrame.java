@@ -18,6 +18,7 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -32,7 +33,20 @@ public class AppFrame {
    public AppFrame(App application) {
       frameTitle = "";
       tabbedPane = new TabbedPane(application);
+ //     preferredHeight = PREFERRED_HEIGHT;
+ //     preferredWidth = PREFERRED_WIDTH;
    }
+
+   /*
+   public void setPreferredHeight(int preferredHeight) {
+      this.preferredHeight = preferredHeight;
+   }
+
+   public void setPreferredWidth(int preferredWidth) {
+      this.preferredWidth = preferredWidth;
+   }
+*/
+   
 
    public void setFrameTitle(String frameTitle) {
       this.frameTitle = frameTitle;
@@ -60,6 +74,7 @@ public class AppFrame {
         JFrame frame = new JFrame(frameTitle);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        frame.setResizable(false);
         //Add content to the window.
         frame.add(tabbedPane, BorderLayout.CENTER);
 
@@ -74,4 +89,9 @@ public class AppFrame {
      */
     private String frameTitle;
     private TabbedPane tabbedPane;
+    //private int preferredHeight;
+    //private int preferredWidth;
+
+    public static final int PREFERRED_HEIGHT = 236;
+    public static final int PREFERRED_WIDTH = 440;
 }

@@ -21,10 +21,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -84,7 +84,7 @@ public class AppOptionFile {
        *
        */
 
-      Map<String, AppOptionEnum> enumMap = Utils.getEnumMap(appOptionEnum);
+      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
       
        // Get list of entries
        //List<Entry> entries = buildEntries(lineReader, enumMap);
@@ -106,7 +106,7 @@ public class AppOptionFile {
    public static void writeEmptyFile(File optionFile, Class appOptionEnum) {
       StringBuilder builder = new StringBuilder();
 
-      Map<String, AppOptionEnum> options = Utils.getEnumMap(appOptionEnum);
+      Map<String, AppOptionEnum> options = AppUtils.getEnumMap(appOptionEnum);
       for(AppOptionEnum option : options.values()) {
          String optionName = option.getName();
          AppValueType type = option.getType();

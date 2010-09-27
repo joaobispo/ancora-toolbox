@@ -43,57 +43,46 @@ public class NewJPanel extends javax.swing.JPanel {
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
-      jTabbedPane2 = new javax.swing.JTabbedPane();
-      jPanel1 = new javax.swing.JPanel();
+      jLabel1 = new javax.swing.JLabel();
+      jTextField1 = new javax.swing.JTextField();
+      jButton1 = new javax.swing.JButton();
 
-      jTabbedPane2.addMouseListener(new java.awt.event.MouseAdapter() {
-         public void mouseClicked(java.awt.event.MouseEvent evt) {
-            jTabbedPane2MouseClicked(evt);
-         }
-      });
-      jTabbedPane2.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            jTabbedPane2FocusGained(evt);
-         }
-      });
+      jLabel1.setText("jLabel1");
 
-      javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-      jPanel1.setLayout(jPanel1Layout);
-      jPanel1Layout.setHorizontalGroup(
-         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGap(0, 395, Short.MAX_VALUE)
-      );
-      jPanel1Layout.setVerticalGroup(
-         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGap(0, 275, Short.MAX_VALUE)
-      );
+      jTextField1.setText("jTextField1");
 
-      jTabbedPane2.addTab("tab1", jPanel1);
+      jButton1.setText("jButton1");
 
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
       this.setLayout(layout);
       layout.setHorizontalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+         .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabel1)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton1)
+            .addContainerGap(212, Short.MAX_VALUE))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+         .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+               .addComponent(jLabel1)
+               .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jButton1))
+            .addContainerGap(266, Short.MAX_VALUE))
       );
    }// </editor-fold>//GEN-END:initComponents
 
-    private void jTabbedPane2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane2FocusGained
-       // TODO add your handling code here:
-    }//GEN-LAST:event_jTabbedPane2FocusGained
-
-    private void jTabbedPane2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane2MouseClicked
-       // TODO add your handling code here:
-    }//GEN-LAST:event_jTabbedPane2MouseClicked
-
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
-   private javax.swing.JPanel jPanel1;
-   private javax.swing.JTabbedPane jTabbedPane2;
+   private javax.swing.JButton jButton1;
+   private javax.swing.JLabel jLabel1;
+   private javax.swing.JTextField jTextField1;
    // End of variables declaration//GEN-END:variables
 
 }

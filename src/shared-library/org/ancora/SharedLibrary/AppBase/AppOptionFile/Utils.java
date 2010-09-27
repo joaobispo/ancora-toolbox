@@ -211,34 +211,7 @@ public class Utils {
       }
    }
 
-   /**
-    * Transforms 
-    * @param appOptionEnum
-    * @return
-    */
-   public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
-       // Check class
-      if (!appOptionEnum.isEnum()) {
-         LoggingUtils.getLogger().
-                 warning("Class '" + appOptionEnum.getName() + "' does not represent an enum.");
-         return null;
-      }
 
-      // Build set with interfaces of the given class
-      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(appOptionEnum.getInterfaces()));
-      Class appOption = AppOptionEnum.class;
-      if(!interfaces.contains(appOption)){
-           LoggingUtils.getLogger().
-                 warning("Class '" + appOptionEnum.getName() + "' does not implement "
-                 + "interface '"+appOption+"'.");
-         return null;
-      }
-
-      // Get map of enums
-       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
-
-       return enumMap;
-   }
 
    /**
     * 
