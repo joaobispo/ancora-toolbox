@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Ancora Research Group.
+ *  Copyright 2010 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,32 +17,28 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
-
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.StreamHandler;
-import javax.swing.JTextArea;
-import org.ancora.SharedLibrary.Logging.ConsoleFormatter;
+import java.io.File;
+import javax.swing.JTextField;
+import org.ancora.SharedLibrary.AppBase.App;
 
 /**
  *
  * @author Joao Bispo
  */
-public class JTextAreaHandler extends StreamHandler {
+public class OptionsPanel extends javax.swing.JPanel {
 
-   public JTextAreaHandler(JTextArea jTextArea) {
-      this.jTextArea = jTextArea;
-      setFormatter(new ConsoleFormatter());
-      setLevel(Level.ALL);
+   public OptionsPanel(Class appOptionEnum) {
+      //this.filenameTextField = filenameTextField;
+      //this.application = application.;
    }
 
+public void updateValues(String optionsFilename) {
+   System.err.println("Updated! -> '"+optionsFilename+"'");
+   System.out.println("Info level");
+   //System.exit(0);
+}
 
-
-   @Override
-   public synchronized void publish(LogRecord record) {
-      jTextArea.append(record.getMessage()+"\n");
-   }
-
-   
-   private JTextArea jTextArea;
+   //private JTextField filenameTextField;
+   //private App application;
+   //private Class appOptionEnum;
 }

@@ -29,7 +29,7 @@ import org.ancora.SharedLibrary.ProcessUtils;
 //public class ApplicationWorker extends SwingWorker<Integer, String> {
 public class ApplicationWorker implements Runnable {
 
-   public ApplicationWorker(MainWindow mainWindow,  Map<String,AppValue> options) {
+   public ApplicationWorker(ProgramPanel mainWindow,  Map<String,AppValue> options) {
    //public ApplicationWorker(MainWindow mainWindow, String filename) {
       this.mainWindow = mainWindow;
       this.options = options;
@@ -97,7 +97,7 @@ public class ApplicationWorker implements Runnable {
 
 
 
-   private MainWindow mainWindow;
+   private ProgramPanel mainWindow;
    private Map<String,AppValue> options;
    private Integer returnValue;
 

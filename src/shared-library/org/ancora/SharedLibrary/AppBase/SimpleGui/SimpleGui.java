@@ -28,6 +28,7 @@ public class SimpleGui {
    public SimpleGui(App application) {
       //this.application = application;
       this.mainWindow = new MainWindow(application);
+      this.frame = new AppFrame(application);
    }
 
 
@@ -42,15 +43,18 @@ public class SimpleGui {
        java.awt.EventQueue.invokeLater(new Runnable() {
          @Override
             public void run() {
-                mainWindow.setVisible(true);
+                //mainWindow.setVisible(true);
+            frame.launchGui();
             }
         });
     }
 
     public void setTitle(String windowTitle) {
        mainWindow.setTitle(windowTitle);
+       frame.setFrameTitle(windowTitle);
     }
 
    private MainWindow mainWindow;
+   private AppFrame frame;
    //final private App application;
 }
