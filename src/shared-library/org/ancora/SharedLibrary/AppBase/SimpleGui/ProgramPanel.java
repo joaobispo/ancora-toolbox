@@ -25,6 +25,7 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import org.ancora.SharedLibrary.Logging.JTextAreaHandler;
 import java.io.File;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Handler;
@@ -52,7 +53,8 @@ public class ProgramPanel extends javax.swing.JPanel {
 
    private void customInit() {
               // Set last used file
-        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        //Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(application.getAppOptionEnum());
         String lastFile = prefs.get(OPTION_LAST_USED_FILE, "");
 
         filenameTextField.setText(lastFile);
@@ -172,7 +174,8 @@ public class ProgramPanel extends javax.swing.JPanel {
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
        // Check if there is a worker
        if(worker == null) {
-          outputArea.append("Application is not running.");
+          //outputArea.append("Application is not running.");
+          System.out.println("Application is not running.");
           return;
        }
 
@@ -188,18 +191,24 @@ public class ProgramPanel extends javax.swing.JPanel {
        String filename = filenameTextField.getText();
        File file = new File(filename);
        if(!file.exists()) {
-          outputArea.append("File '"+filename+"' does not exist.");
+          System.out.println("File '"+filename+"' does not exist.");
+          File file2 = new File("./");
+          System.out.println("Current files in folder '"+file2.getAbsolutePath()+"':");
+          System.out.println(Arrays.asList(file2.listFiles()));
+          //outputArea.append("File '"+filename+"' does not exist.");
           return;
        }
 
        // Save accessed file
-       Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+       //Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+       Preferences prefs = Preferences.userNodeForPackage(application.getAppOptionEnum());
        prefs.put(OPTION_LAST_USED_FILE, filename);
 
        // Get Options from file
        AppOptionFile optionFile = AppOptionFile.parseFile(file, application.getAppOptionEnum());
        if(optionFile == null) {
-          outputArea.append("Could not load options from '"+filename+"'.");
+          //outputArea.append("Could not load options from '"+filename+"'.");
+          System.out.println("Could not load options from '"+filename+"'.");
           return;
        }
 

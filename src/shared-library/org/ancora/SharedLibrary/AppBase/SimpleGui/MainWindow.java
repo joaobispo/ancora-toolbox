@@ -24,6 +24,7 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -158,7 +159,11 @@ public class MainWindow extends javax.swing.JFrame {
        String filename = filenameTextField.getText();
        File file = new File(filename);
        if(!file.exists()) {
-          outputArea.append("File '"+filename+"' does not exist.");
+          System.out.println("File '"+filename+"' does not exist.");
+          File file2 = new File("./");
+          System.out.println("Current files in folder '"+file2.getAbsolutePath()+"':");
+          System.out.println(Arrays.asList(file2.listFiles()));
+          //outputArea.append("File '"+filename+"' does not exist.\n");
           return;
        }
 
@@ -169,7 +174,8 @@ public class MainWindow extends javax.swing.JFrame {
        // Get Options from file
        AppOptionFile optionFile = AppOptionFile.parseFile(file, application.getAppOptionEnum());
        if(optionFile == null) {
-          outputArea.append("Could not load options from '"+filename+"'.");
+          System.out.println("Could not load options from '"+filename+"'.");
+          //outputArea.append("Could not load options from '"+filename+"'.");
           return;
        }
 

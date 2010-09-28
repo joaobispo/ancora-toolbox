@@ -43,13 +43,15 @@ public class AppOptionFile {
    }
 
    public AppOptionFile(Class appOptionEnum) {
-      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
-      EntryList entries = new EntryList();
+      //EntryList entries = new EntryList();
+      this.optionFile = null;
+      this.entryList = new EntryList();
 
-       // Add new entry
-      for(String key : enumMap.keySet()) {
+      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
+      // Add new entry
+      for (String key : enumMap.keySet()) {
          AppOptionEnum type = enumMap.get(key);
-         entries.addEntry(key, OptionFileUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
+         entryList.addEntry(key, OptionFileUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
       }
 
    }
