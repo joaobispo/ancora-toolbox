@@ -18,13 +18,13 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.ancora.SharedLibrary.AppBase.App;
 
 /**
+ * Frame of the SimpleGui.
  *
  * @author Joao Bispo
  */

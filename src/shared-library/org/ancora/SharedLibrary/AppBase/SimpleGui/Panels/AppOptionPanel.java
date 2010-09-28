@@ -17,18 +17,19 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui.Panels;
 
+import javax.swing.JPanel;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 
 /**
  *
  * @author Joao Bispo
  */
-public interface AppOptionPanel {
+public abstract class AppOptionPanel extends JPanel {
 
    /**
     * Each AppOptionPanel supports an AppValueType.
     * 
     * @return the AppValueType supported by this panel.
     */
-   AppValueType getType();
+   public abstract AppValueType getType();
 }

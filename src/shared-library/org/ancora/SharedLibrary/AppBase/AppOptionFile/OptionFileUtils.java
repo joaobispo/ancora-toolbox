@@ -226,6 +226,36 @@ public class OptionFileUtils {
       return "";
    }
 
+   /**
+    * Convert the last non-empty lines of the list of Strings in a string of 
+    * text.
+    *  
+    * @param comments
+    * @return
+    */
+    public static String parseComments(List<String> comments) {
+      // Check how many non-empty lines there is counting from bottom.
+      int counter = 0;
+      for (int i = comments.size() - 1; i >= 0; i--) {
+         String line = comments.get(i);
+         if (line.isEmpty()) {
+            break;
+         }
+         counter++;
+      }
+
+       StringBuilder builder = new StringBuilder();
+       for (int i = comments.size() - counter; i < comments.size(); i++) {
+         String trimmedLine = comments.get(i).trim();
+         trimmedLine = trimmedLine.substring(OptionFileUtils.COMMENT_PREFIX.length());
+         builder.append(trimmedLine);
+         builder.append(" ");
+      }
+
+       return builder.toString();
+    }
+
+
    public static final String COMMENT_PREFIX = "//";
    public static final String SPACE = " ";
    public static final String NEWLINE = "\n";

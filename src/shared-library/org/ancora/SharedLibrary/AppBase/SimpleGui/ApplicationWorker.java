@@ -22,15 +22,16 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
+ * Launches an App object from the ProgramPanel.
  *
  * @author Joao Bispo
  */
 //public class ApplicationWorker extends SwingWorker<Integer, String> {
 public class ApplicationWorker implements Runnable {
 
-   public ApplicationWorker(ProgramPanel mainWindow,  Map<String,AppValue> options) {
+   public ApplicationWorker(ProgramPanel programPanel,  Map<String,AppValue> options) {
    //public ApplicationWorker(MainWindow mainWindow, String filename) {
-      this.mainWindow = mainWindow;
+      this.mainWindow = programPanel;
       this.options = options;
       this.returnValue = null;
       //this.filename = filename;

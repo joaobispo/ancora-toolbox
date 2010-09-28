@@ -19,7 +19,6 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui.Panels;
 
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 
@@ -27,7 +26,7 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
  *
  * @author Joao Bispo
  */
-public class StringPanel extends JPanel implements AppOptionPanel {
+public class StringPanel extends AppOptionPanel {
 
    public StringPanel(String labelName) {
       label = new JLabel(labelName+":");

@@ -23,6 +23,7 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
+import org.ancora.SharedLibrary.Logging.JTextAreaHandler;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2010 Ancora Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,20 +15,34 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase.SimpleGui;
+package org.ancora.SharedLibrary.Logging;
 
-import java.io.File;
+
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
+import javax.swing.JTextArea;
 
 /**
+ * Logger handler for a JTextArea.
  *
  * @author Joao Bispo
  */
-public interface OptionsFileListener {
+public class JTextAreaHandler extends StreamHandler {
 
-   /**
-    * The options file was updated.
-    * 
-    * @param optionsFile
-    */
-   void updatedOptions(File optionsFile);
+   public JTextAreaHandler(JTextArea jTextArea) {
+      this.jTextArea = jTextArea;
+      setFormatter(new ConsoleFormatter());
+      setLevel(Level.ALL);
+   }
+
+
+
+   @Override
+   public synchronized void publish(LogRecord record) {
+      jTextArea.append(record.getMessage()+"\n");
+   }
+
+   
+   private JTextArea jTextArea;
 }

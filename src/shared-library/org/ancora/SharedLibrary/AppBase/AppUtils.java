@@ -92,13 +92,7 @@ public class AppUtils {
    }
 
 
-      /**
-    * Reads the elements in an enum class implementing the AppOptionEnum interface,
-    * and returns a mapping of the name of the options to the enum objects.
-    * @param appOptionEnum
-    * @return
-    */
-   public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
+   public static AppOptionEnum[] getEnumValues(Class appOptionEnum) {
        // Check class
       if (!appOptionEnum.isEnum()) {
          LoggingUtils.getLogger().
@@ -117,9 +111,51 @@ public class AppUtils {
       }
 
       // Get map of enums
-       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
+       return (AppOptionEnum[]) appOptionEnum.getEnumConstants();
+   }
+
+   /**
+    * Reads the elements in an enum class implementing the AppOptionEnum interface,
+    * and returns a mapping of the name of the options to the enum objects.
+    * @param appOptionEnum
+    * @return
+    */
+   public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
+      /*
+      // Check class
+      if (!appOptionEnum.isEnum()) {
+         LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not represent an enum.");
+         return null;
+      }
+
+      // Build set with interfaces of the given class
+      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(appOptionEnum.getInterfaces()));
+      Class appOption = AppOptionEnum.class;
+      if(!interfaces.contains(appOption)){
+           LoggingUtils.getLogger().
+                 warning("Class '" + appOptionEnum.getName() + "' does not implement "
+                 + "interface '"+appOption+"'.");
+         return null;
+      }
+*/
+
+      // Get map of enums
+       //Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
+       Map<String, AppOptionEnum> enumMap = AppUtils.buildMap(getEnumValues(appOptionEnum));
 
        return enumMap;
+   }
+
+   /**
+    * Locates the index of the last ENUM_NAME_SEPARATOR and returns everything
+    * after it.
+    *
+    * @param enumValue
+    * @return
+    */
+   public static String parseEnumName(AppOptionEnum enumValue) {
+      return ((Enum)enumValue).name();
    }
 
    /**
@@ -129,6 +165,7 @@ public class AppUtils {
     * @param name
     * @return
     */
+   /*
    public static String parseEnumName(String name) {
       int index = name.lastIndexOf(ENUM_NAME_SEPARATOR);
       if(index == -1) {
@@ -141,6 +178,8 @@ public class AppUtils {
 
       return name.substring(index+1, name.length());
    }
+    * 
+    */
 
    public static String buildEnumName(AppOptionEnum enumValue) {
       String s = enumValue.getClass().getSimpleName() + ENUM_NAME_SEPARATOR + ((Enum)enumValue).name();

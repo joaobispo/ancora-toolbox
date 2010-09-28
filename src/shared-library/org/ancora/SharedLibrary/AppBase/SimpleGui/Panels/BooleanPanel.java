@@ -20,15 +20,13 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui.Panels;
 import java.awt.FlowLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 
 /**
  *
  * @author Joao Bispo
  */
-public class BooleanPanel extends JPanel implements AppOptionPanel {
+public class BooleanPanel extends AppOptionPanel {
 
    public BooleanPanel(String labelName) {
       label = new JLabel(labelName+":");
