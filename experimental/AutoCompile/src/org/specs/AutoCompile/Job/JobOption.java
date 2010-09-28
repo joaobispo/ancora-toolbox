@@ -19,6 +19,7 @@ package org.specs.AutoCompile.Job;
 
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 
 /**
  * Options available for targets
@@ -27,29 +28,44 @@ import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
  */
 public enum JobOption implements AppOptionEnum {
 
+   inttest(AppValueType.integer),
+   booltest(AppValueType.bool),
+   outputFolder(AppValueType.string),
+   sourceFilesFolder(AppValueType.string),
+   inputFolderMode(AppValueType.string),
+   processor(AppValueType.string),
+   compiler(AppValueType.string),
+   compilerFlags(AppValueType.stringList),
+   optimizationFlags(AppValueType.stringList);
+/*
+   inttest("inttest", AppValueType.integer),
+   booltest("booltest", AppValueType.bool),
    outputFolder("outputFolder", AppValueType.string),
    sourceFilesFolder("sourceFilesFolder", AppValueType.string),
    inputFolderMode("inputFolderMode", AppValueType.string),
-   target("target", AppValueType.string),
+   processor("processor", AppValueType.string),
    compiler("compiler", AppValueType.string),
    compilerFlags("compilerFlags", AppValueType.stringList),
    optimizationFlags("optimizationLevels", AppValueType.stringList);
+*/
 
-   private JobOption(String name, AppValueType type) {
-      this.name = name;
+   private JobOption(AppValueType type) {
+   //private JobOption(String name, AppValueType type) {
+      //this.name = name;
       this.type = type;
    }
 
    public String getName() {
-      return prefix + name;
+      return AppUtils.buildEnumName(this);
+      //return prefix + name;
    }
 
    public AppValueType getType() {
       return type;
    }
 
-   final private String name;
+   //final private String name;
    final private AppValueType type;
 
-   final private static String prefix = "job.";
+   //final private static String prefix = "job.";
 }

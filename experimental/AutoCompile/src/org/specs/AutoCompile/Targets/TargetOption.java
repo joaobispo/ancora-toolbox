@@ -19,6 +19,7 @@ package org.specs.AutoCompile.Targets;
 
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 
 /**
  * Options available for targets
@@ -27,6 +28,15 @@ import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
  */
 public enum TargetOption implements AppOptionEnum {
 
+   target(AppValueType.string),
+   compiler(AppValueType.string),
+   optimizationFlags(AppValueType.stringList),
+   inputExtensions(AppValueType.stringList),
+   outputFlag(AppValueType.string),
+   launchCommand(AppValueType.string),
+   outputExtension(AppValueType.string);
+
+   /*
    target("target", AppValueType.string),
    compiler("compiler", AppValueType.string),
    optimizationFlags("optimizationFlags", AppValueType.stringList),
@@ -34,22 +44,26 @@ public enum TargetOption implements AppOptionEnum {
    outputFlag("outputFlag", AppValueType.string),
    launchCommand("launchCommand", AppValueType.string),
    outputExtension("outputExtension", AppValueType.string);
+    *
+    */
 
-   private TargetOption(String name, AppValueType type) {
-      this.name = name;
+   //private TargetOption(String name, AppValueType type) {
+   private TargetOption(AppValueType type) {
+      //this.name = name;
       this.type = type;
    }
 
    public String getName() {
-      return prefix + name;
+      return AppUtils.buildEnumName(this);
+      //return prefix + name;
    }
 
    public AppValueType getType() {
       return type;
    }
 
-   final private String name;
+   //final private String name;
    final private AppValueType type;
 
-   final private static String prefix = "targetOption.";
+   //final private static String prefix = "targetOption.";
 }

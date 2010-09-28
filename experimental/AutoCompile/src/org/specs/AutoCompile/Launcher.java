@@ -20,6 +20,7 @@ package org.specs.AutoCompile;
 import org.ancora.SharedLibrary.AppBase.SimpleCommandLine.SimpleCommandLine;
 import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
@@ -39,6 +40,7 @@ public class Launcher {
      */
     public static void main(String[] args) {
        LoggingUtils.setupConsoleOnly();
+       LoggingUtils.getRootLogger().setLevel(Level.INFO);
 
        // Create autocompile application
        App autoCompile = buildAutoCompileApp();

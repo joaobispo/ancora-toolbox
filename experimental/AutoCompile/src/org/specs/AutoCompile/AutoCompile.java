@@ -22,7 +22,6 @@ import org.specs.AutoCompile.Targets.Targets;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
@@ -78,7 +77,7 @@ public class AutoCompile implements App {
 */
 
       // Get Target Options
-      String target = AppUtils.getString(jobOptions, JobOption.target);
+      String target = AppUtils.getString(jobOptions, JobOption.processor);
       String compiler = AppUtils.getString(jobOptions, JobOption.compiler);
       File targetConfig = targets.getTargetConfig(target, compiler);
       if(targetConfig == null) {
