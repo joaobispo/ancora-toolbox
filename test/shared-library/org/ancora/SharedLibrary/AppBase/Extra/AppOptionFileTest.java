@@ -20,7 +20,7 @@ package org.ancora.SharedLibrary.AppBase.Extra;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import java.util.HashMap;
-import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.OptionFileUtils;
 import java.io.File;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
@@ -101,7 +101,7 @@ public class AppOptionFileTest {
       //AppOptionFile expResult = null;
       AppOptionFile result = AppOptionFile.parseFile(optionFile, appOptionEnum);
       for(Entry entry : result.getEntries()) {
-         System.out.print(Utils.toString(entry));
+         System.out.print(OptionFileUtils.toString(entry));
       }
 
       //assertEquals(expResult, result);

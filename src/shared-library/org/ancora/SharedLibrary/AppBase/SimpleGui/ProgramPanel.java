@@ -24,12 +24,10 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
@@ -54,7 +52,7 @@ public class ProgramPanel extends javax.swing.JPanel {
    private void customInit() {
               // Set last used file
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-        String lastFile =prefs.get(OPTION_LAST_USED_FILE, "");
+        String lastFile = prefs.get(OPTION_LAST_USED_FILE, "");
 
         filenameTextField.setText(lastFile);
 
@@ -66,15 +64,9 @@ public class ProgramPanel extends javax.swing.JPanel {
         Handler[] newHandlers = new Handler[handlersTemp.length+1];
         System.arraycopy(handlersTemp, 0, newHandlers, 0, handlersTemp.length);
         newHandlers[handlersTemp.length] = new JTextAreaHandler(outputArea);
-        newHandlers[handlersTemp.length].setLevel(Level.FINEST);
+        //newHandlers[handlersTemp.length].setLevel(Level.FINEST);
+        newHandlers[handlersTemp.length].setLevel(Level.ALL);
         LoggingUtils.setRootHandlers(newHandlers);
-
-
-        //LoggingUtils.setLevel(Level.FINEST);
-        //System.err.println("Instantiate logger level 2:"+logger.getLevel());
-        //logger.addHandler(new JTextAreaHandler(outputArea));
-      
-
 
         // Init buttons
         setButtonsEnable(true);
@@ -183,9 +175,6 @@ public class ProgramPanel extends javax.swing.JPanel {
           return;
        }
 
-       //boolean interruptIfRunning = true;
-       //worker.cancel(interruptIfRunning);
-
        workerExecutor.shutdownNow();
        setButtonsEnable(true);
 }//GEN-LAST:event_cancelButtonActionPerformed
@@ -214,9 +203,7 @@ public class ProgramPanel extends javax.swing.JPanel {
        }
 
        worker = new ApplicationWorker(this, optionFile.getMap());
-       //ApplicationWorker runner = new ApplicationWorker(this, optionFile.getMap());
-       //ApplicationWorker runner = new ApplicationWorker(this, filename);
-       //runner.execute();
+
        workerExecutor = Executors.newSingleThreadExecutor();
        workerExecutor.submit(worker);
 
@@ -236,10 +223,6 @@ public class ProgramPanel extends javax.swing.JPanel {
       return filenameTextField;
    }
 
-
-   public void update() {
-      System.out.println("TextField:"+filenameTextField.getText());
-   }
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton browseButton;

@@ -17,13 +17,12 @@
 
 package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
-import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -61,15 +60,13 @@ public class EntryList {
  * @param entries
  * @param optionName
  * @param optionValue
- * @param optionEnum
+ * @param valueType
  * @param comments
  */
-   public void addEntry(String optionName, String optionValue, AppOptionEnum optionEnum, List<String> comments) {
+   public void addEntry(String optionName, String optionValue, AppValueType valueType, List<String> comments) {
      // Create AppValue
-      AppValue appValue = AppValue.newAppOption(optionEnum.getType());
-      if(optionEnum.getType().isList()) {
-         //System.out.println("List:"+appValue.getList());
-         //System.out.println("Option Value:"+optionValue);
+      AppValue appValue = AppValue.newAppOption(valueType);
+      if(valueType.isList()) {
          appValue.getList().add(optionValue);
       } else {
          appValue.set(optionValue);
@@ -79,37 +76,7 @@ public class EntryList {
       Entry newEntry = new Entry(comments, optionName, appValue);
       // Add new entry to map and to list
       addNewEntry(newEntry);
-      /*
-      // Check if entry is list
-      if(optionEnum.getType().isList()) {
-         addListEntry(optionName, optionValue, optionEnum, comments);
-         return;
-      }
-
-      addRegularEntry(optionName, optionValue, optionEnum, comments);
-       *
-       */
    }
-
-   /*
-   private void addListEntry(String optionName, String optionValue, AppOptionEnum optionEnum, List<String> comments) {
-
-
-      if(optionEnum.getType() != AppValueType.stringList) {
-         LoggingUtils.getLogger().
-                 warning("Case not defined: '"+optionEnum.getType()+"'.");
-         return;
-      }
-
-      AppValue appValue = AppValue.newAppOption(AppValueType.stringList);
-      appValue.getList().add(optionValue);
-
-      Entry newEntry = new Entry(comments, optionName, appValue);
-      // Add new entry to map and to list
-      addNewEntry(newEntry);
-   }
-    *
-    */
 
 
    private void addNewEntry(Entry newEntry) {
@@ -162,9 +129,12 @@ public class EntryList {
     */
    public void updateEntry(String optionName, AppValue value) {
       Entry entry = entriesMapping.get(optionName);
-      if(entry == null) {
+      if (entry == null) {
          LoggingUtils.getLogger().
-                 warning("Could not find option '"+optionName+"'.");
+                 info("Adding new entry for option '" + optionName + "'.");
+         // Add new dummy entry, which will be update right away
+         addEntry(optionName, "", value.getType(), new ArrayList<String>());
+         updateEntry(optionName, value);
          return;
       }
 
@@ -197,14 +167,4 @@ public class EntryList {
    // Mapping of entries, to quickly locate them
    private Map<String, Entry> entriesMapping;
 
-
-
-
-   /*
-   class Entry {
-
-     
-   }
-    *
-    */
 }

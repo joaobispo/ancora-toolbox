@@ -25,7 +25,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="filenameTextField" pref="282" max="32767" attributes="0"/>
+              <Component id="filenameTextField" pref="322" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="browseButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -35,9 +35,9 @@
               <Component id="startButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="298" max="32767" attributes="0"/>
+              <EmptySpace pref="338" max="32767" attributes="0"/>
           </Group>
-          <Component id="jScrollPane1" alignment="0" pref="440" max="32767" attributes="0"/>
+          <Component id="jScrollPane1" alignment="0" pref="480" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

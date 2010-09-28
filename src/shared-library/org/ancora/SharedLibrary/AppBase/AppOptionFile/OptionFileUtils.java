@@ -18,56 +18,52 @@
 package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
-import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.Files.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 
 /**
- * Several utility methods
+ * Several utility methods related to handling of AppOptionFile objects.
  *
  * @author Joao Bispo
  */
-public class Utils {
+public class OptionFileUtils {
 
-/**
- * Converts a single entry to text.
- *
- * @param entry
- * @return
- */
+   /**
+    * Converts a single entry to text.
+    *
+    * @param entry
+    * @return
+    */
    public static String toString(Entry entry) {
-       StringBuilder builder = new StringBuilder();
+      StringBuilder builder = new StringBuilder();
 
-       // Put comments
-       for(String comment : entry.getComments()) {
+      // Put comments
+      for (String comment : entry.getComments()) {
          builder.append(comment);
          builder.append(NEWLINE);
-       }
+      }
 
-       // Put value
-       AppValue value = entry.getOptionValue();
+      // Put value
+      AppValue value = entry.getOptionValue();
 
-       if(value.getType().isList()) {
-         for(String singleValue : value.getList()) {
+      if (value.getType().isList()) {
+         for (String singleValue : value.getList()) {
             String line = buildLine(entry.getOptionName(), singleValue, value.getType());
             builder.append(line);
             builder.append(NEWLINE);
          }
-       } else {
-          String line = buildLine(entry.getOptionName(), value.get(), value.getType());
-            builder.append(line);
-            builder.append(NEWLINE);
-       }
+      } else {
+         String line = buildLine(entry.getOptionName(), value.get(), value.getType());
+         builder.append(line);
+         builder.append(NEWLINE);
+      }
 
       return builder.toString();
    }
@@ -163,13 +159,13 @@ public class Utils {
       boolean incorrectOption = false;
       while((line = lineReader.nextLine()) != null) {
          // Check if line is comment
-         if(Utils.isComment(line)) {
+         if(OptionFileUtils.isComment(line)) {
             comments.add(line);
             continue;
          }
 
          // Check if line is option
-         String[] parsedLine = Utils.parseLine(line);
+         String[] parsedLine = OptionFileUtils.parseLine(line);
          if(parsedLine == null) {
             LoggingUtils.getLogger().
                     warning("Ignoring line "+lineReader.getLastLineIndex()+".");
@@ -190,7 +186,7 @@ public class Utils {
          }
 
          // Add new entry
-         entries.addEntry(optionName, optionValue, optionEnum, comments);
+         entries.addEntry(optionName, optionValue, optionEnum.getType(), comments);
          comments = new ArrayList<String>();
 
       }

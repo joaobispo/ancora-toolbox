@@ -17,20 +17,18 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.ancora.SharedLibrary.AppBase.App;
 
 /**
+ * Panel which contains the principal panels of the program and coordinates 
+ * updates between panels.
  *
  * @author Joao Bispo
  */
@@ -75,10 +73,7 @@ public class TabbedPane extends JPanel {
                   return;
                }
                programPanel.getFilenameTextField().setText(file.getPath());
-               programPanel.update();
 
-//               String optionsFilename = programPanel.getFilenameTextField().getText();
-//               optionsPanel.updateValues(optionsFilename);
             }
          }
       });
@@ -92,22 +87,9 @@ public class TabbedPane extends JPanel {
 
     }
 
-   /*
-    private void jTabbedPane2FocusGained(java.awt.event.FocusEvent evt) {
-       optionsPanel.focusGained();
-    }
-    
-    
-       private void jTabbedPane2MouseClicked(java.awt.event.MouseEvent evt) {
-       optionsPanel.updateValues();
-    }
-    * 
-    */
 
     private ProgramPanel programPanel;
     private OptionsPanel optionsPanel;
-   //private App application;
-   //private JTextField inputFileTextField;
 
     private final static int PROGRAM_PANEL = 0;
     private final static int OPTIONS_PANEL = 1;

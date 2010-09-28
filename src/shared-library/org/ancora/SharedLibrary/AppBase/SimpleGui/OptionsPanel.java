@@ -18,10 +18,8 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -42,15 +38,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
-import org.ancora.SharedLibrary.AppBase.AppOptionFile.Utils;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.OptionFileUtils;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.AppOptionPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.BooleanPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.IntegerPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringPanel;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -304,11 +301,20 @@ private void initComponentsSelf() {
    private JPanel getPanel(AppOptionEnum enumOption) {
       AppValueType type = enumOption.getType();
       if(type == AppValueType.string) {
-         return new StringPanel(parseEnumName(enumOption.getName()));
+         return new StringPanel(AppUtils.parseEnumName(enumOption.getName()));
       }
 
       if(type == AppValueType.stringList) {
-         return new StringListPanel(parseEnumName(enumOption.getName()));
+         return new StringListPanel(AppUtils.parseEnumName(enumOption.getName()));
+      }
+
+      if(type == AppValueType.integer) {
+         return new IntegerPanel(AppUtils.parseEnumName(enumOption.getName()));
+      }
+
+
+      if(type == AppValueType.bool) {
+         return new BooleanPanel(AppUtils.parseEnumName(enumOption.getName()));
       }
 
       LoggingUtils.getLogger().
@@ -371,6 +377,7 @@ private void initComponentsSelf() {
     * @param name
     * @return
     */
+   /*
    private String parseEnumName(String name) {
       int index = name.lastIndexOf(".");
       if(index == -1) {
@@ -383,6 +390,8 @@ private void initComponentsSelf() {
 
       return name.substring(index+1, name.length());
    }
+    *
+    */
 
 
    private void loadValues(AppOptionFile optionFile) {
@@ -405,6 +414,19 @@ private void initComponentsSelf() {
       if(type == AppValueType.string) {
          StringPanel stringPanel = (StringPanel) panel;
          stringPanel.setText(value.toString());
+         return;
+      }
+
+      if(type == AppValueType.integer) {
+         IntegerPanel intPanel = (IntegerPanel) panel;
+         intPanel.setText(value.toString());
+         return;
+      }
+
+      if(type == AppValueType.bool) {
+         BooleanPanel boolPanel = (BooleanPanel) panel;
+         Boolean b = Boolean.parseBoolean(value.get());
+         boolPanel.getCheckBox().setSelected(b);
          return;
       }
 
@@ -458,6 +480,24 @@ private void initComponentsSelf() {
          return new AppValue(newValues);
       }
 
+      if(panel.getType() == AppValueType.integer) {
+         IntegerPanel iPanel = (IntegerPanel)panel;
+         Integer newValue = null;
+         try {
+            newValue = Integer.parseInt(iPanel.getText());
+         } catch(NumberFormatException ex) {
+            LoggingUtils.getLogger().
+                    info("Could not parse '"+iPanel.getText()+"' into an integer.");
+            return null;
+         }
+         return new AppValue(newValue);
+      }
+
+      if(panel.getType() == AppValueType.bool) {
+         BooleanPanel bPanel = (BooleanPanel)panel;
+         return new AppValue(bPanel.getCheckBox().isSelected());
+      }
+
       LoggingUtils.getLogger().
               warning("AppValue extraction for type '"+panel.getType()+"' not implemented yet.");
       return null;
@@ -499,7 +539,7 @@ private void initComponentsSelf() {
       StringBuilder builder = new StringBuilder();
       for(int i=comments.size()-counter; i<comments.size(); i++) {
          String trimmedLine = comments.get(i).trim();
-         trimmedLine = trimmedLine.substring(Utils.COMMENT_PREFIX.length());
+         trimmedLine = trimmedLine.substring(OptionFileUtils.COMMENT_PREFIX.length());
          builder.append(trimmedLine);
          builder.append(" ");
       }

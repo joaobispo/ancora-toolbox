@@ -49,7 +49,7 @@ public class AppOptionFile {
        // Add new entry
       for(String key : enumMap.keySet()) {
          AppOptionEnum type = enumMap.get(key);
-         entries.addEntry(key, Utils.getDefaultValue(type.getType()), type, new ArrayList<String>());
+         entries.addEntry(key, OptionFileUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
       }
 
    }
@@ -102,7 +102,7 @@ public class AppOptionFile {
       
        // Get list of entries
        //List<Entry> entries = buildEntries(lineReader, enumMap);
-       EntryList entryList = Utils.buildEntries(lineReader, enumMap);
+       EntryList entryList = OptionFileUtils.buildEntries(lineReader, enumMap);
 
        AppOptionFile appOptionFile = new AppOptionFile(entryList);
        appOptionFile.setOptionFile(optionFile);
@@ -124,9 +124,9 @@ public class AppOptionFile {
       for(AppOptionEnum option : options.values()) {
          String optionName = option.getName();
          AppValueType type = option.getType();
-         String value = Utils.getDefaultValue(type);
-         builder.append(Utils.buildLine(optionName, value, type));
-         builder.append(Utils.NEWLINE);
+         String value = OptionFileUtils.getDefaultValue(type);
+         builder.append(OptionFileUtils.buildLine(optionName, value, type));
+         builder.append(OptionFileUtils.NEWLINE);
       }
 
       IoUtils.write(optionFile, builder.toString());
@@ -167,7 +167,7 @@ public class AppOptionFile {
       StringBuilder builder = new StringBuilder();
 
       for(Entry entry : entryList.getEntries()) {
-         builder.append(Utils.toString(entry));
+         builder.append(OptionFileUtils.toString(entry));
       }
 
       IoUtils.write(optionFile, builder.toString());

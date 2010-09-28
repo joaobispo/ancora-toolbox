@@ -48,6 +48,7 @@ public class NewJPanel extends javax.swing.JPanel {
       jButton1 = new javax.swing.JButton();
       jComboBox1 = new javax.swing.JComboBox();
       jButton2 = new javax.swing.JButton();
+      jCheckBox1 = new javax.swing.JCheckBox();
 
       jLabel1.setText("jLabel1");
 
@@ -61,6 +62,13 @@ public class NewJPanel extends javax.swing.JPanel {
       jButton2.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             jButton2ActionPerformed(evt);
+         }
+      });
+
+      jCheckBox1.setText("jCheckBox1");
+      jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jCheckBox1ActionPerformed(evt);
          }
       });
 
@@ -80,8 +88,10 @@ public class NewJPanel extends javax.swing.JPanel {
                .addGroup(layout.createSequentialGroup()
                   .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                  .addComponent(jButton2)))
-            .addContainerGap(212, Short.MAX_VALUE))
+                  .addComponent(jButton2)
+                  .addGap(18, 18, 18)
+                  .addComponent(jCheckBox1)))
+            .addContainerGap(153, Short.MAX_VALUE))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,7 +104,8 @@ public class NewJPanel extends javax.swing.JPanel {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jButton2))
+               .addComponent(jButton2)
+               .addComponent(jCheckBox1))
             .addContainerGap(237, Short.MAX_VALUE))
       );
    }// </editor-fold>//GEN-END:initComponents
@@ -103,10 +114,15 @@ public class NewJPanel extends javax.swing.JPanel {
        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+       // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton jButton1;
    private javax.swing.JButton jButton2;
+   private javax.swing.JCheckBox jCheckBox1;
    private javax.swing.JComboBox jComboBox1;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JTextField jTextField1;

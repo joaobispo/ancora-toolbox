@@ -121,4 +121,31 @@ public class AppUtils {
 
        return enumMap;
    }
+
+   /**
+    * Locates the index of the last ENUM_NAME_SEPARATOR and returns everything
+    * after it.
+    *
+    * @param name
+    * @return
+    */
+   public static String parseEnumName(String name) {
+      int index = name.lastIndexOf(ENUM_NAME_SEPARATOR);
+      if(index == -1) {
+         return name;
+      }
+
+      if(index == name.length()-1) {
+         return name;
+      }
+
+      return name.substring(index+1, name.length());
+   }
+
+   public static String buildEnumName(AppOptionEnum enumValue) {
+      String s = enumValue.getClass().getSimpleName() + ENUM_NAME_SEPARATOR + ((Enum)enumValue).name();
+      return s;
+   }
+
+   public static final String ENUM_NAME_SEPARATOR = ".";
 }
