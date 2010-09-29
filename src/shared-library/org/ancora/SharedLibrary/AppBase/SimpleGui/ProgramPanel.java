@@ -95,7 +95,7 @@ public class ProgramPanel extends javax.swing.JPanel {
 
       setPreferredSize(new java.awt.Dimension(480, 236));
 
-      jLabel1.setText("Input file:");
+      jLabel1.setText("Options file:");
 
       browseButton.setText("Browse...");
       browseButton.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +131,7 @@ public class ProgramPanel extends javax.swing.JPanel {
             .addContainerGap()
             .addComponent(jLabel1)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(filenameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+            .addComponent(filenameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(browseButton)
             .addContainerGap())
@@ -140,8 +140,8 @@ public class ProgramPanel extends javax.swing.JPanel {
             .addComponent(startButton)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(cancelButton)
-            .addContainerGap(298, Short.MAX_VALUE))
-         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+            .addContainerGap(338, Short.MAX_VALUE))
+         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

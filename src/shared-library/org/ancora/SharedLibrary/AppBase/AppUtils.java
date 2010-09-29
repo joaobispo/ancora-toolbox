@@ -50,6 +50,17 @@ public class AppUtils {
       return map.get(option.getName()).get();
    }
 
+   public static Boolean getBool(Map<String, AppValue> map, AppOptionEnum option) {
+      if(!map.containsKey(option.getName())) {
+         LoggingUtils.getLogger().
+                 warning("Could not find a value for option '"+option.getName()+"'. "
+                 + "Check if the option is set.");
+         return null;
+      }
+
+      return Boolean.valueOf(map.get(option.getName()).get());
+   }
+
    /**
     * Given a map and an AppOptionEnum, returns the corresponding list.
     *

@@ -303,6 +303,12 @@ public class IoUtils {
     * @return
     */
    private static boolean writeAppendHelper(File file, String contents, boolean append) {
+      // Check if folders for file exist
+      File folder = new File(file.getParent());
+      if(!folder.exists()) {
+         folder.mkdirs();
+      }
+      
 
       FileOutputStream stream = null;
       OutputStreamWriter streamWriter = null;
