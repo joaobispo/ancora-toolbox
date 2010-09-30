@@ -16,12 +16,19 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
 public enum TesterOption implements AppOptionEnum {
 
    ElfFile(AppValueType.string),
-   DumpInstructionMemory(AppValueType.bool),
-   DumpInstructionMemoryFile(AppValueType.string),
-   DumpInstructionMemoryAfterError(AppValueType.bool),
-   DumpInstructionMemoryAfterErrorFile(AppValueType.string),
+   ExecuteUpToXInstructions(AppValueType.bool),
+   StopInstruction(AppValueType.integer),
+   StopAtAddressX(AppValueType.bool),
+   StopAddress(AppValueType.integer),
    WriteTrace(AppValueType.bool),
-   TraceFile(AppValueType.string);
+   TraceFile(AppValueType.string),
+   WriteLmbMemoryBeforeExecution(AppValueType.bool),
+   LmbBeforeFile(AppValueType.string),
+   WriteLmbMemoryAfterExecution(AppValueType.bool),
+   LmbAfterFile(AppValueType.string),
+   RegistersValuesAfterExecution(AppValueType.bool),
+   FileForRegisters(AppValueType.string);
+   
 
    private TesterOption(AppValueType type) {
       this.type = type;

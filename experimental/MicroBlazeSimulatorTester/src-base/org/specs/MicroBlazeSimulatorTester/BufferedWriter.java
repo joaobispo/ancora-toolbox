@@ -23,7 +23,7 @@ import system.Util;
  *
  * @author Joao Bispo
  */
-public class TraceFile {
+public class BufferedWriter {
 
    /*
    public TraceFile(PrintStream output, File writeFile, FileOutputStream outputFileStream) {
@@ -35,7 +35,7 @@ public class TraceFile {
     */
 
 
-   private TraceFile(File traceFile) {
+   private BufferedWriter(File traceFile) {
       this.writeFile = traceFile;
 
       // Erase last trace
@@ -44,7 +44,7 @@ public class TraceFile {
       builder = newStringBuilder();
    }
 
-   public static TraceFile newTraceFile(Map<String, AppValue> options) {
+   public static BufferedWriter newTraceFile(Map<String, AppValue> options) {
       boolean writeTrace = Boolean.parseBoolean(AppUtils.getString(options, TesterOption.WriteTrace));
       if (!writeTrace) {
          return null;
@@ -53,7 +53,7 @@ public class TraceFile {
       String traceFilename = AppUtils.getString(options, TesterOption.TraceFile);
       File traceFile = new File(traceFilename);
 
-      return new TraceFile(traceFile);
+      return new BufferedWriter(traceFile);
    }
 
    /*

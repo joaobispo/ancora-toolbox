@@ -30,9 +30,10 @@ LoggingUtils.setupConsoleOnly();
        // Launch GUI
 
        SimpleGui gui = new SimpleGui(tester);
-       gui.setTitle("DTool Tester for FireWorks Processor v1.0");
+       gui.setTitle(TITLE_STRING);
        gui.execute();
 
     }
 
+    public final static String TITLE_STRING = "Tester for FireWorks (MicroBlaze) Processor v1.2";
 }
