@@ -20,14 +20,12 @@ package org.ancora.SharedLibrary.AppBase;
 
 
 import java.util.Arrays;
-import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 
@@ -59,6 +57,33 @@ public class AppUtils {
       }
 
       return Boolean.valueOf(map.get(option.getName()).get());
+   }
+
+   /**
+    * If integer could not be parsed, returns null.
+    *
+    * @param map
+    * @param option
+    * @return
+    */
+   public static Integer getInteger(Map<String, AppValue> map, AppOptionEnum option) {
+      if(!map.containsKey(option.getName())) {
+         LoggingUtils.getLogger().
+                 warning("Could not find a value for option '"+option.getName()+"'. "
+                 + "Check if the option is set.");
+         return null;
+      }
+
+      String intString = map.get(option.getName()).get();
+      Integer value = null;
+      try {
+         value = Integer.valueOf(intString);
+      } catch(NumberFormatException ex) {
+         LoggingUtils.getLogger().
+                 warning("Could not parse '"+intString+"' to int, for option '"+option.getName()+"'.");
+      }
+
+      return value;
    }
 
    /**

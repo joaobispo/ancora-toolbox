@@ -152,6 +152,9 @@ public class PanelUtils {
    public static AppOptionPanel newPanel(AppOptionEnum enumOption) {
       AppValueType type = enumOption.getType();
       String panelLabel = AppUtils.parseEnumName(enumOption);
+      // Parse label a bit. Add spaces between camel case
+      panelLabel = insertSpacesOnCamelCase(panelLabel);
+
       if(type == AppValueType.string) {
          //return new StringPanel(AppUtils.parseEnumName(enumOption.getName()));
          return new StringPanel(panelLabel);
@@ -173,6 +176,40 @@ public class PanelUtils {
       LoggingUtils.getLogger().
               warning("Option type '"+type+"' in option '"+enumOption.getName()+"' not implemented yet.");
       return null;
+   }
+
+   private static String insertSpacesOnCamelCase(String panelLabel) {
+      //System.out.println("Input String:"+panelLabel);
+      List<Integer> upperCaseLetters = new ArrayList<Integer>();
+      for(int i=1; i<panelLabel.length(); i++) {
+         char c = panelLabel.charAt(i);
+         if(!Character.isUpperCase(c)) {
+            continue;
+         }
+
+         /*
+         // Check if previous character is also uppercase.
+         // If it is, skip it (to account for cases like OneACRONYM)
+         char previousC = panelLabel.charAt(i-1);
+         if(Character.isUpperCase(previousC)) {
+            continue;
+         }
+          * 
+          */
+
+         upperCaseLetters.add(i);
+      }
+
+      //System.out.println("UpperCaseLetters:"+upperCaseLetters);
+
+      // Insert spaces in the found indexes
+      String newString = panelLabel;
+      for(int i=upperCaseLetters.size()-1; i>=0; i--) {
+         int index = upperCaseLetters.get(i);
+         newString = newString.substring(0, index) + " " + newString.substring(index, newString.length());
+      }
+
+      return newString;
    }
 
 
