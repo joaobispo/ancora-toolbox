@@ -63,16 +63,27 @@ public class PanelUtils {
 
       if(panel.getType() == AppValueType.integer) {
          IntegerPanel iPanel = (IntegerPanel)panel;
-         Integer newValue = null;
-         try {
-            newValue = Integer.parseInt(iPanel.getText());
-         } catch(NumberFormatException ex) {
-            LoggingUtils.getLogger().
-                    info("Could not parse '"+iPanel.getText()+"' into an integer.");
-            return null;
+         String stringValue = iPanel.getText();
+
+            // Check if empty string
+            if (stringValue.isEmpty()) {
+               stringValue = AppUtils.getDefaultValue(iPanel.getType());
+               return new AppValue(Integer.parseInt(stringValue));
+            }
+
+
+            Integer newValue = null;
+            try {
+               newValue = Integer.parseInt(stringValue);
+            } catch (NumberFormatException ex) {
+               LoggingUtils.getLogger().
+                       info("Could not parse '" + iPanel.getText() + "' into an integer.");
+
+               String integerString = AppUtils.getDefaultValue(iPanel.getType());
+               newValue = Integer.parseInt(integerString);
+            }
+            return new AppValue(newValue);
          }
-         return new AppValue(newValue);
-      }
 
       if(panel.getType() == AppValueType.bool) {
          BooleanPanel bPanel = (BooleanPanel)panel;

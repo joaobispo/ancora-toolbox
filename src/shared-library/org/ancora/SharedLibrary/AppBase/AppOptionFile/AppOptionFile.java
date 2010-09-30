@@ -51,7 +51,7 @@ public class AppOptionFile {
       // Add new entry
       for (String key : enumMap.keySet()) {
          AppOptionEnum type = enumMap.get(key);
-         entryList.addEntry(key, OptionFileUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
+         entryList.addEntry(key, AppUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
       }
 
    }
@@ -126,7 +126,7 @@ public class AppOptionFile {
       for(AppOptionEnum option : options.values()) {
          String optionName = option.getName();
          AppValueType type = option.getType();
-         String value = OptionFileUtils.getDefaultValue(type);
+         String value = AppUtils.getDefaultValue(type);
          builder.append(OptionFileUtils.buildLine(optionName, value, type));
          builder.append(OptionFileUtils.NEWLINE);
       }

@@ -209,22 +209,7 @@ public class OptionFileUtils {
 
 
 
-   /**
-    * 
-    * @param appOptionType
-    * @return default values for the given AppValueType
-    */
-   public static String getDefaultValue(AppValueType appOptionType) {
-      if(appOptionType == AppValueType.bool) {
-         return "false";
-      }
 
-      if(appOptionType == appOptionType.integer) {
-         return "0";
-      }
-
-      return "";
-   }
 
    /**
     * Convert the last non-empty lines of the list of Strings in a string of 

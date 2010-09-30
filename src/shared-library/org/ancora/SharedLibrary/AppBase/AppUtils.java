@@ -222,5 +222,22 @@ public class AppUtils {
       return s;
    }
 
+   /**
+    *
+    * @param appOptionType
+    * @return default values for the given AppValueType
+    */
+   public static String getDefaultValue(AppValueType appOptionType) {
+      if(appOptionType == AppValueType.bool) {
+         return "false";
+      }
+
+      if(appOptionType == appOptionType.integer) {
+         return "0";
+      }
+
+      return "";
+   }
+
    public static final String ENUM_NAME_SEPARATOR = ".";
 }

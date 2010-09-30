@@ -220,6 +220,7 @@ public class OptionsPanel extends javax.swing.JPanel {
          if(value == null) {
             LoggingUtils.getLogger().
                     warning("value is null.");
+            // No valid value for the table
             continue;
          }
          updatedMap.put(key, value);
