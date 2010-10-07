@@ -494,9 +494,11 @@ public class IoUtils {
 
       public ExtensionFilter(String extension) {
          this.extension = extension;
-         this.separator = DEFAULT_EXTENSION_SEPARATOR;
+         //this.separator = DEFAULT_EXTENSION_SEPARATOR;
+         this.separator = "";
       }
 
+      @Override
       public boolean accept(File dir, String name) {
          String suffix = separator + extension;
          return name.endsWith(suffix);
