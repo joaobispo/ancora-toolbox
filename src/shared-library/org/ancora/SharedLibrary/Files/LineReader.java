@@ -17,6 +17,7 @@
 
 package org.ancora.SharedLibrary.Files;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.StringStack;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,6 +68,18 @@ public class LineReader {
       }
 
       return null;
+   }
+
+   /**
+    * Builds a LineReader from the given String. If the object could
+    * not be created, returns null.
+    *
+    * @return a LineReader If the object could not be created, returns null.
+     */
+   public static LineReader createLineReader(String string) {
+      StringReader reader = new StringReader(string);
+      BufferedReader newReader = new BufferedReader(reader);
+      return new LineReader(newReader);
    }
 
    /**

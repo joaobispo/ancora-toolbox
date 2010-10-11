@@ -28,7 +28,8 @@ public enum AppValueType {
    string("="),
    bool("="),
    integer("="),
-   stringList("+=");
+   stringList("+="),
+   multipleChoice("=");
 
    private AppValueType(String attribution) {
       this.attribution = attribution;

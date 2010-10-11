@@ -31,7 +31,7 @@ import org.ancora.SharedLibrary.LoggingUtils;
  */
 public class AppValue {
 
-   private AppValue(String value, AppValueType type) {
+   public AppValue(String value, AppValueType type) {
       
       
       if (type.isList()) {
@@ -91,6 +91,8 @@ public class AppValue {
             return new AppValue("");
          case stringList:
             return new AppValue(new String[0]);
+         case multipleChoice:
+            return new AppValue("", AppValueType.multipleChoice);
          default:
             LoggingUtils.getLogger().
                     warning("Case not defined: '"+type+"'. Returning null.");

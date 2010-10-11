@@ -18,15 +18,18 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JComboBox;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.AppOptionPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.BooleanPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.IntegerPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoicePanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringPanel;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -90,6 +93,11 @@ public class PanelUtils {
          return new AppValue(bPanel.getCheckBox().isSelected());
       }
 
+      if(panel.getType() == AppValueType.multipleChoice) {
+         MultipleChoicePanel mcPanel = (MultipleChoicePanel)panel;
+         return new AppValue((String)mcPanel.getValues().getSelectedItem(), AppValueType.multipleChoice);
+      }
+
       LoggingUtils.getLogger().
               warning("AppValue extraction for type '"+panel.getType()+"' not implemented yet.");
       return null;
@@ -150,6 +158,44 @@ public class PanelUtils {
          return;
       }
 
+      if(type == AppValueType.multipleChoice) {
+         // Check if the value in AppValue is one of the possible choices
+         MultipleChoicePanel multipleChoicePanel = (MultipleChoicePanel) panel;
+         final JComboBox box = multipleChoicePanel.getValues();
+         final String currentChoice = value.get();
+
+         boolean foundChoice = false;
+         for(int i=0; i<box.getItemCount(); i++) {
+            String aChoice = (String)box.getItemAt(i);
+            if(currentChoice.equals(aChoice)) {
+               foundChoice = true;
+               break;
+            }
+         }
+
+         if (!foundChoice) {
+            List<String> choices = new ArrayList<String>();
+            for (int i = 0; i < box.getItemCount(); i++) {
+               choices.add((String) box.getItemAt(i));
+            }
+            LoggingUtils.getLogger().
+                    warning("Could not find choice '" + currentChoice + "'. Available "
+                    + "choices: " + choices);
+
+            return;
+         }
+
+
+         ProcessUtils.runOnSwing(new Runnable() {
+            @Override
+            public void run() {
+               box.setSelectedItem(currentChoice);
+            }
+         });
+
+         return;
+      }
+
       LoggingUtils.getLogger().
               warning("Update for type '" + value.getType() + "' not implemented yet.");
    }
@@ -182,6 +228,11 @@ public class PanelUtils {
 
       if(type == AppValueType.bool) {
          return new BooleanPanel(panelLabel);
+      }
+
+      if(type == AppValueType.multipleChoice) {
+         Enum[] choices = ((AppOptionMultipleChoice)enumOption).getChoices();
+         return new MultipleChoicePanel(panelLabel, choices);
       }
 
       LoggingUtils.getLogger().
