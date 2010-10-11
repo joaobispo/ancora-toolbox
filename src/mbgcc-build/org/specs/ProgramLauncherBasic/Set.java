@@ -33,6 +33,7 @@ import org.specs.ProgramLauncher.ProgramOption;
  */
 public class Set implements Program {
 
+   @Override
    public boolean execute(List<String> arguments, OptionsTable state) {
       // Check arguments
 
@@ -91,10 +92,11 @@ public class Set implements Program {
       if (optionName.equals(ProgramOption.loggerLevel.getOptionName())) {
          String levelString = state.get(ProgramOption.loggerLevel);
          Level level = LoggingUtils.parseLevel(levelString);
-         LoggingUtils.setLevel(level);
+         LoggingUtils.getRootLogger().setLevel(level);
       }
    }
 
+   @Override
    public String getHelpMessage(OptionsTable state) {
       StringBuilder builder = new StringBuilder();
       builder.append("Sets options in the program state. Current options and values:\n");
