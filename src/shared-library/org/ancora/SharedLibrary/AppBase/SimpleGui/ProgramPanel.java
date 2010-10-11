@@ -161,8 +161,12 @@ public class ProgramPanel extends javax.swing.JPanel {
    }// </editor-fold>//GEN-END:initComponents
 
     private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
-
-       fc.setCurrentDirectory(new File(filenameTextField.getText()));
+       File optionsFile = new File(filenameTextField.getText());
+       if(!optionsFile.exists()) {
+          optionsFile = new File("./");
+       }
+       //fc.setCurrentDirectory(new File(filenameTextField.getText()));
+       fc.setCurrentDirectory(optionsFile);
        int returnVal = fc.showOpenDialog(this);
 
        if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -180,6 +184,7 @@ public class ProgramPanel extends javax.swing.JPanel {
        }
 
        workerExecutor.shutdownNow();
+       worker = null;
        setButtonsEnable(true);
 }//GEN-LAST:event_cancelButtonActionPerformed
 

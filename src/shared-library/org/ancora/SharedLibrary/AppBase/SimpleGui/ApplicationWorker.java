@@ -19,6 +19,7 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
@@ -40,6 +41,7 @@ public class ApplicationWorker implements Runnable {
 
    @Override
    public void run() {
+
       // Disable buttons
       ProcessUtils.runOnSwing(new Runnable() {
 
@@ -49,7 +51,12 @@ public class ApplicationWorker implements Runnable {
          }
       });
 
-      returnValue = mainWindow.getApplication().execute(options);
+         try {
+            returnValue = mainWindow.getApplication().execute(options);
+         } catch (InterruptedException ex) {
+            LoggingUtils.getLogger().
+                    info("Interruption:"+ex.getMessage());
+         }
 
       // Enable buttons again
        ProcessUtils.runOnSwing(new Runnable() {
@@ -59,6 +66,7 @@ public class ApplicationWorker implements Runnable {
             mainWindow.setButtonsEnable(true);
          }
       });
+
    }
    /*
    @Override

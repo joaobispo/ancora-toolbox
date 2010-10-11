@@ -32,10 +32,20 @@ public interface App {
 
    /**
     * Executes the application with the options in the given map.
+    *
+    * Method throws InterruptedException to support cancelling the task. In the
+    * application code, insert:
+    *
+    * if (Thread.currentThread().isInterrupted()) {
+    *  throw new InterruptedException("Task Cancellation");
+    * }
+    *
+    * On the places you want the task to be cancelled.
+    *
     * @param options
     * @return
     */
-   int execute(Map<String, AppValue> options);
+   int execute(Map<String, AppValue> options) throws InterruptedException ;
 
    /**
     *

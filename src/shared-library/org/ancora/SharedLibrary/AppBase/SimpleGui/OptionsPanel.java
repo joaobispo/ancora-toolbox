@@ -113,7 +113,14 @@ public class OptionsPanel extends javax.swing.JPanel {
    }
 
    private void saveAsButtonActionPerformed(ActionEvent evt) {
-      JFileChooser fc = new JFileChooser(optionFile.getOptionFile());
+      JFileChooser fc;
+
+      if(optionFile.getOptionFile() == null) {
+        fc = new JFileChooser(new File("./"));
+      } else {
+         fc = new JFileChooser(optionFile.getOptionFile());
+      }
+      //JFileChooser fc = new JFileChooser(optionFile.getOptionFile());
       int returnVal = fc.showOpenDialog(this);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
          File file = fc.getSelectedFile();
