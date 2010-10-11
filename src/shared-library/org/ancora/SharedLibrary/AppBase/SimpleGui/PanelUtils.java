@@ -18,7 +18,6 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JComboBox;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
@@ -30,8 +29,10 @@ import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.AppOptionPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.BooleanPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.IntegerPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoicePanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoiceListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringPanel;
+import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
 
@@ -98,6 +99,12 @@ public class PanelUtils {
          return new AppValue((String)mcPanel.getValues().getSelectedItem(), AppValueType.multipleChoice);
       }
 
+      if(panel.getType() == AppValueType.multipleChoiceStringList) {
+         MultipleChoiceListPanel mclPanel = (MultipleChoiceListPanel)panel;
+         List<String> values = mclPanel.getSelectedValues();
+         return new AppValue(values, AppValueType.multipleChoiceStringList);
+      }
+
       LoggingUtils.getLogger().
               warning("AppValue extraction for type '"+panel.getType()+"' not implemented yet.");
       return null;
@@ -161,6 +168,8 @@ public class PanelUtils {
       if(type == AppValueType.multipleChoice) {
          // Check if the value in AppValue is one of the possible choices
          MultipleChoicePanel multipleChoicePanel = (MultipleChoicePanel) panel;
+         multipleChoicePanel.updatePanel(value);
+         /*
          final JComboBox box = multipleChoicePanel.getValues();
          final String currentChoice = value.get();
 
@@ -192,7 +201,13 @@ public class PanelUtils {
                box.setSelectedItem(currentChoice);
             }
          });
+*/
+         return;
+      }
 
+      if (type == AppValueType.multipleChoiceStringList) {
+         MultipleChoiceListPanel multipleChoiceListPanel = (MultipleChoiceListPanel) panel;
+         multipleChoiceListPanel.updatePanel(value);
          return;
       }
 
@@ -232,7 +247,24 @@ public class PanelUtils {
 
       if(type == AppValueType.multipleChoice) {
          Enum[] choices = ((AppOptionMultipleChoice)enumOption).getChoices();
-         return new MultipleChoicePanel(panelLabel, choices);
+         if(choices == null) {
+            LoggingUtils.getLogger().
+                    warning("No enum values defined for multiple choice option '"+enumOption.getName()+"'");
+            return null;
+         }
+
+         return new MultipleChoicePanel(panelLabel, EnumUtils.buildList(choices));
+      }
+
+      if(type == AppValueType.multipleChoiceStringList) {
+         Enum[] choices = ((AppOptionMultipleChoice)enumOption).getChoices();
+         if(choices == null) {
+            LoggingUtils.getLogger().
+                    warning("No enum values defined for multiple choice option '"+enumOption.getName()+"'");
+            return null;
+         }
+         
+         return new MultipleChoiceListPanel(panelLabel, EnumUtils.buildList(choices));
       }
 
       LoggingUtils.getLogger().

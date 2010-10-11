@@ -32,8 +32,8 @@ import org.ancora.SharedLibrary.LoggingUtils;
 public class AppValue {
 
    public AppValue(String value, AppValueType type) {
-      
-      
+
+
       if (type.isList()) {
          LoggingUtils.getLogger().
                  warning("This constructor does not support List types. Building"
@@ -44,6 +44,22 @@ public class AppValue {
       this.type = type;
       this.value = value;
       this.list = null;
+
+   }
+
+   public AppValue(List<String> values, AppValueType type) {
+      
+      
+      if (!type.isList()) {
+         LoggingUtils.getLogger().
+                 warning("This constructor is only for List types. Building"
+                 + "a ListString type instead.");
+         type = AppValueType.stringList;
+      }
+
+      this.type = type;
+      this.value = null;
+      this.list = values;
 
    }
 
@@ -93,6 +109,8 @@ public class AppValue {
             return new AppValue(new String[0]);
          case multipleChoice:
             return new AppValue("", AppValueType.multipleChoice);
+         case multipleChoiceStringList:
+            return new AppValue(new ArrayList<String>(), AppValueType.multipleChoiceStringList);
          default:
             LoggingUtils.getLogger().
                     warning("Case not defined: '"+type+"'. Returning null.");

@@ -18,13 +18,13 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui.Panels;
 
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
+import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
  *
@@ -32,12 +32,13 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
  */
 public class MultipleChoicePanel extends AppOptionPanel {
 
-   public MultipleChoicePanel(String labelName, Enum[] choices) {
+   public MultipleChoicePanel(String labelName, List<String> choices) {
       label = new JLabel(labelName+":");
       values = new JComboBox();
+      availableChoices = choices;
 
-      for(Enum anEnum : choices) {
-         values.addItem(anEnum.name());
+      for(String choice : choices) {
+         values.addItem(choice);
       }
 
       add(label);
@@ -59,6 +60,41 @@ public class MultipleChoicePanel extends AppOptionPanel {
     * 
     */
 
+   /**
+    * Selects the option in AppValue object. If the option could not be found,
+    * selects the first option.
+    *
+    * @param value
+    * @return true if the option is one of the available choices and could be
+    * selected, false otherwise
+    */
+   public boolean updatePanel(AppValue value) {
+         // Check if the value in AppValue is one of the possible choices
+
+         final JComboBox box = this.values;
+         final String currentChoice = value.get();
+
+         boolean foundChoice = availableChoices.contains(currentChoice);
+
+
+         if (!foundChoice) {
+            LoggingUtils.getLogger().
+                    warning("Could not find choice '" + currentChoice + "'. Available "
+                    + "choices: " + availableChoices);
+
+            return false;
+         }
+
+
+         ProcessUtils.runOnSwing(new Runnable() {
+            @Override
+            public void run() {
+               box.setSelectedItem(currentChoice);
+            }
+         });
+
+         return true;
+   }
 
 
    @Override
@@ -71,5 +107,6 @@ public class MultipleChoicePanel extends AppOptionPanel {
     */
    private JLabel label;
    private JComboBox values;
+   private List<String> availableChoices;
 
 }

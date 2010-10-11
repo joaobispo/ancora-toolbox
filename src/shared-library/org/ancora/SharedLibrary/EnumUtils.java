@@ -17,8 +17,10 @@
 
 package org.ancora.SharedLibrary;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,6 +88,21 @@ public class EnumUtils {
       }
 
       return Collections.unmodifiableMap(aMap);
+   }
+
+   /**
+    *
+    * @param <K>
+    * @param values
+    * @return a list with the names of the enums
+    */
+   public static <K extends Enum> List<String> buildList(K[] values) {
+      List<String> aList = new ArrayList<String>();
+      for (K anEnum : values) {
+         aList.add(anEnum.name());
+      }
+
+      return aList;
    }
 
 }

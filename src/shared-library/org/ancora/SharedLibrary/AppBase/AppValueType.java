@@ -29,7 +29,8 @@ public enum AppValueType {
    bool("="),
    integer("="),
    stringList("+="),
-   multipleChoice("=");
+   multipleChoice("="),
+   multipleChoiceStringList("+=");
 
    private AppValueType(String attribution) {
       this.attribution = attribution;
@@ -37,7 +38,7 @@ public enum AppValueType {
 
 
    public boolean isList() {
-      if (this == stringList) {
+      if (this == stringList || this == multipleChoiceStringList) {
          return true;
       } else {
          return false;
@@ -56,6 +57,7 @@ public enum AppValueType {
     * @param value
     * @return
     */
+   /*
    public AppValue parseValue(String value) {
       if(isList()) {
          LoggingUtils.getLogger().
@@ -87,7 +89,8 @@ public enum AppValueType {
               warning("Type '"+this+"' not supported.");
       return null;
    }
-
+*/
+   
    final private String attribution;
 
 }
