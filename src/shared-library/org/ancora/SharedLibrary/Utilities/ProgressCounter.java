@@ -40,11 +40,12 @@ public class ProgressCounter<K>  {
     * numbers:
     *
     * <p>NUM_ELEMENTS: total number of elements;
-    * <p>CURRENT_ELEMENT: current element number;
+    * <br>CURRENT_ELEMENT: current element number;
+    * <br>PROGRESS: "X of TOTAL";
     *
     * @param message
     */
-   public void totalMessage(String message) {
+   public void message(String message) {
       String newMessage = parseMessage(message);
       // Replace number of elements
       logger.info(newMessage);
@@ -89,6 +90,12 @@ public class ProgressCounter<K>  {
    public void setProgressSeparator(String progressSeparator) {
       this.progressSeparator = progressSeparator;
    }
+
+   public List<K> getElements() {
+      return elements;
+   }
+
+   
 
    /**
     * INSTANCE VARIABLES

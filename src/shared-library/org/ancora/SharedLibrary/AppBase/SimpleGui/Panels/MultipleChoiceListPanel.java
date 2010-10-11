@@ -84,6 +84,10 @@ public class MultipleChoiceListPanel extends AppOptionPanel {
     * @return
     */
    private boolean addValue(String valueName) {
+      if(valueName == null && possibleValuesShadow.isEmpty()) {
+         return true;
+      }
+
       // Check if value is available
       if(!possibleValuesShadow.contains(valueName)) {
          LoggingUtils.getLogger().
@@ -108,6 +112,9 @@ public class MultipleChoiceListPanel extends AppOptionPanel {
     * @return
     */
    private boolean removeValue(String valueName) {
+      if(valueName == null && selectedValuesShadow.isEmpty()) {
+         return true;
+      }
        // Check if value is selected
       if(!selectedValuesShadow.contains(valueName)) {
          LoggingUtils.getLogger().
@@ -176,6 +183,10 @@ public class MultipleChoiceListPanel extends AppOptionPanel {
 
       //boolean error = false;
       for(String valueName : values) {
+         // Check if it is not already in the selected list.
+         if(selectedValuesShadow.contains(valueName)) {
+            continue;
+         }
         // boolean success = addValue(valueName);
          addValue(valueName);
          /*
