@@ -19,6 +19,7 @@ package org.specs.AutoCompile.Job;
 
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 
 /**
@@ -26,13 +27,14 @@ import org.ancora.SharedLibrary.AppBase.AppUtils;
  *
  * @author Joao Bispo
  */
-public enum JobOption implements AppOptionEnum {
+public enum JobOption implements AppOptionEnum, AppOptionMultipleChoice {
 
    inttest(AppValueType.integer),
    booltest(AppValueType.bool),
    outputFolder(AppValueType.string),
    sourceFilesFolder(AppValueType.string),
-   inputFolderMode(AppValueType.string),
+   //inputFolderMode(AppValueType.string),
+   inputFolderMode(AppValueType.multipleChoice),
    processor(AppValueType.string),
    compiler(AppValueType.string),
    compilerFlags(AppValueType.stringList),
@@ -64,8 +66,23 @@ public enum JobOption implements AppOptionEnum {
       return type;
    }
 
+   public Enum[] getChoices() {
+      switch(this) {
+         case inputFolderMode:
+            return SourceMode.values();
+         default:
+            return null;
+      }
+   }
+
+   public enum InputFolderModeChoices {
+
+   }
+
    //final private String name;
    final private AppValueType type;
+
+
 
    //final private static String prefix = "job.";
 }
