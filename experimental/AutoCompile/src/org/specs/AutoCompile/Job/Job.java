@@ -65,6 +65,7 @@ public class Job {
          LoggingUtils.getLogger().
                  info("Job cancelled.");
          interrupted = true;
+         Thread.currentThread().interrupt();
          return 0;
       }
       return result;
