@@ -40,6 +40,7 @@ public class SimpleGui {
      * Starts the GUI
      */
     public void execute() {
+
        java.awt.EventQueue.invokeLater(new Runnable() {
          @Override
             public void run() {

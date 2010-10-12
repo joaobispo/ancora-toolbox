@@ -18,6 +18,8 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
@@ -36,37 +38,45 @@ public class ApplicationWorker implements Runnable {
       this.options = options;
       this.returnValue = null;
       //this.filename = filename;
+
    }
 
 
    @Override
    public void run() {
+      try {
+         // Disable buttons
+         ProcessUtils.runOnSwing(new Runnable() {
 
-      // Disable buttons
-      ProcessUtils.runOnSwing(new Runnable() {
+            @Override
+            public void run() {
+               mainWindow.setButtonsEnable(false);
+            }
+         });
 
-         @Override
-         public void run() {
-            mainWindow.setButtonsEnable(false);
-         }
-      });
 
          try {
             returnValue = mainWindow.getApplication().execute(options);
          } catch (InterruptedException ex) {
             LoggingUtils.getLogger().
-                    info("Interruption:"+ex.getMessage());
+                    info("Interruption:" + ex.getMessage());
+            Thread.currentThread().interrupt();
          }
 
-      // Enable buttons again
-       ProcessUtils.runOnSwing(new Runnable() {
+         // Enable buttons again
 
-         @Override
-         public void run() {
-            mainWindow.setButtonsEnable(true);
-         }
-      });
+         ProcessUtils.runOnSwing(new Runnable() {
 
+            @Override
+            public void run() {
+               mainWindow.setButtonsEnable(true);
+            }
+         });
+      } catch (Exception e) {
+         LoggingUtils.getLogger().
+                 severe("Exception happend:" + e.getMessage());
+         e.printStackTrace();
+      }
    }
    /*
    @Override

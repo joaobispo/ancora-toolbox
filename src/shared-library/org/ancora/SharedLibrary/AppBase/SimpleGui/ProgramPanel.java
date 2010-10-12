@@ -29,13 +29,11 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
-import org.ancora.SharedLibrary.Logging.ConsoleFormatter;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**

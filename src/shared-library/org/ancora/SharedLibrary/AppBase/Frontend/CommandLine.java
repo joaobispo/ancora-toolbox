@@ -90,6 +90,7 @@ public class CommandLine {
          LoggingUtils.getLogger().
                  info("Cancelling application.");
          //Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, null, ex);
+         Thread.currentThread().interrupt();
          return -1;
       }
 

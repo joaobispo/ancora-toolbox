@@ -66,6 +66,7 @@ public class SimpleCommandLine {
       } catch (InterruptedException ex) {
          LoggingUtils.getLogger().
                  info("Cancelling application.");
+         Thread.currentThread().interrupt();
          return -1;
       }
    }
