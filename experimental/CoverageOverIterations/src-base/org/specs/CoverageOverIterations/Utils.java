@@ -26,7 +26,11 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.DToolPlus.DToolUtils;
+import org.specs.DToolPlus.Utils.EasySystem;
 import org.specs.DymaLib.Partitioning.SupportedPartitioners;
+import org.specs.DymaLib.Trace.DToolReader;
+import system.SysteM;
 
 /**
  * Several utility methods for this program.
@@ -76,5 +80,31 @@ public class Utils {
 
       return parts;
    }
+
+
+   /**
+    * Instantiates a DToolReader loaded with an Elf file.
+    *
+    * @param elfFile
+    * @return a DToolReader loaded with the given file, or null if the object
+    * could not be created
+    */
+   public static DToolReader newTraceReader(File elfFile) {
+      String systemConfig = "./Configuration Files/systemconfig.xml";
+      String elfFilename = elfFile.getPath();
+
+      SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, false);
+      if(originalSystem == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not create SysteM object.");
+         return null;
+      }
+      EasySystem system = new EasySystem(originalSystem);
+      DToolReader dtoolReader = new DToolReader(system);
+
+      return dtoolReader;
+   }
+
+   public static final String MICROBLAZE_SYSTEM_CONFIG = "./Configuration Files/systemconfig.xml";
 
 }
