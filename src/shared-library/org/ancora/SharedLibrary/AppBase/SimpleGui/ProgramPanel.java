@@ -35,6 +35,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
+import org.ancora.SharedLibrary.Logging.ConsoleFormatter;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -66,9 +67,15 @@ public class ProgramPanel extends javax.swing.JPanel {
         Handler[] handlersTemp = LoggingUtils.getRootLogger().getHandlers();
         Handler[] newHandlers = new Handler[handlersTemp.length+1];
         System.arraycopy(handlersTemp, 0, newHandlers, 0, handlersTemp.length);
-        newHandlers[handlersTemp.length] = new JTextAreaHandler(outputArea);
+        //newHandlers[handlersTemp.length] = new JTextAreaHandler(outputArea);
+        JTextAreaHandler jTextAreaHandler = new JTextAreaHandler(outputArea);
         //newHandlers[handlersTemp.length].setLevel(Level.FINEST);
-        newHandlers[handlersTemp.length].setLevel(Level.ALL);
+        
+        //newHandlers[handlersTemp.length].setFormatter(new ConsoleFormatter());
+        //newHandlers[handlersTemp.length].setLevel(Level.ALL);
+        //jTextAreaHandler.setFormatter(new ConsoleFormatter());
+        //jTextAreaHandler.setLevel(Level.ALL);
+        newHandlers[handlersTemp.length] = jTextAreaHandler;
         LoggingUtils.setRootHandlers(newHandlers);
 
         // Init buttons

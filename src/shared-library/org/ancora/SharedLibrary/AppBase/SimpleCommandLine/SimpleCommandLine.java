@@ -19,6 +19,8 @@ package org.ancora.SharedLibrary.AppBase.SimpleCommandLine;
 
 import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
@@ -59,8 +61,13 @@ public class SimpleCommandLine {
       // Load optionFile into Map
       Class optionClass = application.getAppOptionEnum();
       Map<String, AppValue> map = AppOptionFile.parseFile(optionFile, optionClass).getMap();
-
-      return application.execute(map);
+      try {
+         return application.execute(map);
+      } catch (InterruptedException ex) {
+         LoggingUtils.getLogger().
+                 info("Cancelling application.");
+         return -1;
+      }
    }
 
    /**

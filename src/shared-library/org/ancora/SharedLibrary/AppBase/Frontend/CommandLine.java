@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
@@ -81,7 +83,15 @@ public class CommandLine {
          return -1;
       }
 
-      return app.execute(options);
+
+      try {
+         return app.execute(options);
+      } catch (InterruptedException ex) {
+         LoggingUtils.getLogger().
+                 info("Cancelling application.");
+         //Logger.getLogger(CommandLine.class.getName()).log(Level.SEVERE, null, ex);
+         return -1;
+      }
 
    }
 

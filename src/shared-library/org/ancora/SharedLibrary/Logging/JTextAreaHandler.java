@@ -40,7 +40,17 @@ public class JTextAreaHandler extends StreamHandler {
 
    @Override
    public synchronized void publish(LogRecord record) {
-      jTextArea.append(record.getMessage()+"\n");
+      if(record.getLevel().intValue() < this.getLevel().intValue()) {
+         return;
+      }
+
+      if(this.getFormatter() == null) {
+         jTextArea.append(record.getMessage()+"\n");
+      } else {
+         jTextArea.append(this.getFormatter().format(record));
+      }
+
+      
    }
 
    
