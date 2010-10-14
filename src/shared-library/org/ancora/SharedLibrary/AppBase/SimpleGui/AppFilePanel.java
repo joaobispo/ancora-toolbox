@@ -20,6 +20,7 @@ package org.ancora.SharedLibrary.AppBase.SimpleGui;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,8 +28,14 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.OptionFileUtils;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
+import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.AppOptionPanel;
+import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
  * Panel which will contain the options
@@ -81,7 +88,54 @@ public class AppFilePanel extends JPanel {
       return panels;
    }
 
-   
+   public void loadValues(AppOptionFile optionFile) {
+      Map<String, AppValue> map = optionFile.getMap();
+      Map<String, Entry> entries = optionFile.getEntryList().getEntriesMapping();
+      for (String key : optionFile.getMap().keySet()) {
+         AppValue value = map.get(key);
+
+         // Get panel
+         //JPanel panel = panels.get(key);
+         AppOptionPanel panel = panels.get(key);
+         PanelUtils.updatePanel(panel, value);
+         // Get comments
+         updateTooltipText(panel, entries.get(key).getComments());
+      }
+   }
+
+   private void updateTooltipText(final JPanel panel, List<String> comments) {
+
+      final String commentString = OptionFileUtils.parseComments(comments);
+      ProcessUtils.runOnSwing(new Runnable() {
+
+         @Override
+         public void run() {
+            panel.setToolTipText(commentString);
+         }
+      });
+   }
+
+   /**
+    * Collects information in all the panels and returns a map with the information.
+    *
+    * @return
+    */
+   public Map<String, AppValue> getMapWithValues() {
+      Map<String, AppValue> updatedMap = new HashMap<String, AppValue>();
+      for(String key : panels.keySet()) {
+         JPanel panel = panels.get(key);
+         AppValue value = PanelUtils.getAppValue((AppOptionPanel)panel);
+         if(value == null) {
+            LoggingUtils.getLogger().
+                    warning("value is null.");
+            // No valid value for the table
+            continue;
+         }
+         updatedMap.put(key, value);
+      }
+
+      return updatedMap;
+   }
 
    private Map<String, AppOptionPanel> panels;
 

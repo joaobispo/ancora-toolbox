@@ -21,6 +21,7 @@ import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,40 +30,36 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnumSetup;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppOptionMultipleSetup;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.AppFilePanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Interfaces.SetupPanel;
 import org.ancora.SharedLibrary.EnumUtils;
+import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MultipleSetupListPanel extends AppOptionPanel {
+public class MultipleSetupListPanel extends AppOptionPanel 
+        implements SetupPanel {
 
-   public MultipleSetupListPanel(String labelName, AppOptionMultipleSetup setup) {
+   public MultipleSetupListPanel(AppOptionEnum enumOption, String labelName, AppOptionMultipleSetup setup) {
       // Initiallize objects
-
-
+      id = enumOption;
+      masterFile = null;
       label = new JLabel(labelName+":");
       removeButton = new JButton("X");
       addButton = new JButton("Add");
 
       initChoices(setup);
       initElements();
-
-      // Add possible values
-      /*
-      for(String choice : EnumUtils.buildList((Enum[])setup.getSetups())) {
-         possibleValues.addItem(choice);
-         possibleValuesShadow.add(choice);
-      }
-       *
-       */
 
       // Add actions
       addButton.addActionListener(new ActionListener() {
@@ -91,17 +88,7 @@ public class MultipleSetupListPanel extends AppOptionPanel {
 
       // Build choice panel
       choicePanel = buildChoicePanel();
-      /*
-      choicePanel.add(label);
-      choicePanel.add(elements);
-      choicePanel.add(removeButton);
-      choicePanel.add(possibleValues);
-      choicePanel.add(addButton);
 
-      choicePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-  */
-
-      //JPanel choicePanel = new MultipleChoiceListPanel(labelName, EnumUtils.buildList((Enum[])setup.getSetups()));
       currentOptionsPanel = null;
 
       //setLayout(new BorderLayout(5, 5));
@@ -110,8 +97,6 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       setLayout(layout);
       add(choicePanel);
 
-
-      //setups = setup;
    }
 
    private void initChoices(AppOptionMultipleSetup setupList) {
@@ -127,10 +112,6 @@ public class MultipleSetupListPanel extends AppOptionPanel {
          choicesBoxShadow.add(setupName);
       }
 
-//            for(String choice : EnumUtils.buildList((Enum[])setup.getSetups())) {
-  //       choicesBox.addItem(choice);
-    //     choicesBoxShadow.add(choice);
-      //}
    }
 
    private void initElements() {
@@ -154,74 +135,6 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       return panel;
    }
 
-   private void update(JPanel panel) {
-//      setLayout(new BorderLayout(5, 5));
-      if(currentOptionsPanel != null) {
-         remove(currentOptionsPanel);
-      }
-      currentOptionsPanel = panel;
-      add(currentOptionsPanel);
-//      setLayout(new BorderLayout(5, 5));
-//      add(choicePanel, BorderLayout.PAGE_START);
-
-//      add(appFile, BorderLayout.CENTER);
-      validate();
-   }
-
-   /**
-    * Moves one value from possibleValues to selectedValues. This method is not
-    * thread-safe.
-    * 
-    * @param valueName
-    * @return
-    */
-   private boolean addValue(String valueName) {
-      if(valueName == null && choicesBoxShadow.isEmpty()) {
-         return true;
-      }
-
-      // Check if value is available
-      if(!choicesBoxShadow.contains(valueName)) {
-         LoggingUtils.getLogger().
-                 warning("Could not find value '"+valueName+"' in Multiple Choice "
-                 + "list. Available choices:"+choicesBoxShadow);
-         return false;
-      }
-
-      // Remove from possible and add to selected
-      choicesBox.removeItem(valueName);
-      choicesBoxShadow.remove(valueName);
-      elementsBox.addItem(valueName);
-//      elementsBoxShadow.add(valueName);
-      return true;
-   }
-
-   /**
-    * Moves one value from selectedValues to possibleValues. This method is not
-    * thread-safe.
-    *
-    * @param valueName
-    * @return
-    */
-   private boolean removeValue(String valueName) {
-      if(valueName == null && elementsBoxShadow.isEmpty()) {
-         return true;
-      }
-       // Check if value is selected
-      if(!elementsBoxShadow.contains(valueName)) {
-         LoggingUtils.getLogger().
-                 warning("Could not find value '"+valueName+"' in already "
-                 + "selected choices. Currently selected choices:"+elementsBoxShadow);
-         return false;
-      }
-
-      // Remove from possible and add to selected
-      elementsBox.removeItem(valueName);
-      elementsBoxShadow.remove(valueName);
-      choicesBox.addItem(valueName);
-      choicesBoxShadow.add(valueName);
-      return true;
-   }
 
    /**
     * Adds the option from the avaliable list to selected list.
@@ -236,35 +149,6 @@ public class MultipleSetupListPanel extends AppOptionPanel {
        }
 
        addElement(choice);
-
-       // Check if there is text in the textfield
-       //final String selectedValue = (String)choicesBox.getSelectedItem();
-       //addValue(selectedValue);
-       /*
-       ProcessUtils.runOnSwing(new Runnable() {
-         @Override
-         public void run() {
-            addValue(selectedValue);
-         }
-      });
-        * 
-        */
-//        AppOptionEnumSetup[] enums = setups.getSetups();
-       /*
-        AppOptionEnumSetup anEnum;
-        if(!dummy) {
-            anEnum = setups.get(0);
-            dummy = true;
-       } else {
-           anEnum = setups.get(1);
-       }
-       AppOptionEnum[] otherEnums = anEnum.getSetupOptions();
-       AppOptionEnum otherEnum = otherEnums[0];
-
-       JPanel panel = new AppFilePanel(otherEnum.getClass());
-       update(panel);
-        * 
-        */
     }
 
     /**
@@ -280,10 +164,6 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       }
       
       removeElement(indexToRemove);
-
-      // Check if there is text in the textfield
-      //final String selectedValue = (String) elementsBox.getSelectedItem();
-      //removeValue(selectedValue);
    }
 
    /**
@@ -300,16 +180,20 @@ public class MultipleSetupListPanel extends AppOptionPanel {
     *
     * @return currently selected values.
     */
+   /*
    public List<String> getSelectedValues() {
       return null;
 //      return Collections.unmodifiableList(elementsBoxShadow);
    }
+    *
+    */
 
    /**
     * For each element in the value list, add it to the selected items.
     *
     * @param value
     */
+   /*
    public void updatePanel(AppValue value) {
       List<String> values = value.getList();
 
@@ -329,32 +213,10 @@ public class MultipleSetupListPanel extends AppOptionPanel {
          }
           *
           */
+   /*
       }
    }
-
-   /*
-   public JComboBox getValues() {
-      return selectedValues;
-   }
-    * 
-    */
-
-   /*
-   public void setValues(JComboBox values) {
-      this.selectedValues = values;
-   }
-    *
-    */
-
-   
-
-   /*
-   public void setText(String text) {
-      value.setText(text);
-   }
-    *
-    */
-
+*/
 
    @Override
    public AppValueType getType() {
@@ -364,9 +226,9 @@ public class MultipleSetupListPanel extends AppOptionPanel {
    /**
     * Adds an element to the elements list, from the choices list.
     * 
-    * @return
+    * @return the index of the added element
     */
-   public void addElement(int choice) {
+   public int addElement(int choice) {
       // Add index to elements
       elementsBoxShadow.add(choice);
       // Get setup options and create option file for element
@@ -374,32 +236,113 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       Class setupOptionsClass = EnumUtils.getClass((Enum[])setup.getSetupOptions());
       elementsFiles.add(new AppOptionFile(setupOptionsClass));
       elementsOptionPanels.add(new AppFilePanel(setupOptionsClass));
+
+      // Refresh
+      updateElementsComboBox();
+
+      int elementIndex = elementsBoxShadow.size()-1;
+      // Select last item
+      elementsBox.setSelectedIndex(elementIndex);
+      // Update vision of setup options - not needed, when we select, automatically updates
+      //updateSetupOptions();
+
+      return elementIndex;
+   }
+
+   /**
+    * Loads several elements from an AppValue.
+    * 
+    * @param choice
+    */
+   public void updateValue(AppValue value) {
+      // Clear previous values
+      clearElements();
+
+
+      //Unpack value (filename and class)
+      List<String> stringValues = value.getList();
+      //System.out.println("List size:"+stringValues.size());
+      for (int i = 0; i < stringValues.size(); i++) {
+         List<Object> unpackedValues = AppUtils.unpackSetup(stringValues.get(i));
+         String enumName = (String) unpackedValues.get(0);
+         File aFile = (File) unpackedValues.get(1);
+         loadElement(enumName, aFile);
+      }
+
+   }
+
+   /**
+    * Loads a single element from a file
+    *
+    * @param aClass
+    * @param aFile
+    */
+   private void loadElement(String enumName, File aFile) {
+//      System.out.println("Loading:"+enumName+"; "+aFile);
+      //int setupIndex = setups.indexOf(enumName);
+      int setupIndex = choicesBoxShadow.indexOf(enumName);
+
+      if(setupIndex == -1) {
+         LoggingUtils.getLogger().
+                 warning("Could not find enum '"+enumName+"'. Available enums:"+setups);
+         return;
+      }
       
+      // Create element
+      int elementsIndex = addElement(setupIndex);
+
+      // Update values
+      AppOptionEnumSetup setup = setups.get(setupIndex);
+      Class setupOptionsClass = EnumUtils.getClass((Enum[])setup.getSetupOptions());
+      AppOptionFile optionFile = AppOptionFile.parseFile(aFile, setupOptionsClass);
+
+      // Set option file
+      elementsFiles.set(elementsIndex, optionFile);
+      // Load values in the file
+      elementsOptionPanels.get(elementsIndex).loadValues(optionFile);
+      //elementsOptionPanels.get(elementsIndex).getPanels()
+
+
+/*
+      
+
+
+      // Add index to elements
+      elementsBoxShadow.add(choice);
+      // Get setup options and create option file for element
+      AppOptionEnumSetup setup = setups.get(choice);
+      Class setupOptionsClass = EnumUtils.getClass((Enum[]) setup.getSetupOptions());
+      elementsFiles.add(new AppOptionFile(setupOptionsClass));
+      elementsOptionPanels.add(new AppFilePanel(setupOptionsClass));
+
       // Refresh
       updateElements();
       // Select last item
-      elementsBox.setSelectedIndex(elementsBoxShadow.size()-1);
+      elementsBox.setSelectedIndex(elementsBoxShadow.size() - 1);
       // Update vision of setup options - not needed, when we select, automatically updates
       //updateSetupOptions();
+ * 
+ */
    }
 
 
-   private void updateElements() {
+
+   private void updateElementsComboBox() {
       // Build list of strings to present
-      //List<String> comboBoxElements = new ArrayList<String>(elementsBoxShadow.size());
       elementsBox.removeAllItems();
       for(int i=0; i<elementsBoxShadow.size(); i++) {
          // Get choice name
          int choice = elementsBoxShadow.get(i);
          AppOptionEnumSetup setup = setups.get(choice);
          String boxString = (i+1)+ " - "+((Enum)setup).name();
-         //comboBoxElements.add(boxString);
          elementsBox.addItem(boxString);
       }
-
    }
 
    private void updateSetupOptions() {
+//      System.out.println("CurrentOptionsPanel:"+currentOptionsPanel);
+//      System.out.println("ElementsBoxIndex:"+elementsBox.getSelectedIndex());
+//      System.out.println("OptionPanelsSize:"+elementsOptionPanels.size());
       if (currentOptionsPanel != null) {
          remove(currentOptionsPanel);
          currentOptionsPanel = null;
@@ -411,10 +354,13 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       if (index != -1) {
          currentOptionsPanel = elementsOptionPanels.get(index);
          add(currentOptionsPanel);
+         currentOptionsPanel.revalidate();
+         //System.out.println("Validated");
       }
 
-      //validate();
-      revalidate();
+      //revalidate();
+      // TODO: Is it repaint necessary here, or revalidate on panel solves it?
+      //repaint();
    }
 
    /**
@@ -431,29 +377,18 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       }
 
       // Remove shadow index, AppOptionFile and panel
-
-
       elementsBoxShadow.remove(index);
-
-      // Get setup options and create option file for element
       elementsFiles.remove(index);
       elementsOptionPanels.remove(index);
 
       // Refresh
-      updateElements();
+      updateElementsComboBox();
 
-      // Calculate new index of selected element
+      // Calculate new index of selected element and select it
       int newIndex = calculateIndexAfterRemoval(index);
       if(newIndex != -1) {
          elementsBox.setSelectedIndex(newIndex);
       }
-
-      // Select last item
-//      
-      // Update vision of setup options
-//      updateSetupOptions();
-
-
    }
 
    private int calculateIndexAfterRemoval(int index) {
@@ -480,12 +415,86 @@ public class MultipleSetupListPanel extends AppOptionPanel {
       return -1;
    }
 
+/*
+   private boolean isClassValid(Class aClass) {
+      AppOptionEnumSetup setup = setups.get(0);
+      Class panelEnum = ((Enum)setup).getDeclaringClass();
+      System.out.println("Panel enum class:"+panelEnum+"; Loaded class:"+aClass);
+
+      return aClass.equals(panelEnum);
+   }
+*/
+
+   public List<String> getPackedValues() {
+      List<String> packedValues = new ArrayList<String>();
+
+      // Get folder
+      File masterF = masterFile.getOptionFile();
+      if (masterF == null) {
+         LoggingUtils.getLogger().
+                 warning("No option file defined.");
+         return packedValues;
+      }
+      String newFoldername = masterF.getPath()+"."+id.getName();
+     // System.out.println(masterF);
+     // System.out.println(id);
+     // System.out.println(id.getName());
+     // File panelFolder = new File(masterF.getParentFile(), id.getName());
+     // IoUtils.safeFolder(panelFolder.getPath());
+      File panelFolder = IoUtils.safeFolder(newFoldername);
+      // Delete previous values
+      File[] filesForDeletion = panelFolder.listFiles();
+      for(File deletedFile : filesForDeletion) {
+         if(!deletedFile.delete()) {
+            LoggingUtils.getLogger().
+                    info("Could not delete file '"+deletedFile.getPath()+"'");
+         }
+      }
+
+
+      // For each selected panel, create an file and write the corresponding optionfile
+      for(int i=0; i<elementsOptionPanels.size(); i++) {
+         int choicesIndex = elementsBoxShadow.get(i);
+         String choiceEnumName = choicesBoxShadow.get(choicesIndex);
+         // Form filename
+         String filename = (i+1)+"-"+choiceEnumName;
+         File setupFile = new File(panelFolder, filename);
+
+         // Pack information and store
+         packedValues.add(AppUtils.packSetup(choiceEnumName, setupFile));
+
+         // Save information
+         AppOptionFile optionFile = elementsFiles.get(i);
+         optionFile.setOptionFile(setupFile);
+         // Get info from panels
+         optionFile.update(elementsOptionPanels.get(i).getMapWithValues());
+         // Write file
+         optionFile.write();
+      }
+
+      return packedValues;
+   }
+
+
+   @Override
+   public void updateMasterFile(AppOptionFile optionFile) {
+      masterFile = optionFile;
+   }
+
+
+   private void clearElements() {
+      elementsBox.removeAllItems();
+
+      elementsBoxShadow = new ArrayList<Integer>();
+      elementsFiles = new ArrayList<AppOptionFile>();
+      elementsOptionPanels = new ArrayList<AppFilePanel>();
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    private JPanel currentOptionsPanel;
    private JPanel choicePanel;
-   //private AppOptionMultipleSetup setups;
 
    private JLabel label;
    private JComboBox elementsBox;
@@ -501,8 +510,8 @@ public class MultipleSetupListPanel extends AppOptionPanel {
    private List<AppOptionFile> elementsFiles;
    private List<AppFilePanel> elementsOptionPanels;
 
-private boolean dummy = false;
-
+   private AppOptionEnum id;
+   private AppOptionFile masterFile;
 
 
 

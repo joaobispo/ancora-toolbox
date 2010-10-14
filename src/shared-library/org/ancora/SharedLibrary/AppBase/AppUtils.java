@@ -19,6 +19,8 @@ package org.ancora.SharedLibrary.AppBase;
 
 
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -219,6 +221,7 @@ public class AppUtils {
 
    public static String buildEnumName(AppOptionEnum enumValue) {
       String s = enumValue.getClass().getSimpleName() + ENUM_NAME_SEPARATOR + ((Enum)enumValue).name();
+//      String s = ((Enum)enumValue).name();
       return s;
    }
 
@@ -239,5 +242,39 @@ public class AppUtils {
       return "";
    }
 
+   /**
+    * Extracts a String and a File objects from a String and returns a list with
+    * the elements in the previous order.
+    * 
+    * @param value
+    * @return the first element is the enum name for the setup
+    */
+   public static List<Object> unpackSetup(String value) {
+      int separatorIndex = value.indexOf(SETUP_PACK_SEPARATOR);
+      if(separatorIndex == -1) {
+         LoggingUtils.getLogger().
+                 warning("Malformed setup pack string:"+value);
+         return null;
+      }
+
+      String enumName = value.substring(0, separatorIndex);
+      String filename = value.substring(separatorIndex+1);
+      File file = new File(filename);
+
+      List<Object> returnList = new ArrayList<Object>(2);
+      returnList.add(enumName);
+      returnList.add(file);
+
+      return returnList;
+   }
+
+
+   public static String packSetup(String choiceEnumName, File file) {
+      return choiceEnumName+SETUP_PACK_SEPARATOR+file.getPath();
+   }
+
    public static final String ENUM_NAME_SEPARATOR = ".";
+   public static final String SETUP_PACK_SEPARATOR = ";";
+
+
 }

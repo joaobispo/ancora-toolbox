@@ -108,13 +108,13 @@ public class PanelUtils {
          return new AppValue(values, AppValueType.multipleChoiceStringList);
       }
 
-      /*
-      if(panel.getType() == AppValueType.multipleChoiceSetupList) {
-         MultipleChoiceListPanel mclPanel = (MultipleChoiceListPanel)panel;
-         List<String> values = mclPanel.getSelectedValues();
-         return new AppValue(values, AppValueType.multipleChoiceSetupList);
+      
+      if(panel.getType() == AppValueType.multipleSetupList) {
+         MultipleSetupListPanel mslPanel = (MultipleSetupListPanel)panel;
+         List<String> values = mslPanel.getPackedValues();
+         return new AppValue(values, AppValueType.multipleSetupList);
       }
-*/
+
 
       LoggingUtils.getLogger().
               warning("AppValue extraction for type '"+panel.getType()+"' not implemented yet.");
@@ -222,6 +222,12 @@ public class PanelUtils {
          return;
       }
 
+      if (type == AppValueType.multipleSetupList) {
+         MultipleSetupListPanel multipleSetupListPanel = (MultipleSetupListPanel) panel;
+         multipleSetupListPanel.updateValue(value);
+         return;
+      }
+
       LoggingUtils.getLogger().
               warning("Update for type '" + value.getType() + "' not implemented yet.");
    }
@@ -286,7 +292,7 @@ public class PanelUtils {
             return null;
          }
          
-         return new MultipleSetupListPanel(panelLabel, choices);
+         return new MultipleSetupListPanel(enumOption, panelLabel, choices);
       }
 
       LoggingUtils.getLogger().

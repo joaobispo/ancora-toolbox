@@ -24,9 +24,14 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -41,7 +46,9 @@ import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.OptionFileUtils;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Interfaces.SetupPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.AppOptionPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleSetupListPanel;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
 
@@ -53,9 +60,16 @@ import org.ancora.SharedLibrary.ProcessUtils;
 public class OptionsPanel extends javax.swing.JPanel {
 
    public OptionsPanel(Class appOptionEnum) {
+      JComponent optionsPanel = initEnumOptions(appOptionEnum);
+      initSetupPanels();
+      // Setup panels must be initallized
+      assignNewOptionFile(new AppOptionFile(appOptionEnum));
+      fileInfo = new JLabel();
+      updateFileInfoString();
+
       optionClass = appOptionEnum;
-      panels = new HashMap<String, AppOptionPanel>();
-      optionFile = new AppOptionFile(appOptionEnum);
+      //panels = new HashMap<String, AppOptionPanel>();
+      
 
 
        saveButton = new JButton("Save");
@@ -64,8 +78,7 @@ public class OptionsPanel extends javax.swing.JPanel {
        saveButton.setEnabled(false);
        saveAsButton = new JButton("Save as...");
        
-       fileInfo = new JLabel();
-       updateFileInfoString();
+       
 
        saveButton.addActionListener(new ActionListener() {
          @Override
@@ -97,7 +110,7 @@ public class OptionsPanel extends javax.swing.JPanel {
        //Map<String,AppOptionEnum> enums = AppUtils.getEnumMap(appOptionEnum);
        //JComponent optionsPanel = initEnumOptions(enums);
 
-       JComponent optionsPanel = initEnumOptions(appOptionEnum);
+
        //JComponent appFilePanel = new AppFilePanel(appOptionEnum);
 
 
@@ -117,6 +130,36 @@ public class OptionsPanel extends javax.swing.JPanel {
 
        //add(appFilePanel, BorderLayout.CENTER);
        //panels = ((AppFilePanel)appFilePanel).getPanels();
+   }
+
+   /**
+    * Find setup panels and adds them to the list
+    */
+   
+   private void initSetupPanels() {
+      setupPanels = new ArrayList<SetupPanel>();
+      Map<String, AppOptionPanel> panelMap = appFilePanel.getPanels();
+      for(String key : panelMap.keySet()) {
+         SetupPanel setupPanel = getSetupPanel(panelMap.get(key));
+         if(setupPanel == null) {
+            continue;
+         }
+         setupPanels.add(setupPanel);
+         // Update option file
+         setupPanel.updateMasterFile(optionFile);
+      }
+   }
+    
+
+
+   private SetupPanel getSetupPanel(AppOptionPanel panel) {
+      Class[] interfaces = panel.getClass().getInterfaces();
+      Set<Class> classSet = new HashSet<Class>(Arrays.asList(interfaces));
+      if(!classSet.contains(SetupPanel.class)) {
+         return null;
+      }
+
+      return (SetupPanel)panel;
    }
 
    public AppOptionFile getOptionFile() {
@@ -167,8 +210,11 @@ public class OptionsPanel extends javax.swing.JPanel {
       }
 
       // Load file
-      optionFile = newOptionFile;
-      loadValues(optionFile);
+      assignNewOptionFile(newOptionFile);
+      //optionFile = newOptionFile;
+
+      //loadValues(optionFile);
+      appFilePanel.loadValues(optionFile);
       saveButton.setEnabled(true);
       updateFileInfoString();
 
@@ -205,15 +251,17 @@ public class OptionsPanel extends javax.swing.JPanel {
       LayoutManager layout = new BoxLayout(options, BoxLayout.Y_AXIS);
       options.setLayout(layout);
 */
-      JPanel options = new AppFilePanel(appOptionEnum);
-      this.panels = ((AppFilePanel)options).getPanels();
+//      JPanel options = new AppFilePanel(appOptionEnum);
+      appFilePanel = new AppFilePanel(appOptionEnum);
+      //this.panels = appFilePanel.getPanels();
 
 
 
       JScrollPane scrollPane = new JScrollPane();
       
       scrollPane.setPreferredSize(new Dimension(AppFrame.PREFERRED_WIDTH + 10, AppFrame.PREFERRED_HEIGHT + 10));
-      scrollPane.setViewportView(options);
+      //scrollPane.setViewportView(options);
+      scrollPane.setViewportView(appFilePanel);
 
 
       //add(Box.createRigidArea(new Dimension(1,1)));
@@ -223,7 +271,7 @@ public class OptionsPanel extends javax.swing.JPanel {
    }
 
    
-
+/*
    private void loadValues(AppOptionFile optionFile) {
       Map<String, AppValue> map = optionFile.getMap();
       Map<String, Entry> entries = optionFile.getEntryList().getEntriesMapping();
@@ -238,12 +286,13 @@ public class OptionsPanel extends javax.swing.JPanel {
          updateTooltipText(panel, entries.get(key).getComments());
       }
    }
-
+*/
 
    /**
     * Collects information in all the panels and updates internal map.
     *
     */
+   /*
    private void updateInternalMap() {
       Map<String, AppValue> updatedMap = new HashMap<String, AppValue>();
       for(String key : panels.keySet()) {
@@ -261,6 +310,8 @@ public class OptionsPanel extends javax.swing.JPanel {
       // Update internal optionfile
       optionFile.update(updatedMap);
    }
+    *
+    */
 
    private void updateFileInfoString() {
       File file = optionFile.getOptionFile();
@@ -279,12 +330,33 @@ public class OptionsPanel extends javax.swing.JPanel {
     * Sets the current option file to the given file.
     */
    private void updateFile(File file) {
+      updateInternalMap();
       optionFile.setOptionFile(file);
       saveButton.setEnabled(true);
       updateFileInfoString();
    }
 
+   private void updateInternalMap() {
+      // Get info from panels
+      Map<String, AppValue> updatedMap = appFilePanel.getMapWithValues();
+      // Update internal optionfile
+      optionFile.update(updatedMap);
+   }
 
+
+   /**
+    * Can only be called after setup panels are initallized.
+    * 
+    * @param newOptionFile
+    */
+   private void assignNewOptionFile(AppOptionFile newOptionFile) {
+      optionFile = newOptionFile;
+      for(SetupPanel setup : setupPanels) {
+         setup.updateMasterFile(newOptionFile);
+      }
+   }
+
+/*
    private void updateTooltipText(final JPanel panel, List<String> comments) {
 
       final String commentString = OptionFileUtils.parseComments(comments);
@@ -296,9 +368,10 @@ public class OptionsPanel extends javax.swing.JPanel {
          }
       });
    }
+*/
 
-
-   private Map<String, AppOptionPanel> panels;
+   //private Map<String, AppOptionPanel> panels;
+   private AppFilePanel appFilePanel;
    //private AppFilePanel optionsPanel;
    
    private Class optionClass;
@@ -306,5 +379,10 @@ public class OptionsPanel extends javax.swing.JPanel {
    private JButton saveButton;
    private JButton saveAsButton;
    private JLabel fileInfo;
+
+   private List<SetupPanel> setupPanels;
+
+
+
 
 }
