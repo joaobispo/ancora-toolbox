@@ -53,6 +53,8 @@ public class TabbedPane extends JPanel {
       tabbedPane.setMnemonicAt(OPTIONS_PANEL, KeyEvent.VK_2);
 
 
+      //buildSetupPanels(application.getAppOptionEnum());
+
       // Register a change listener
       tabbedPane.addChangeListener(new ChangeListener() {
          // This method is called whenever the selected tab changes
@@ -87,10 +89,29 @@ public class TabbedPane extends JPanel {
 
     }
 
+   /*
+   private void buildSetupPanels(Class appOptionEnum) {
+      setupPanels = new ArrayList<OptionsPanel>();
+      setupPanelsIds = new ArrayList<Integer>();
+      
+      // Search options for values of the type multipleChoiceSetupList
+
+   }
+    *
+    */
 
     private ProgramPanel programPanel;
     private OptionsPanel optionsPanel;
+    //private List<OptionsPanel> setupPanels;
+    //private List<Integer> setupPanelsIds;
+
+    // TODO: Shared variables between tabs should be stored here.
+    // Shared variables between panes
+    //private AppOptionFile optionFile;
 
     private final static int PROGRAM_PANEL = 0;
     private final static int OPTIONS_PANEL = 1;
+    
+
+
 }

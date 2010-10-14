@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionEnumSetup;
 import org.ancora.SharedLibrary.AppBase.AppOptionMultipleChoice;
+import org.ancora.SharedLibrary.AppBase.AppOptionMultipleSetup;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
@@ -30,6 +32,7 @@ import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.BooleanPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.IntegerPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoicePanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoiceListPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleSetupListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringPanel;
 import org.ancora.SharedLibrary.EnumUtils;
@@ -104,6 +107,14 @@ public class PanelUtils {
          List<String> values = mclPanel.getSelectedValues();
          return new AppValue(values, AppValueType.multipleChoiceStringList);
       }
+
+      /*
+      if(panel.getType() == AppValueType.multipleChoiceSetupList) {
+         MultipleChoiceListPanel mclPanel = (MultipleChoiceListPanel)panel;
+         List<String> values = mclPanel.getSelectedValues();
+         return new AppValue(values, AppValueType.multipleChoiceSetupList);
+      }
+*/
 
       LoggingUtils.getLogger().
               warning("AppValue extraction for type '"+panel.getType()+"' not implemented yet.");
@@ -263,8 +274,19 @@ public class PanelUtils {
                     warning("No enum values defined for multiple choice option '"+enumOption.getName()+"'");
             return null;
          }
-         
+
          return new MultipleChoiceListPanel(panelLabel, EnumUtils.buildList(choices));
+      }
+
+      if(type == AppValueType.multipleSetupList) {
+         AppOptionMultipleSetup choices = ((AppOptionMultipleSetup)enumOption);
+         if(choices == null) {
+            LoggingUtils.getLogger().
+                    warning("No enum values defined for multiple setup option '"+enumOption.getName()+"'");
+            return null;
+         }
+         
+         return new MultipleSetupListPanel(panelLabel, choices);
       }
 
       LoggingUtils.getLogger().

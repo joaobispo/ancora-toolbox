@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -95,12 +96,27 @@ public class OptionsPanel extends javax.swing.JPanel {
 
        //Map<String,AppOptionEnum> enums = AppUtils.getEnumMap(appOptionEnum);
        //JComponent optionsPanel = initEnumOptions(enums);
+
        JComponent optionsPanel = initEnumOptions(appOptionEnum);
+       //JComponent appFilePanel = new AppFilePanel(appOptionEnum);
 
 
        setLayout(new BorderLayout(5, 5));
        add(savePanel, BorderLayout.PAGE_START);
+
        add(optionsPanel, BorderLayout.CENTER);
+       
+       /*
+       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+       add(savePanel);
+       add(Box.createRigidArea(new Dimension(0,5)));
+       add(optionsPanel);
+       add(Box.createVerticalGlue());
+        *
+        */
+
+       //add(appFilePanel, BorderLayout.CENTER);
+       //panels = ((AppFilePanel)appFilePanel).getPanels();
    }
 
    public AppOptionFile getOptionFile() {
@@ -162,6 +178,7 @@ public class OptionsPanel extends javax.swing.JPanel {
 
    //private JComponent initEnumOptions(Map<String, AppOptionEnum> enums) {
    private JComponent initEnumOptions(Class appOptionEnum) {
+      /*
       // Extract the enum values
       AppOptionEnum[] values = AppUtils.getEnumValues(appOptionEnum);
 
@@ -187,14 +204,22 @@ public class OptionsPanel extends javax.swing.JPanel {
       // Make the panel scrollable
       LayoutManager layout = new BoxLayout(options, BoxLayout.Y_AXIS);
       options.setLayout(layout);
+*/
+      JPanel options = new AppFilePanel(appOptionEnum);
+      this.panels = ((AppFilePanel)options).getPanels();
+
+
 
       JScrollPane scrollPane = new JScrollPane();
       
       scrollPane.setPreferredSize(new Dimension(AppFrame.PREFERRED_WIDTH + 10, AppFrame.PREFERRED_HEIGHT + 10));
       scrollPane.setViewportView(options);
 
+
+      //add(Box.createRigidArea(new Dimension(1,1)));
       //add(scrollPane);
-      return scrollPane;
+     return scrollPane;
+ 
    }
 
    
@@ -274,6 +299,8 @@ public class OptionsPanel extends javax.swing.JPanel {
 
 
    private Map<String, AppOptionPanel> panels;
+   //private AppFilePanel optionsPanel;
+   
    private Class optionClass;
    private AppOptionFile optionFile;
    private JButton saveButton;

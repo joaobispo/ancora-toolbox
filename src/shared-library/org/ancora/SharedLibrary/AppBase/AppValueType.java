@@ -17,8 +17,6 @@
 
 package org.ancora.SharedLibrary.AppBase;
 
-import org.ancora.SharedLibrary.LoggingUtils;
-
 /**
  * Enumeration of the supported types for the options.
  *
@@ -30,7 +28,8 @@ public enum AppValueType {
    integer("="),
    stringList("+="),
    multipleChoice("="),
-   multipleChoiceStringList("+=");
+   multipleChoiceStringList("+="),
+   multipleSetupList("+=");
 
    private AppValueType(String attribution) {
       this.attribution = attribution;
@@ -38,7 +37,9 @@ public enum AppValueType {
 
 
    public boolean isList() {
-      if (this == stringList || this == multipleChoiceStringList) {
+      if (this == stringList 
+              || this == multipleChoiceStringList
+              || this == multipleSetupList) {
          return true;
       } else {
          return false;

@@ -34,7 +34,11 @@ public class StringPanel extends AppOptionPanel {
 
       add(label);
       add(value);
-      setLayout(new FlowLayout(FlowLayout.LEFT));
+      //setLayout(new FlowLayout(FlowLayout.LEFT));
+      FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+      //flowLayout.setVgap(10);
+      setLayout(flowLayout);
+      //setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
    }
 
    public void setText(String text) {

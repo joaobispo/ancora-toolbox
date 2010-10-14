@@ -105,4 +105,21 @@ public class EnumUtils {
       return aList;
    }
 
+   /**
+    * Returns the class of the enum correspondent to the values of the given
+    * array.
+    *
+    * @param <K>
+    * @param values
+    * @return the class correspondent to the given array of enums
+    */
+   public static <K extends Enum> Class getClass(K[] values) {
+      if(values.length == 0) {
+         LoggingUtils.getLogger().
+                 warning("Given array is empty");
+         return null;
+      }
+
+      return values[0].getClass();
+   }
 }

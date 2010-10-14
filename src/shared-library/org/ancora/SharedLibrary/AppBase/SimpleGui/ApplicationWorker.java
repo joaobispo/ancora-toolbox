@@ -18,8 +18,6 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
@@ -75,7 +73,8 @@ public class ApplicationWorker implements Runnable {
       } catch (Exception e) {
          LoggingUtils.getLogger().
                  severe("Exception happend:" + e.getMessage());
-         e.printStackTrace();
+         e.printStackTrace(System.err);
+         return;
       }
    }
    /*
