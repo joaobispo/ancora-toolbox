@@ -15,16 +15,33 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Partitioning;
+package org.specs.DymaLib.TraceReading;
 
 /**
- * List of supported partitioners in this package.
+ * Symbolizes a trace.
+ *
+ * <p>Delivers instructions and the corresponding instruction address.
  *
  * @author Joao Bispo
  */
-public enum SupportedPartitioners {
-   BasicBlock,
-   SuperBlock,
-   MegaBlock,
-   WarpBlock;
+public interface TraceReader {
+
+   /**
+    * 
+    * @return the next instruction in the trace, or null if it reached the end
+    */
+   String nextInstruction();
+
+   /**
+    *
+    * @return the address of the last returned instruction, or null if there is
+    * no valid address
+    */
+   Integer getAddress();
+
+   /**
+    *
+    * @return the total number of returned instructions up to this moment
+    */
+   long getNumInstructions();
 }

@@ -15,9 +15,10 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Trace;
+package org.specs.DymaLib.TraceReading.Readers;
 
 import org.specs.DToolPlus.Utils.EasySystem;
+import org.specs.DymaLib.TraceReading.TraceReader;
 
 /**
  * TraceReader implementation using a EasySystem object from DTool.

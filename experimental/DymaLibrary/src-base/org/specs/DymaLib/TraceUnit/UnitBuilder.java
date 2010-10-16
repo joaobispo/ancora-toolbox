@@ -15,33 +15,34 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Trace;
+package org.specs.DymaLib.TraceUnit;
+
+import java.util.List;
 
 /**
- * Symbolizes a trace.
- *
- * <p>Delivers instructions and the corresponding instruction address.
+ * Builds TraceUnit objects from the incoming trace.
  *
  * @author Joao Bispo
  */
-public interface TraceReader {
+public interface UnitBuilder {
 
    /**
+    * Feeds an instruction to this UnitBuilder.
     * 
-    * @return the next instruction in the trace, or null if it reached the end
+    * @param address
+    * @param instruction
     */
-   String nextInstruction();
+   void nextInstruction(int address, String instruction);
+   /**
+    * Indicates that the stream of instructions has ended.
+    */
+   void close();
 
    /**
     *
-    * @return the address of the last returned instruction, or null if there is
-    * no valid address
+    * @return a list of the TraceUnits found. After returning lists, they are
+    * cleared from the UnitBuilder. Returns null if there are no TraceUnits at
+    * the moment
     */
-   Integer getAddress();
-
-   /**
-    *
-    * @return the total number of returned instructions up to this moment
-    */
-   long getNumInstructions();
+   List<TraceUnit> getAndClearUnits();
 }
