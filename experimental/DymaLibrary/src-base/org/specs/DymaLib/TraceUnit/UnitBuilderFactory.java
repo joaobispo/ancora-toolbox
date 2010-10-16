@@ -18,7 +18,7 @@
 package org.specs.DymaLib.TraceUnit;
 
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.Instructions.InstructionDecoder;
+import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.TraceUnit.Builders.BasicBlockBuilder;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
 

@@ -15,25 +15,33 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Instructions;
+package org.specs.DymaLib.Interfaces;
 
 /**
- * Extracts information from an instruction in String format.
+ * Symbolizes a trace.
+ *
+ * <p>Delivers instructions and the corresponding instruction address.
  *
  * @author Joao Bispo
  */
-public interface InstructionDecoder {
+public interface TraceReader {
+
+   /**
+    * 
+    * @return the next instruction in the trace, or null if it reached the end
+    */
+   String nextInstruction();
+
    /**
     *
-    * @param instruction
-    * @return true if instruction is a jump. False otherwise.
+    * @return the address of the last returned instruction, or null if there is
+    * no valid address
     */
-   boolean isJump(String instruction);
+   Integer getAddress();
+
    /**
     *
-    * @param instruction
-    * @return the number of delay slots after this instruction. Returns 0 if
-    * the instruction has no delay slots, 1 if it as 1 delay slot, etc.
+    * @return the total number of returned instructions up to this moment
     */
-   int delaySlot(String instruction);
+   long getNumInstructions();
 }
