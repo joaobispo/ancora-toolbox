@@ -25,8 +25,11 @@ import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Utilities.ProgressCounter;
-import org.specs.DymaLib.Partitioning.SupportedPartitioners;
-import org.specs.DymaLib.Trace.TraceReader;
+import org.specs.DymaLib.LoopDetection.LoopDetectors;
+import org.specs.DymaLib.Interfaces.TraceReader;
+import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
+import org.specs.DymaLib.TraceUnit.TraceUnit;
+import org.specs.DymaLib.TraceUnit.UnitBuilder;
 
 /**
  * Implements the CoverageOverIterations application
@@ -65,7 +68,7 @@ public class Application implements App {
        */
 
       // Get partitioners
-      List<SupportedPartitioners> partitioners = Utils.getPartitioners(options);
+      List<LoopDetectors> partitioners = Utils.getPartitioners(options);
 
       process(inputPrograms, partitioners);
 
@@ -86,11 +89,11 @@ public class Application implements App {
       return Options.class;
    }
 
-   private void process(List<File> inputPrograms, List<SupportedPartitioners> partitioners) {
+   private void process(List<File> inputPrograms, List<LoopDetectors> partitioners) {
       Logger logger = LoggingUtils.getLogger(this);
 
       // Iterate over partitioners
-      for (SupportedPartitioners partitionerId : partitioners) {
+      for (LoopDetectors partitionerId : partitioners) {
          // Apply all files to current partitioner
          logger.info("Using partitioner '" + partitionerId + "':");
 
@@ -110,7 +113,7 @@ public class Application implements App {
     * @param supportedPartitioners
     * @param partitionerId
     */
-   private void processFile(SupportedPartitioners partitionerId, File elfFile) {
+   private void processFile(LoopDetectors partitionerId, File elfFile) {
       // Create a TraceReader from the file
       TraceReader traceReader = Utils.newTraceReader(elfFile);
       if(traceReader == null) {
@@ -119,19 +122,60 @@ public class Application implements App {
          return;
       }
 
+      UnitBuilder builder = new InstructionBuilder();
+      InstructionVerifier instVerifier = new InstructionVerifier(traceReader);
+
       String inst = null;
+      //long totalInstructions = 0l;
       while((inst = traceReader.nextInstruction()) != null) {
+         Integer address = traceReader.getAddress();
+         builder.nextInstruction(address, inst);
+         instVerifier.addInstructions(processTraceUnit(builder));
+         //totalInstructions +=
+         // Feed instruction and address to Partitioner
          //System.out.println(traceReader.getAddress() + ": " +inst);
       }
-        
-       
+      builder.close();
+      instVerifier.addInstructions(processTraceUnit(builder));
+      //totalInstructions += processTraceUnit(builder);
+
+      if(instVerifier.verify()) {
+      //if(traceReader.getNumInstructions() != totalInstructions) {
+         System.err.println("# Instructions diverge.");
+         System.err.println("Trace Reader: "+traceReader.getNumInstructions());
+         System.err.println("Unit Builder: "+instVerifier.getExternalInst());
+      }
+       System.out.println("");
       System.out.println("Total:"+traceReader.getNumInstructions());
+   }
+
+
+   private long processTraceUnit(UnitBuilder builder) {
+      long totalInstructions = 0l;
+
+      List<TraceUnit> traceUnits = builder.getAndClearUnits();
+      if(traceUnits == null) {
+         return totalInstructions;
+      }
+
+      for(TraceUnit traceUnit : traceUnits) {
+         System.out.println("Block "+traceUnit.getIdentifier());
+         List<String> insts = traceUnit.getInstructions();
+         List<Integer> addresses = traceUnit.getAddresses();
+         for(int i=0; i<insts.size(); i++) {
+            totalInstructions++;
+            //System.out.println(addresses.get(i)+" "+insts.get(i));
+         }
+      }
+
+      return totalInstructions;
    }
 
    /**
     * INSTANCE VARIABLES
     */
    private Map<String, AppValue> options;
+
 
 
 }

@@ -27,9 +27,9 @@ import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DToolPlus.DToolUtils;
-import org.specs.DToolPlus.Utils.EasySystem;
-import org.specs.DymaLib.Partitioning.SupportedPartitioners;
-import org.specs.DymaLib.Trace.DToolReader;
+import org.specs.DToolPlus.Utilities.EasySystem;
+import org.specs.DymaLib.LoopDetection.LoopDetectors;
+import org.specs.DToolPlus.DymaLib.DToolReader;
 import system.SysteM;
 
 /**
@@ -61,14 +61,14 @@ public class Utils {
     * @param options
     * @return a list with the selected partitioners
     */
-   public static List<SupportedPartitioners> getPartitioners(Map<String, AppValue> options) {
-      List<String> partitioners = AppUtils.getStringList(options, Options.Partitioners);
+   public static List<LoopDetectors> getPartitioners(Map<String, AppValue> options) {
+      List<String> partitioners = AppUtils.getStringList(options, Options.LoopDetectors);
 
-      List<SupportedPartitioners> parts = new ArrayList<SupportedPartitioners>();
+      List<LoopDetectors> parts = new ArrayList<LoopDetectors>();
       for (String partitionerName : partitioners) {
          // Decode name into enum
-         SupportedPartitioners partEnum =
-                 EnumUtils.valueOf(SupportedPartitioners.class, partitionerName);
+         LoopDetectors partEnum =
+                 EnumUtils.valueOf(LoopDetectors.class, partitionerName);
          if (partEnum == null) {
             LoggingUtils.getLogger().
                     warning("Ignoring partitioner '" + partitionerName + "'");

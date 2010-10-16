@@ -17,21 +17,22 @@
 
 package org.specs.CoverageOverIterations;
 
-import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
-import org.ancora.SharedLibrary.AppBase.AppOptionMultipleChoice;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.specs.DymaLib.Partitioning.SupportedPartitioners;
 
 /**
  * Options for Coverate Over Interations application.
  *
  * @author Joao Bispo
  */
-public enum Options implements AppOptionEnum, AppOptionMultipleChoice {
+public enum Options implements AppOptionEnum, AppOptionMultipleSetup {
    FolderWithPrograms(AppValueType.string),
    OutputFolder(AppValueType.string),
-   Partitioners(AppValueType.multipleChoiceStringList);
+   LoopDetectors(AppValueType.multipleSetupList);
+   //LoopDetectors(AppValueType.string);
 
    private Options(AppValueType type) {
       this.type = type;
@@ -50,11 +51,14 @@ public enum Options implements AppOptionEnum, AppOptionMultipleChoice {
 
    final private AppValueType type;
 
-   public Enum[] getChoices() {
-      if(this == Partitioners) {
-         return SupportedPartitioners.values();
+
+
+   public AppOptionEnumSetup[] getSetups() {
+      if (this == LoopDetectors) {
+         return org.specs.DymaLib.LoopDetection.LoopDetectors.values();
       }
 
       return null;
    }
+
 }
