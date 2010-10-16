@@ -6,6 +6,7 @@
             <name>Shared Library</name>
             <source-roots>
                 <root id="src.dir"/>
+                <root id="src.shared-library-processors.dir" name="Processors"/>
             </source-roots>
             <test-roots>
                 <root id="test.shared-library.dir" name="Test Packages"/>

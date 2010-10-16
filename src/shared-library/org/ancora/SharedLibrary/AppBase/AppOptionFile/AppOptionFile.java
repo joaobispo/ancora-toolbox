@@ -26,7 +26,7 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
-import org.ancora.SharedLibrary.Files.LineReader;
+import org.ancora.SharedLibrary.Utilities.LineReader;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 

@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.SharedLibrary.EnumUtils;
+import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 
@@ -39,6 +41,12 @@ import org.ancora.SharedLibrary.LoggingUtils;
  */
 public class AppUtils {
 
+   /**
+    *
+    * @param map a table with values
+    * @param option an option
+    * @return the string mapped to the given option
+    */
    public static String getString(Map<String, AppValue> map, AppOptionEnum option) {
       if(!map.containsKey(option.getName())) {
          LoggingUtils.getLogger().
@@ -50,33 +58,52 @@ public class AppUtils {
       return map.get(option.getName()).get();
    }
 
+   /**
+    *
+    * @param map a table with values
+    * @param option an option
+    * @return the boolean mapped to the given option
+    */
    public static Boolean getBool(Map<String, AppValue> map, AppOptionEnum option) {
+      /*
       if(!map.containsKey(option.getName())) {
-         LoggingUtils.getLogger().
-                 warning("Could not find a value for option '"+option.getName()+"'. "
-                 + "Check if the option is set.");
-         return null;
+      LoggingUtils.getLogger().
+      warning("Could not find a value for option '"+option.getName()+"'. "
+      + "Check if the option is set.");
+      return null;
+      }
+       *
+       */
+      String value = getString(map, option);
+      if (value == null) {
+         return Boolean.FALSE;
       }
 
-      return Boolean.valueOf(map.get(option.getName()).get());
+//      return Boolean.valueOf(map.get(option.getName()).get());
+      return Boolean.valueOf(value);
    }
 
    /**
-    * If integer could not be parsed, returns null.
+    * 
     *
-    * @param map
-    * @param option
-    * @return
+    * @param map a table with values
+    * @param option an option
+    * @return the boolean mapped to the given option. If integer cannot be
+    * parsed, returns null.
     */
    public static Integer getInteger(Map<String, AppValue> map, AppOptionEnum option) {
+      /*
       if(!map.containsKey(option.getName())) {
          LoggingUtils.getLogger().
                  warning("Could not find a value for option '"+option.getName()+"'. "
                  + "Check if the option is set.");
          return null;
       }
+       *
+       */
 
-      String intString = map.get(option.getName()).get();
+      //String intString = map.get(option.getName()).get();
+      String intString = getString(map, option);
       Integer value = null;
       try {
          value = Integer.valueOf(intString);
@@ -91,9 +118,10 @@ public class AppUtils {
    /**
     * Given a map and an AppOptionEnum, returns the corresponding list.
     *
-    * @param map
-    * @param option
-    * @return
+    * @param map a table with values
+    * @param option an option
+    * @return the list of strings mapped to the given option. If the value
+    * cannot be parsed, returns null.
     */
    public static List<String> getStringList(Map<String, AppValue> map, AppOptionEnum option) {
       AppValue value = map.get(option.getName());
@@ -107,6 +135,40 @@ public class AppUtils {
       }
 
       return value.getList();
+   }
+
+
+
+   /**
+    *
+    * @param map a table with values
+    * @param option an option
+    * @return the folder mapped to the given option. If the folder does not
+    * exist or could not be created, returns null.
+    */
+   public static File getFolder(Map<String, AppValue> map, AppOptionEnum option) {
+      String foldername = getString(map, option);
+      File folder = IoUtils.safeFolder(foldername);
+      if(folder == null) {
+         return null;
+      }
+
+      return folder;
+   }
+
+   /**
+    *
+    * @param map a table with values
+    * @param option an option
+    * @return the file mapped to the given option. If the file does not
+    * exist, returns null.
+    */
+   public static File getExistingFile(Map<String, AppValue> map, AppOptionEnum option) {
+      String filename = getString(map, option);
+//      File newFile = new File(filename);
+      File newFile = IoUtils.existingFile(filename);
+
+      return newFile;
    }
 
    /**
@@ -271,6 +333,40 @@ public class AppUtils {
 
    public static String packSetup(String choiceEnumName, File file) {
       return choiceEnumName+SETUP_PACK_SEPARATOR+file.getPath();
+   }
+
+   /**
+    * Extracts the AppOptionEnum values from a enum setup class.
+    * 
+    * @param appOptionEnumSetup
+    * @param enumName
+    * @param setupFile
+    * @return
+    */
+   public static AppOptionEnum[] parseSetup(Class<Enum> appOptionEnumSetup,
+           String enumName, File setupFile) {
+
+      // Get enum from setup class
+      Enum anEnum = EnumUtils.valueOf(appOptionEnumSetup, enumName);
+      if(anEnum == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find name '"+enumName+"' inside enum '"+appOptionEnumSetup+"'");
+         LoggingUtils.getLogger().
+                 warning("Available names:"+appOptionEnumSetup.getEnumConstants());
+         return null;
+      }
+      
+      // Check if it is an AppOptionEnumSetup
+      AppOptionEnumSetup setupEnum;
+      try {
+          setupEnum = (AppOptionEnumSetup) anEnum;
+      } catch(ClassCastException e) {
+         LoggingUtils.getLogger().
+                 warning("Enum '"+anEnum+"' does not implement interface '"+AppOptionEnumSetup.class+"'");
+         return null;
+      }
+
+      return setupEnum.getSetupOptions();
    }
 
    public static final String ENUM_NAME_SEPARATOR = ".";

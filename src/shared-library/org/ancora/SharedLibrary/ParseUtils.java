@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.Files.LineParser;
-import org.ancora.SharedLibrary.Files.LineReader;
+import org.ancora.SharedLibrary.Utilities.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineReader;
 
 /**
  * Utility methods for parsing of values which, instead of throwing an

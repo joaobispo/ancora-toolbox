@@ -355,12 +355,13 @@ public class MultipleSetupListPanel extends AppOptionPanel
          currentOptionsPanel = elementsOptionPanels.get(index);
          add(currentOptionsPanel);
          currentOptionsPanel.revalidate();
-         //System.out.println("Validated");
       }
 
-      //revalidate();
+
+      
       // TODO: Is it repaint necessary here, or revalidate on panel solves it?
-      //repaint();
+      repaint();
+      //System.out.println("SetupPanel Repainted");
    }
 
    /**

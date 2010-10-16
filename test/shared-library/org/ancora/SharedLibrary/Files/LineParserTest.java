@@ -17,6 +17,8 @@
 
 package org.ancora.SharedLibrary.Files;
 
+import org.ancora.SharedLibrary.Utilities.LineReader;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import java.io.File;
 import java.util.List;
 import org.junit.After;

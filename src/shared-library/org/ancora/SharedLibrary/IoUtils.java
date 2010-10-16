@@ -303,9 +303,17 @@ public class IoUtils {
     * @return
     */
    private static boolean writeAppendHelper(File file, String contents, boolean append) {
+      // Get parent
+      String parentName = file.getParent();
+      if (parentName == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not get parent of file '" + file.getPath() + "'.");
+         return false;
+      }
+
       // Check if folders for file exist
       File folder = new File(file.getParent());
-      if(!folder.exists()) {
+      if (!folder.exists()) {
          folder.mkdirs();
       }
       
