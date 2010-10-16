@@ -21,6 +21,7 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.TraceUnit.Builders.BasicBlockBuilder;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
+import org.specs.DymaLib.TraceUnit.Builders.SuperBlockBuilder;
 
 /**
  * Factory for Unit Builders.
@@ -35,6 +36,8 @@ public class UnitBuilderFactory {
             return new InstructionBuilder();
          case BasicBlock:
             return new BasicBlockBuilder(decoder);
+         case SuperBlock:
+            return new SuperBlockBuilder(decoder);
          default:
             LoggingUtils.getLogger().
                     warning("Case not defined:"+unitName);

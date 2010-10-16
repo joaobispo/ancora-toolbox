@@ -24,5 +24,6 @@ package org.specs.DymaLib.TraceUnit;
  */
 public enum TraceUnits {
    InstructionUnit,
-   BasicBlock;
+   BasicBlock,
+   SuperBlock;
 }
