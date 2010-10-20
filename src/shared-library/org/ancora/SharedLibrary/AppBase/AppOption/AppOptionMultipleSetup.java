@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase;
+package org.ancora.SharedLibrary.AppBase.AppOption;
 
 /**
  * If an AppOptionEnum wants to use a value of the type SetupList, the

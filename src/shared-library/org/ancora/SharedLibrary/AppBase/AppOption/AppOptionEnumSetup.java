@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Ancora Research Group.
+ *  Copyright 2010 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase;
+package org.ancora.SharedLibrary.AppBase.AppOption;
 
 /**
- * We suggest storing information about options inside an enumeration file
- * implementing this interface. It gives convenient access to the options and
- * might enables other features, such as automatic construction of a table with
- * empty AppOption objects.
- * 
+ * If an AppOptionEnum wants to use a value of the type SetupList, the
+ * enum class must implement this interface.
+ *
+ *
  * @author Joao Bispo
  */
-public interface AppOptionEnum {
+public interface AppOptionEnumSetup {
 
-   String getName();
-
-   AppValueType getType();
-
-
+   /**
+    * For each value which can have multiple setups, define an AppOptionEnum
+    * file.
+    * 
+    * @return
+    */
+   AppOptionEnum[] getSetupOptions();
 }

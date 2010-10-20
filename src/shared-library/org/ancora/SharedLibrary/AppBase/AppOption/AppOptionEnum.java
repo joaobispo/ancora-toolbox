@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2010 Ancora Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,15 +15,23 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase;
+package org.ancora.SharedLibrary.AppBase.AppOption;
+
+import org.ancora.SharedLibrary.AppBase.AppValueType;
 
 /**
- * If an AppOptionEnum wants to use a value of the type MultipleChoice, the
- * enum class must implement this interface
- *
+ * We suggest storing information about options inside an enumeration file
+ * implementing this interface. It gives convenient access to the options and
+ * might enables other features, such as automatic construction of a table with
+ * empty AppOption objects.
+ * 
  * @author Joao Bispo
  */
-public interface AppOptionMultipleChoice {
+public interface AppOptionEnum {
 
-   Enum[] getChoices();
+   String getName();
+
+   AppValueType getType();
+
+
 }

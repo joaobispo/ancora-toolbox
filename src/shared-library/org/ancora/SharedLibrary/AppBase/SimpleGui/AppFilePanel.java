@@ -17,17 +17,13 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
-import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.Entry;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.OptionFileUtils;

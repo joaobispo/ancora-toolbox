@@ -15,22 +15,15 @@
  *  under the License.
  */
 
-package org.ancora.SharedLibrary.AppBase;
+package org.ancora.SharedLibrary.AppBase.AppOption;
 
 /**
- * If an AppOptionEnum wants to use a value of the type SetupList, the
- * enum class must implement this interface.
- *
+ * If an AppOptionEnum wants to use a value of the type MultipleChoice, the
+ * enum class must implement this interface
  *
  * @author Joao Bispo
  */
-public interface AppOptionEnumSetup {
+public interface AppOptionMultipleChoice {
 
-   /**
-    * For each value which can have multiple setups, define an AppOptionEnum
-    * file.
-    * 
-    * @return
-    */
-   AppOptionEnum[] getSetupOptions();
+   Enum[] getChoices();
 }
