@@ -33,6 +33,7 @@ import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.IntegerPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoicePanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleChoiceListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleSetupListPanel;
+import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.MultipleSetupPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringListPanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Panels.StringPanel;
 import org.ancora.SharedLibrary.EnumUtils;
@@ -74,7 +75,7 @@ public class PanelUtils {
 
             // Check if empty string
             if (stringValue.isEmpty()) {
-               stringValue = AppUtils.getDefaultValue(iPanel.getType());
+               stringValue = AppUtils.getZeroValue(iPanel.getType());
                return new AppValue(Integer.parseInt(stringValue));
             }
 
@@ -86,7 +87,7 @@ public class PanelUtils {
                LoggingUtils.getLogger().
                        info("Could not parse '" + iPanel.getText() + "' into an integer.");
 
-               String integerString = AppUtils.getDefaultValue(iPanel.getType());
+               String integerString = AppUtils.getZeroValue(iPanel.getType());
                newValue = Integer.parseInt(integerString);
             }
             return new AppValue(newValue);
@@ -108,11 +109,17 @@ public class PanelUtils {
          return new AppValue(values, AppValueType.multipleChoiceStringList);
       }
 
-      
+
       if(panel.getType() == AppValueType.multipleSetupList) {
          MultipleSetupListPanel mslPanel = (MultipleSetupListPanel)panel;
          List<String> values = mslPanel.getPackedValues();
          return new AppValue(values, AppValueType.multipleSetupList);
+      }
+      
+      if(panel.getType() == AppValueType.multipleSetup) {
+         MultipleSetupPanel mslPanel = (MultipleSetupPanel)panel;
+         String value = mslPanel.getSetupFile();
+         return new AppValue(value, AppValueType.multipleSetup);
       }
 
 
@@ -180,39 +187,7 @@ public class PanelUtils {
          // Check if the value in AppValue is one of the possible choices
          MultipleChoicePanel multipleChoicePanel = (MultipleChoicePanel) panel;
          multipleChoicePanel.updatePanel(value);
-         /*
-         final JComboBox box = multipleChoicePanel.getValues();
-         final String currentChoice = value.get();
 
-         boolean foundChoice = false;
-         for(int i=0; i<box.getItemCount(); i++) {
-            String aChoice = (String)box.getItemAt(i);
-            if(currentChoice.equals(aChoice)) {
-               foundChoice = true;
-               break;
-            }
-         }
-
-         if (!foundChoice) {
-            List<String> choices = new ArrayList<String>();
-            for (int i = 0; i < box.getItemCount(); i++) {
-               choices.add((String) box.getItemAt(i));
-            }
-            LoggingUtils.getLogger().
-                    warning("Could not find choice '" + currentChoice + "'. Available "
-                    + "choices: " + choices);
-
-            return;
-         }
-
-
-         ProcessUtils.runOnSwing(new Runnable() {
-            @Override
-            public void run() {
-               box.setSelectedItem(currentChoice);
-            }
-         });
-*/
          return;
       }
 
@@ -225,6 +200,12 @@ public class PanelUtils {
       if (type == AppValueType.multipleSetupList) {
          MultipleSetupListPanel multipleSetupListPanel = (MultipleSetupListPanel) panel;
          multipleSetupListPanel.updateValue(value);
+         return;
+      }
+
+      if (type == AppValueType.multipleSetup) {
+         MultipleSetupPanel multipleSetupPanel = (MultipleSetupPanel) panel;
+         multipleSetupPanel.updateValue(value);
          return;
       }
 
@@ -291,8 +272,19 @@ public class PanelUtils {
                     warning("No enum values defined for multiple setup option '"+enumOption.getName()+"'");
             return null;
          }
-         
+
          return new MultipleSetupListPanel(enumOption, panelLabel, choices);
+      }
+
+      if(type == AppValueType.multipleSetup) {
+         AppOptionEnumSetup choices = ((AppOptionEnumSetup)enumOption);
+         if(choices == null) {
+            LoggingUtils.getLogger().
+                    warning("No enum values defined for multiple setup option '"+enumOption.getName()+"'");
+            return null;
+         }
+         
+         return new MultipleSetupPanel(enumOption, panelLabel, choices);
       }
 
       LoggingUtils.getLogger().

@@ -30,9 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.SharedLibrary.AppBase.AppOption.DefaultValues;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 
 
@@ -51,10 +53,24 @@ public class AppUtils {
     */
    public static String getString(Map<String, AppValue> map, AppOptionEnum option) {
       if(!map.containsKey(option.getName())) {
+         Object returnObject = null;
+         // Check if it as a default value
+         if(ProcessUtils.implementsInterface(option.getClass(), DefaultValues.class)) {
+            returnObject = ((DefaultValues)option).getDefaultValue();
+         }
+
+         if(returnObject == null) {
+
+            LoggingUtils.getLogger().
+                    warning("Could not find a value for option '" + option.getName() + "'. "
+                    + "Check if the option is set.");
+            return null;
+         }
+
          LoggingUtils.getLogger().
-                 warning("Could not find a value for option '"+option.getName()+"'. "
-                 + "Check if the option is set.");
-         return null;
+                 info("Using default value '"+returnObject.toString()+"' for "
+                 + "option '"+option+"'");
+         return returnObject.toString();
       }
 
       return map.get(option.getName()).get();
@@ -290,11 +306,15 @@ public class AppUtils {
    }
 
    /**
+    * Returns the "zero" value for a given type.
+    * 
+    * <p>Ex.: for integers, it is zero (0); for Strings, it is the empty String;
+    * for booleans it is false;
     *
     * @param appOptionType
-    * @return default values for the given AppValueType
+    * @return zero values for the given AppValueType
     */
-   public static String getDefaultValue(AppValueType appOptionType) {
+   public static String getZeroValue(AppValueType appOptionType) {
       if(appOptionType == AppValueType.bool) {
          return "false";
       }
@@ -304,6 +324,24 @@ public class AppUtils {
       }
 
       return "";
+   }
+
+   public static String getDefaultValue(AppValueType appOptionType, DefaultValues aDefault) {
+
+      // Get default value
+      String defaultValue = null;
+
+      Object defaultValueObject = aDefault.getDefaultValue();
+      if (defaultValueObject != null) {
+         defaultValue = defaultValueObject.toString();
+      }
+
+
+      if (defaultValue == null) {
+         defaultValue = AppUtils.getZeroValue(appOptionType);
+      }
+
+      return defaultValue;
    }
 
    /**

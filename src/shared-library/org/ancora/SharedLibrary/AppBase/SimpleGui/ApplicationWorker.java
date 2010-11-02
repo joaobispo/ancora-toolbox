@@ -35,6 +35,7 @@ public class ApplicationWorker implements Runnable {
       this.mainWindow = programPanel;
       this.options = options;
       this.returnValue = null;
+      this.isRunning = false;
       //this.filename = filename;
 
    }
@@ -42,6 +43,8 @@ public class ApplicationWorker implements Runnable {
 
    @Override
    public void run() {
+      isRunning = true;
+
       try {
          // Disable buttons
          ProcessUtils.runOnSwing(new Runnable() {
@@ -74,8 +77,10 @@ public class ApplicationWorker implements Runnable {
          LoggingUtils.getLogger().
                  severe("Exception happend:" + e.getMessage());
          e.printStackTrace(System.err);
-         return;
       }
+
+      isRunning = false;
+      return;
    }
    /*
    @Override
@@ -111,11 +116,17 @@ public class ApplicationWorker implements Runnable {
       return returnValue;
    }
 
+   public boolean isRunning() {
+      return isRunning;
+   }
+
 
 
    private ProgramPanel mainWindow;
    private Map<String,AppValue> options;
    private Integer returnValue;
+
+   private volatile boolean isRunning;
 
    //private  String filename;
 

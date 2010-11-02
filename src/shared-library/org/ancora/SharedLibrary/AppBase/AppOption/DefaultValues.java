@@ -18,19 +18,18 @@
 package org.ancora.SharedLibrary.AppBase.AppOption;
 
 /**
- * If an AppOptionEnum wants to use a value of the type SetupList or Setup, the
+ * If an AppOptionEnum wants to use default values for its types, the
  * enum class must implement this interface.
- *
  *
  * @author Joao Bispo
  */
-public interface AppOptionEnumSetup {
+public interface DefaultValues {
 
    /**
-    * For each value which can have a setup with multiple values, define an
-    * AppOptionEnum file.
-    * 
+    * For each type which can have a default value, define an Object as
+    * return value.
+    *
     * @return
     */
-   AppOptionEnum[] getSetupOptions();
+   Object getDefaultValue();
 }

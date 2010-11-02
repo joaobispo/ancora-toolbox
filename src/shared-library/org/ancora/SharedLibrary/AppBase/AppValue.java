@@ -113,6 +113,8 @@ public class AppValue {
             return new AppValue(new ArrayList<String>(), AppValueType.multipleChoiceStringList);
          case multipleSetupList:
             return new AppValue(new ArrayList<String>(), AppValueType.multipleSetupList);
+         case multipleSetup:
+            return new AppValue("", AppValueType.multipleSetup);
          default:
             LoggingUtils.getLogger().
                     warning("Case not defined: '"+type+"'. Returning null.");

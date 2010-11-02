@@ -21,7 +21,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -227,5 +230,17 @@ public class ProcessUtils {
       }
    }
 
+   /**
+    * 
+    * @param aClass
+    * @param anInterface
+    * @return true if the given class implements the given interface. False 
+    * otherwise.
+    */
+   public static boolean implementsInterface(Class aClass, Class anInterface) {
+      // Build set with interfaces of the given class
+      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(aClass.getInterfaces()));
+      return interfaces.contains(anInterface);
+   }
 
 }

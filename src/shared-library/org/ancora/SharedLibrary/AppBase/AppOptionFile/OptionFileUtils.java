@@ -18,14 +18,19 @@
 package org.ancora.SharedLibrary.AppBase.AppOptionFile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.DefaultValues;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.Utilities.LineReader;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 
 /**
@@ -195,6 +200,9 @@ public class OptionFileUtils {
          showOptions(enumMap);
       }
 
+      // Check if there are entries missing, and fill them with default values
+      addMissingEntries(entries, enumMap);
+
       return entries;
    }
 
@@ -241,8 +249,39 @@ public class OptionFileUtils {
     }
 
 
+    /**
+     * Checks if there is an entry for all enumMap options.
+        *
+    * @param entries
+    * @param enumMap
+    */
+   private static void addMissingEntries(EntryList entries, Map<String, AppOptionEnum> enumMap) {
+      Set<String> entryKeys = entries.getEntriesMapping().keySet();
+      Set<String> enumMapKeys = new HashSet<String>(enumMap.keySet());
+      enumMapKeys.removeAll(entryKeys);
+
+
+
+      for (String key : enumMapKeys) {
+         AppOptionEnum optionEnum = enumMap.get(key);
+         boolean hasDefaults = ProcessUtils.implementsInterface(optionEnum.getClass(), DefaultValues.class);
+         String optionValue = null;
+         if (hasDefaults) {
+            optionValue = AppUtils.getDefaultValue(optionEnum.getType(), (DefaultValues) optionEnum);
+         } else {
+            optionValue = AppUtils.getZeroValue(optionEnum.getType());
+         }
+
+         // Add new entry
+         entries.addEntry(key, optionValue, optionEnum.getType(), new ArrayList<String>());
+
+      }
+
+   }
+
    public static final String COMMENT_PREFIX = "//";
    public static final String SPACE = " ";
    public static final String NEWLINE = "\n";
+
 
 }

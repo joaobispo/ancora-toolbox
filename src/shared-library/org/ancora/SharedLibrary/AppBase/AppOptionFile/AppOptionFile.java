@@ -25,10 +25,12 @@ import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.DefaultValues;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.Utilities.LineReader;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.SharedLibrary.ProcessUtils;
 
 /**
  * Interface between files and AppOptions.
@@ -48,10 +50,33 @@ public class AppOptionFile {
       this.entryList = new EntryList();
 
       Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
+
+      boolean hasDefaults = ProcessUtils.implementsInterface(appOptionEnum, DefaultValues.class);
+
       // Add new entry
       for (String key : enumMap.keySet()) {
          AppOptionEnum type = enumMap.get(key);
-         entryList.addEntry(key, AppUtils.getDefaultValue(type.getType()), type.getType(), new ArrayList<String>());
+
+         // Get default value
+         String defaultValue = null;
+         if(hasDefaults) {
+            defaultValue = AppUtils.getDefaultValue(type.getType(), (DefaultValues)type);
+         } else {
+            defaultValue = AppUtils.getZeroValue(type.getType());
+         }
+         /*
+         if(hasDefaults) {
+            Object defaultValueObject = ((DefaultValues)type).getDefaultValue();
+            if(defaultValueObject != null) {
+               defaultValue = defaultValueObject.toString();
+            }
+         }
+
+         if(defaultValue == null) {
+            defaultValue = AppUtils.getZeroValue(type.getType());
+         }
+         */
+         entryList.addEntry(key, defaultValue, type.getType(), new ArrayList<String>());
       }
 
    }
@@ -126,7 +151,7 @@ public class AppOptionFile {
       for(AppOptionEnum option : options.values()) {
          String optionName = option.getName();
          AppValueType type = option.getType();
-         String value = AppUtils.getDefaultValue(type);
+         String value = AppUtils.getZeroValue(type);
          builder.append(OptionFileUtils.buildLine(optionName, value, type));
          builder.append(OptionFileUtils.NEWLINE);
       }

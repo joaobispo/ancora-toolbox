@@ -23,6 +23,8 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.Logging.JTextAreaHandler;
 import java.io.File;
 import java.util.Arrays;
@@ -189,6 +191,22 @@ public class ProgramPanel extends javax.swing.JPanel {
        }
 
        workerExecutor.shutdownNow();
+       
+/*
+       workerThread.interrupt();
+       int counter = 1;
+       while(worker.isRunning()) {
+         try {
+            Thread.sleep(50);
+            System.out.println("Cancelling... ("+counter+")");
+            counter++;
+         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+         }
+       }
+       System.out.println("Cancel Successful");
+ *
+ */
        worker = null;
        setButtonsEnable(true);
 }//GEN-LAST:event_cancelButtonActionPerformed
@@ -223,6 +241,9 @@ public class ProgramPanel extends javax.swing.JPanel {
        }
 
        worker = new ApplicationWorker(this, optionFile.getMap());
+
+       //workerThread = new Thread(worker);
+       //workerThread.start();
 
        workerExecutor = Executors.newSingleThreadExecutor();
        workerExecutor.submit(worker);
@@ -260,6 +281,7 @@ public class ProgramPanel extends javax.swing.JPanel {
    final private App application;
    private ApplicationWorker worker;
    private ExecutorService workerExecutor;
+   //private Thread workerThread;
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
 

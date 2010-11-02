@@ -23,13 +23,37 @@ package org.ancora.SharedLibrary.AppBase;
  * @author Joao Bispo
  */
 public enum AppValueType {
+   /**
+    * A string
+    */
    string("="),
+   /**
+    * A boolean
+    */
    bool("="),
+   /**
+    * An integer
+    */
    integer("="),
+   /**
+    * A list of custom strings
+    */
    stringList("+="),
+   /**
+    * A list of predefined strings, from which we can choose only one.
+    */
    multipleChoice("="),
    multipleChoiceStringList("+="),
+   /**
+    * One complete setup. Value stores the path to a file in AppOptionFile format.
+    */
+   multipleSetup("="),
+   /**
+    * A list of pre-defined setups. There can be several instances of the same
+    * type of setup.
+    */
    multipleSetupList("+=");
+   
 
    private AppValueType(String attribution) {
       this.attribution = attribution;
