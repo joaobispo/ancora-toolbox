@@ -20,6 +20,7 @@ package org.specs.DymaLib.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
+import org.specs.DymaLib.Utils.PatternDetector.PatternState;
 
 /**
  *
@@ -29,34 +30,109 @@ public class TraceUnitCollector {
 
    public TraceUnitCollector() {
       //traceUnits = new ArrayList<TraceUnit>();
-      currentTraceUnits = null;
-      previousTraceUnits = null;
-      collecting = false;
-      newCollection = false;
-      patternSize = 0;
+      tempTraceUnits = null;
+      completeTraceUnits = null;
+      //collecting = false;
+      currentState = CollectorState.LOOKING_FOR_PATTERN;
+      repetitions = 0;
+      //newCollection = false;
+      //patternSize = 0;
    }
 
+   /*
    public void startCollecting(int patternSize) {
-      currentTraceUnits = new ArrayList<TraceUnit>();
+      tempTraceUnits = new ArrayList<TraceUnit>();
       collecting = true;
       this.patternSize = patternSize;
    }
 
    public void stopCollecting() {
       //previousTraceUnits = currentTraceUnits;
-      currentTraceUnits = null;
+      tempTraceUnits = null;
       collecting = false;
       //newCollection = true;
       patternSize = 0;
    }
+*/
 
+   public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
+         switch (currentState) {
+            case LOOKING_FOR_PATTERN:
+               stateLookingForPattern(traceUnit, state, patternSize);
+               break;
+
+            case BUILDING_PATTERN:
+               stateBuildingPattern(traceUnit, state, patternSize);
+               break;
+
+            case CHECKING_PATTERN:
+               stateCheckingPattern(traceUnit, state, patternSize);
+               break;
+         }
+      }
+
+   private void stateLookingForPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
+      // Check if there is a pattern
+      if (state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_CHANGED_SIZES) {
+
+         // Start block
+         tempTraceUnits = new ArrayList<TraceUnit>();
+
+         // Prepare Data
+         currentState = CollectorState.BUILDING_PATTERN;
+
+         // Start processing pattern
+         stateBuildingPattern(traceUnit, state, patternSize);
+
+         return;
+      }
+
+   }
+
+      private void stateBuildingPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
+         // Pattern is bulding and continuing
+         if(state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_UNCHANGED) {
+            // Check size
+            if(tempTraceUnits.size() < patternSize) {
+               tempTraceUnits.add(traceUnit);
+            }
+            
+            if(tempTraceUnits.size() == patternSize) {
+               currentState = CollectorState.CHECKING_PATTERN;
+               completeTraceUnits = tempTraceUnits;
+               tempTraceUnits = new ArrayList<TraceUnit>();
+               repetitions = 1;
+               
+               //stateCheckingPattern(traceUnit, state, patternSize);
+            }
+            
+            return;
+         }
+
+         // Pattern stopped before completing a set
+         tempTraceUnits = null;
+         currentState = CollectorState.LOOKING_FOR_PATTERN;
+         stateLookingForPattern(traceUnit, state, patternSize);
+      }
+
+      private void stateCheckingPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
+         if(state != PatternState.PATTERN_UNCHANGED) {
+            // Pattern stopped before completing a set
+            tempTraceUnits = null;
+            currentState = CollectorState.LOOKING_FOR_PATTERN;
+            stateLookingForPattern(traceUnit, state, patternSize);
+         }
+      }
+
+
+   /*
    public void step(TraceUnit traceUnit) {
       if(collecting) {
-         if(currentTraceUnits.size() < patternSize) {
-            currentTraceUnits.add(traceUnit);
+         if(tempTraceUnits.size() < patternSize) {
+            tempTraceUnits.add(traceUnit);
             newCollection = false;
-         } else if(currentTraceUnits.size() == patternSize){
-            previousTraceUnits = currentTraceUnits;
+         } else if(tempTraceUnits.size() == patternSize){
+            completeTraceUnits = tempTraceUnits;
             newCollection = true;
          } else {
             newCollection = false;
@@ -65,20 +141,37 @@ public class TraceUnitCollector {
          newCollection = false;
       }
    }
-
+*/
+   /*
    public List<TraceUnit> getPreviousTraceUnits() {
       return previousTraceUnits;
    }
+    * 
+    */
 
+   public List<TraceUnit> getAndClearUnits() {
+      List<TraceUnit> returnList = completeTraceUnits;
+      completeTraceUnits = null;
+      return returnList;
+   }
+
+   /*
    public boolean isNewCollection() {
       return newCollection;
    }
+    *
+    */
+   enum CollectorState {
+      LOOKING_FOR_PATTERN,
+      BUILDING_PATTERN,
+      CHECKING_PATTERN;
+   }
 
-   
-
-   private List<TraceUnit> currentTraceUnits;
-   private List<TraceUnit> previousTraceUnits;
-   private boolean newCollection;
-   private boolean collecting;
-   private int patternSize;
+   private List<TraceUnit> tempTraceUnits;
+   private List<TraceUnit> completeTraceUnits;
+   //private boolean newCollection;
+//   private boolean collecting;
+   private CollectorState currentState;
+   private int repetitions;
+   //private int patternSize;
 }

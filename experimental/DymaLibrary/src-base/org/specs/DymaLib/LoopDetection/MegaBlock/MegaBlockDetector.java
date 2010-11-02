@@ -68,8 +68,17 @@ public class MegaBlockDetector implements LoopDetector {
 
    private void processTraceUnit(TraceUnit traceUnit) {
       patternDetector.step(traceUnit.getIdentifier());
-      
-      
+      collector.step(traceUnit, patternDetector.getState(), patternDetector.getPatternSize());
+
+      List<TraceUnit> megablock = collector.getAndClearUnits();
+      if(megablock != null) {
+         System.out.println("Found megablock:");
+         for(TraceUnit unit : megablock) {
+            System.out.println(unit.getInstructions());
+         }
+
+      }
+
       //patternFilter.step(patternDetector.getPatternSize());
 
       //collector.step(traceUnit);
