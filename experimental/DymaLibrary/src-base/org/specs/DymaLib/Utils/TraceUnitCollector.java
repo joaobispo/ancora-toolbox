@@ -19,6 +19,7 @@ package org.specs.DymaLib.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.Utils.PatternDetector.PatternState;
 
@@ -33,11 +34,13 @@ public class TraceUnitCollector {
       tempTraceUnits = null;
       completeTraceUnits = null;
       //collecting = false;
-      currentState = CollectorState.LOOKING_FOR_PATTERN;
-      repetitions = 0;
+      //currentState = CollectorState.LOOKING_FOR_PATTERN;
+      //repetitions = 0;
       //newCollection = false;
       //patternSize = 0;
    }
+
+
 
    /*
    public void startCollecting(int patternSize) {
@@ -56,6 +59,37 @@ public class TraceUnitCollector {
 */
 
    public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
+      switch(state) {
+         case NO_PATTERN:
+            break;
+         case PATTERN_STARTED:
+            initList();
+            addTraceUnit(traceUnit);
+            checkCompleteness(patternSize);
+            break;
+         case PATTERN_UNCHANGED:
+            if(tempTraceUnits != null) {
+               addTraceUnit(traceUnit);
+               checkCompleteness(patternSize);
+            }
+            break;
+         case PATTERN_CHANGED_SIZES:
+            initList();
+            addTraceUnit(traceUnit);
+            checkCompleteness(patternSize);
+            break;
+         case PATTERN_STOPED:
+            nullifyList();
+            break;
+         default:
+            LoggingUtils.getLogger().
+                    warning("Case not defined:"+state);
+            break;
+      }
+   }
+
+/*
+   public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
          switch (currentState) {
             case LOOKING_FOR_PATTERN:
                stateLookingForPattern(traceUnit, state, patternSize);
@@ -70,7 +104,8 @@ public class TraceUnitCollector {
                break;
          }
       }
-
+   */
+/*
    private void stateLookingForPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
       // Check if there is a pattern
       if (state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_CHANGED_SIZES) {
@@ -88,7 +123,8 @@ public class TraceUnitCollector {
       }
 
    }
-
+*/
+   /*
       private void stateBuildingPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
          // Pattern is bulding and continuing
          if(state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_UNCHANGED) {
@@ -124,7 +160,7 @@ public class TraceUnitCollector {
          }
       }
 
-
+*/
    /*
    public void step(TraceUnit traceUnit) {
       if(collecting) {
@@ -161,17 +197,39 @@ public class TraceUnitCollector {
    }
     *
     */
+   /*
    enum CollectorState {
       LOOKING_FOR_PATTERN,
       BUILDING_PATTERN,
       CHECKING_PATTERN;
    }
+    *
+    */
 
    private List<TraceUnit> tempTraceUnits;
    private List<TraceUnit> completeTraceUnits;
+
+   private void initList() {
+      tempTraceUnits = new ArrayList<TraceUnit>();
+   }
+
+   private void addTraceUnit(TraceUnit traceUnit) {
+      tempTraceUnits.add(traceUnit);
+   }
+
+   private void checkCompleteness(int patternSize) {
+      if(tempTraceUnits.size() == patternSize) {
+         completeTraceUnits = tempTraceUnits;
+         nullifyList();
+      }
+   }
+
+   private void nullifyList() {
+      tempTraceUnits = null;
+   }
    //private boolean newCollection;
 //   private boolean collecting;
-   private CollectorState currentState;
-   private int repetitions;
+//   private CollectorState currentState;
+   //private int repetitions;
    //private int patternSize;
 }
