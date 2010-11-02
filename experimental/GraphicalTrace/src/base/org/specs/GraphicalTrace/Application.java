@@ -28,6 +28,7 @@ import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
 import org.specs.DToolPlus.Utilities.EasySystem;
 import org.specs.DymaLib.Dotty.DottyTraceUnit;
@@ -44,7 +45,7 @@ import system.SysteM;
 
 /**
  *
- * @author AJoao Bispo
+ * @author Joao Bispo
  */
 public class Application implements App {
 
@@ -79,7 +80,12 @@ public class Application implements App {
    }
 
    private void processFile(File inputFile) {
-      TraceReader traceReader = (TraceReader)newTraceReader(inputFile);
+      SystemSetup setup = SystemSetup.buildConfig(systemConfigFile);
+      if(setup == null) {
+         setup = SystemSetup.getDefaultConfig();
+      }
+
+      TraceReader traceReader = (TraceReader)newTraceReader(inputFile, setup);
       if(traceReader == null) {
          LoggingUtils.getLogger().
                  warning("traceReader is null.");
@@ -143,11 +149,14 @@ public class Application implements App {
     * @return a DToolReader loaded with the given file, or null if the object
     * could not be created
     */
-   public static DToolReader newTraceReader(File elfFile) {
+   public static DToolReader newTraceReader(File elfFile, SystemSetup setup) {
       String systemConfig = "./Configuration Files/systemconfig.xml";
       String elfFilename = elfFile.getPath();
 
-      SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, false);
+
+
+      //SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, false);
+      SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, setup);
       if(originalSystem == null) {
          LoggingUtils.getLogger().
                  warning("Could not create SysteM object.");
@@ -181,6 +190,14 @@ public class Application implements App {
                  warning("Could not get Trace Unit name.");
          return false;
       }
+
+      String systemConfigFilename = AppUtils.getString(options, Options.SystemSetup);
+      systemConfigFile = new File(systemConfigFilename);
+      if(!systemConfigFile.exists()) {
+         LoggingUtils.getLogger().
+                 info("MicroBlaze setup file '"+systemConfigFilename+"' not found.");
+      }
+
 
       return true;
    }
@@ -228,6 +245,7 @@ public class Application implements App {
    private List<File> inputFiles;
    private File outputFolder;
    private TraceUnits traceUnitName;
+   private File systemConfigFile;
    private final static InstructionDecoder instructionDecoder = new FW_3SP_Decoder();
 
 }

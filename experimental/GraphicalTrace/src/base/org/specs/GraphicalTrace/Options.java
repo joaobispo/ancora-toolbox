@@ -18,9 +18,11 @@
 package org.specs.GraphicalTrace;
 
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.specs.DToolPlus.Config.SystemOptions;
 import org.specs.DymaLib.TraceUnit.TraceUnits;
 
 /**
@@ -28,12 +30,13 @@ import org.specs.DymaLib.TraceUnit.TraceUnits;
  *
  * @author Joao Bispo
  */
-public enum Options implements AppOptionEnum, AppOptionMultipleChoice {
+public enum Options implements AppOptionEnum, AppOptionMultipleChoice, AppOptionEnumSetup {
 
    Input(AppValueType.string),
    InputType(AppValueType.multipleChoice),
    OutputFolder(AppValueType.string),
-   TraceUnit(AppValueType.multipleChoice);
+   TraceUnit(AppValueType.multipleChoice),
+   SystemSetup(AppValueType.multipleSetup);
 
    Options(AppValueType type) {
       this.type = type;
@@ -56,6 +59,14 @@ public enum Options implements AppOptionEnum, AppOptionMultipleChoice {
 
       if(this == TraceUnit) {
          return TraceUnits.values();
+      }
+
+      return null;
+   }
+
+   public AppOptionEnum[] getSetupOptions() {
+      if(this == SystemSetup) {
+         return SystemOptions.values();
       }
 
       return null;
