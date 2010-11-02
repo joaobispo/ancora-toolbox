@@ -23,13 +23,9 @@
 
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ancora.SharedLibrary.Logging.JTextAreaHandler;
 import java.io.File;
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Handler;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
@@ -67,21 +63,13 @@ public class ProgramPanel extends javax.swing.JPanel {
         Handler[] handlersTemp = LoggingUtils.getRootLogger().getHandlers();
         Handler[] newHandlers = new Handler[handlersTemp.length+1];
         System.arraycopy(handlersTemp, 0, newHandlers, 0, handlersTemp.length);
-        //newHandlers[handlersTemp.length] = new JTextAreaHandler(outputArea);
         JTextAreaHandler jTextAreaHandler = new JTextAreaHandler(outputArea);
-        //newHandlers[handlersTemp.length].setLevel(Level.FINEST);
         
-        //newHandlers[handlersTemp.length].setFormatter(new ConsoleFormatter());
-        //newHandlers[handlersTemp.length].setLevel(Level.ALL);
-        //jTextAreaHandler.setFormatter(new ConsoleFormatter());
-        //jTextAreaHandler.setLevel(Level.ALL);
         newHandlers[handlersTemp.length] = jTextAreaHandler;
         LoggingUtils.setRootHandlers(newHandlers);
 
         // Init buttons
         setButtonsEnable(true);
-        //worker = null;
-//        worker = new ApplicationWorker(this, optionFile.getMap());
         worker = new ApplicationWorker(this);
    }
 
@@ -174,7 +162,6 @@ public class ProgramPanel extends javax.swing.JPanel {
        if(!optionsFile.exists()) {
           optionsFile = new File("./");
        }
-       //fc.setCurrentDirectory(new File(filenameTextField.getText()));
        fc.setCurrentDirectory(optionsFile);
        int returnVal = fc.showOpenDialog(this);
 
@@ -186,37 +173,9 @@ public class ProgramPanel extends javax.swing.JPanel {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
 
-       /*
-       // Check if there is a worker
-       if(worker == null) {
-          //outputArea.append("Application is not running.");
-          System.out.println("Application is not running.");
-          return;
-       }
-        *
-        */
 
        worker.shutdown();
-       //workerExecutor.shutdownNow();
-       
-/*
-       workerThread.interrupt();
-       int counter = 1;
-       while(worker.isRunning()) {
-         try {
-            Thread.sleep(50);
-            System.out.println("Cancelling... ("+counter+")");
-            counter++;
-         } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-         }
-       }
-       System.out.println("Cancel Successful");
- *
- */
-       
-       //worker = null;
-       //setButtonsEnable(true);
+ 
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
@@ -247,30 +206,8 @@ public class ProgramPanel extends javax.swing.JPanel {
           System.out.println("Could not load options from '"+filename+"'.");
           return;
        }
+     worker.execute(optionFile.getMap());
 
-       //worker = new ApplicationWorker(this, optionFile.getMap());
-
-       //workerThread = new Thread(worker);
-       //workerThread.start();
-
-
-       worker.execute(optionFile.getMap());
-
-       //workerExecutor = Executors.newSingleThreadExecutor();
-       //workerExecutor.submit(worker);
-
-       /*
-       workerExecutor = Executors.newSingleThreadExecutor();
-       workerExecutor.submit(new Runnable() {
-
-
-         @Override
-         public void run() {
-            worker.execute();
-         }
-      });
-        *
-        */
     }//GEN-LAST:event_startButtonActionPerformed
 
    public final void setButtonsEnable(boolean enable) {
@@ -303,8 +240,7 @@ public class ProgramPanel extends javax.swing.JPanel {
    private JFileChooser fc;
    final private App application;
    private ApplicationWorker worker;
-   //private ExecutorService workerExecutor;
-   //private Thread workerThread;
+
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
 
