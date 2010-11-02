@@ -5,7 +5,7 @@
 
 package org.specs.MicroBlazeSimulatorTester;
 
-import org.ancora.SharedLibrary.AppBase.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 
@@ -13,7 +13,7 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
  *
  * @author Joao Bispo
  */
-public enum TesterOption implements AppOptionEnum {
+public enum Options implements AppOptionEnum {
 
    ElfFile(AppValueType.string),
    ExecuteUpToXInstructions(AppValueType.bool),
@@ -30,7 +30,7 @@ public enum TesterOption implements AppOptionEnum {
    FileForRegisters(AppValueType.string);
    
 
-   private TesterOption(AppValueType type) {
+   private Options(AppValueType type) {
       this.type = type;
    }
 

@@ -39,12 +39,12 @@ public class BufferedWriter {
    }
 
    public static BufferedWriter newTraceFile(Map<String, AppValue> options) {
-      boolean writeTrace = Boolean.parseBoolean(AppUtils.getString(options, TesterOption.WriteTrace));
+      boolean writeTrace = Boolean.parseBoolean(AppUtils.getString(options, Options.WriteTrace));
       if (!writeTrace) {
          return null;
       }
 
-      String traceFilename = AppUtils.getString(options, TesterOption.TraceFile);
+      String traceFilename = AppUtils.getString(options, Options.TraceFile);
       File traceFile = new File(traceFilename);
 
       return new BufferedWriter(traceFile);

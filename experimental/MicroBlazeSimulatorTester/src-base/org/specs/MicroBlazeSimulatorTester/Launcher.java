@@ -11,6 +11,8 @@ import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
+ * Executes and simulates MicroBlaze ELF files. Contains several options to
+ * inspect the execution of the program.
  *
  * @author Ancora Group <ancora.codigo@gmail.com>
  */
@@ -24,7 +26,7 @@ LoggingUtils.setupConsoleOnly();
        LoggingUtils.getRootLogger().setLevel(Level.INFO);
 
        // Create autocompile application
-       App tester = new Tester();
+       App tester = new Application();
 
 
        // Launch GUI

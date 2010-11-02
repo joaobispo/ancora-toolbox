@@ -12,38 +12,41 @@ import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DToolPlus.Utils.Dumper;
-import org.specs.DToolPlus.Utils.ElfBusReader;
+import org.specs.DToolPlus.Config.SystemSetup;
+import org.specs.DToolPlus.DToolUtils;
+import org.specs.DToolPlus.Utilities.Dumper;
+import org.specs.DToolPlus.Utilities.EasySystem;
 import system.memory.MemoryException;
 
 /**
  *
  * @author Joao Bispo
  */
-public class Tester implements App {
+public class Application implements App {
 
    public int execute(Map<String, AppValue> options) {
       // Get ELF
-      String elfFilename = AppUtils.getString(options, TesterOption.ElfFile);
+      String elfFilename = AppUtils.getString(options, Options.ElfFile);
       File elfFile = new File(elfFilename);
 
       String systemConfig = "./Configuration Files/systemconfig.xml";
-      ElfBusReader busReader = ElfBusReader.createElfReader(systemConfig, elfFile.getPath());
+      //ElfBusReader busReader = ElfBusReader.createElfReader(systemConfig, elfFile.getPath());
+      EasySystem busReader = new EasySystem(DToolUtils.newSysteM(systemConfig, elfFile.getPath(), SystemSetup.getDefaultConfig()));
 
 
       dumpInstructionMemoryBeforeExecution(options, busReader);
       BufferedWriter traceFile = BufferedWriter.newTraceFile(options);
 
-      boolean stopAtInstructionNumberX = AppUtils.getBool(options, TesterOption.ExecuteUpToXInstructions);
+      boolean stopAtInstructionNumberX = AppUtils.getBool(options, Options.ExecuteUpToXInstructions);
       Integer stopInstruction = null;
       if(stopAtInstructionNumberX) {
-         stopInstruction = AppUtils.getInteger(options, TesterOption.StopInstruction);
+         stopInstruction = AppUtils.getInteger(options, Options.StopInstruction);
       }
 
-      boolean stopAtAddressX = AppUtils.getBool(options, TesterOption.StopAtAddressX);
+      boolean stopAtAddressX = AppUtils.getBool(options, Options.StopAtAddressX);
       Integer stopAddress = null;
       if(stopAtAddressX) {
-         stopAddress = AppUtils.getInteger(options, TesterOption.StopAddress);
+         stopAddress = AppUtils.getInteger(options, Options.StopAddress);
       }
 
       // First step
@@ -68,7 +71,8 @@ public class Tester implements App {
          currentValue++;
          counter++;
 
-         if(busReader.foundEmptyInstruction()) {
+         //if(busReader.foundEmptyInstruction()) {
+         if(busReader.isEmptyInstruction()) {
              break;
          }
 
@@ -102,18 +106,19 @@ public class Tester implements App {
    }
 
    public Class getAppOptionEnum() {
-      return TesterOption.class;
+      return Options.class;
    }
 
-   private void dumpInstructionMemoryBeforeExecution(Map<String, AppValue> options, ElfBusReader busReader) {
+   //private void dumpInstructionMemoryBeforeExecution(Map<String, AppValue> options, ElfBusReader busReader) {
+   private void dumpInstructionMemoryBeforeExecution(Map<String, AppValue> options, EasySystem busReader) {
       // Check if we want to dump the instruction memory
-      boolean dumpInstructionMemory = Boolean.parseBoolean(AppUtils.getString(options, TesterOption.WriteLmbMemoryBeforeExecution));
+      boolean dumpInstructionMemory = Boolean.parseBoolean(AppUtils.getString(options, Options.WriteLmbMemoryBeforeExecution));
       if(!dumpInstructionMemory) {
          return;
       }
 
       // Get output file
-      String filename = AppUtils.getString(options, TesterOption.LmbBeforeFile);
+      String filename = AppUtils.getString(options, Options.LmbBeforeFile);
       File file = new File(filename);
 
       try {
@@ -125,15 +130,16 @@ public class Tester implements App {
       }
    }
 
-   private void dumpInstructionMemoryAfterError(Map<String, AppValue> options, ElfBusReader busReader) {
+   private void dumpInstructionMemoryAfterError(Map<String, AppValue> options, EasySystem busReader) {
+   //private void dumpInstructionMemoryAfterError(Map<String, AppValue> options, ElfBusReader busReader) {
       // Check if we want to dump the instruction memory
-      boolean dumpInstructionMemory = Boolean.parseBoolean(AppUtils.getString(options, TesterOption.WriteLmbMemoryAfterExecution));
+      boolean dumpInstructionMemory = Boolean.parseBoolean(AppUtils.getString(options, Options.WriteLmbMemoryAfterExecution));
       if(!dumpInstructionMemory) {
          return;
       }
 
       // Get output file
-      String filename = AppUtils.getString(options, TesterOption.LmbAfterFile);
+      String filename = AppUtils.getString(options, Options.LmbAfterFile);
       File file = new File(filename);
 
       try {
@@ -145,13 +151,14 @@ public class Tester implements App {
       }
    }
 
-   private void dumpRegisters(ElfBusReader busReader, Map<String, AppValue> options) {
-      boolean dumpRegisters = AppUtils.getBool(options, TesterOption.RegistersValuesAfterExecution);
+   //private void dumpRegisters(ElfBusReader busReader, Map<String, AppValue> options) {
+   private void dumpRegisters(EasySystem busReader, Map<String, AppValue> options) {
+      boolean dumpRegisters = AppUtils.getBool(options, Options.RegistersValuesAfterExecution);
       if(!dumpRegisters) {
          return;
       }
 
-      String filename = AppUtils.getString(options, TesterOption.FileForRegisters);
+      String filename = AppUtils.getString(options, Options.FileForRegisters);
       File file = new File(filename);
 
       /*
@@ -166,7 +173,7 @@ public class Tester implements App {
 */
 
       //IoUtils.write(file, builder.toString());
-      IoUtils.write(file, Dumper.dumpRegisters(busReader.getCpu()));
+      IoUtils.write(file, Dumper.dumpRegisters(busReader.getSystem().getCPUClass()));
    }
 
 }
