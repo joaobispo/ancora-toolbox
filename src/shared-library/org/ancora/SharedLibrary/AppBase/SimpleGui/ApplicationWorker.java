@@ -18,6 +18,14 @@
 package org.ancora.SharedLibrary.AppBase.SimpleGui;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ProcessUtils;
@@ -28,44 +36,69 @@ import org.ancora.SharedLibrary.ProcessUtils;
  * @author Joao Bispo
  */
 //public class ApplicationWorker extends SwingWorker<Integer, String> {
-public class ApplicationWorker implements Runnable {
+public class ApplicationWorker {
 
-   public ApplicationWorker(ProgramPanel programPanel,  Map<String,AppValue> options) {
+   public ApplicationWorker(ProgramPanel programPanel) {
+   //public ApplicationWorker(ProgramPanel programPanel,  Map<String,AppValue> options) {
    //public ApplicationWorker(MainWindow mainWindow, String filename) {
       this.mainWindow = programPanel;
-      this.options = options;
+//      this.options = null;
+ //     this.options = options;
       this.returnValue = null;
-      this.isRunning = false;
+//      this.isRunning = false;
       //this.filename = filename;
+      workerExecutor = null;
 
    }
 
 
-   @Override
-   public void run() {
-      isRunning = true;
+   public void execute(final Map<String,AppValue> options) {
+   //public void execute() {
+     // this.options = options;
+     ExecutorService monitor = Executors.newSingleThreadExecutor();
+     monitor.submit(new Runnable() {
 
-      try {
-         // Disable buttons
-         ProcessUtils.runOnSwing(new Runnable() {
-
-            @Override
-            public void run() {
-               mainWindow.setButtonsEnable(false);
-            }
-         });
-
-
-         try {
-            returnValue = mainWindow.getApplication().execute(options);
-         } catch (InterruptedException ex) {
-            LoggingUtils.getLogger().
-                    info("Interruption:" + ex.getMessage());
-            Thread.currentThread().interrupt();
+         @Override
+         public void run() {
+            runner(options);
          }
+      });
+      //this.options = null;
+      //System.out.println("Option == null");
+      // Run this class on its own thread
+      /*
+      // Disable buttons
+      ProcessUtils.runOnSwing(new Runnable() {
 
-         // Enable buttons again
+         @Override
+         public void run() {
+            mainWindow.setButtonsEnable(false);
+         }
+      });
 
+
+
+      // Create task
+      Callable<Integer> task = getTask();
+
+      // Submit task
+      workerExecutor = Executors.newSingleThreadExecutor();
+      Future<Integer> future = workerExecutor.submit(task);
+
+      // Check if task finishes
+      Integer result = null;
+      try {
+         result = future.get();
+      } catch (InterruptedException ex) {
+         Thread.currentThread().interrupt(); // ignore/reset
+      } catch (ExecutionException ex) {
+         LoggingUtils.getLogger().
+                 //warning("Caught Exception:"+ex.getMessage());
+                 warning(ex.getMessage());
+      }
+
+
+       // Enable buttons again
          ProcessUtils.runOnSwing(new Runnable() {
 
             @Override
@@ -73,14 +106,110 @@ public class ApplicationWorker implements Runnable {
                mainWindow.setButtonsEnable(true);
             }
          });
-      } catch (Exception e) {
+ 
+
+      //workerExecutor = Executors.newSingleThreadExecutor();
+      //workerExecutor.submit(this);
+      */
+
+   }
+
+   private void runner(Map<String,AppValue> options) {
+            // Disable buttons
+      setButtons(false);
+
+
+
+      // Create task
+      Callable<Integer> task = getTask(options);
+
+      // Submit task
+      workerExecutor = Executors.newSingleThreadExecutor();
+      Future<Integer> future = workerExecutor.submit(task);
+
+      // Check if task finishes
+      Integer result = null;
+      try {
+         result = future.get();
+      } catch (InterruptedException ex) {
+         Thread.currentThread().interrupt(); // ignore/reset
+      } catch (ExecutionException ex) {
          LoggingUtils.getLogger().
-                 severe("Exception happend:" + e.getMessage());
-         e.printStackTrace(System.err);
+                 //warning("Caught Exception:"+ex.getMessage());
+                 warning(ex.toString());
+      }
+     
+      if(result == null) {
+         LoggingUtils.getLogger().
+                 info("Cancelled application.");
+      } else if(result.compareTo(0) != 0) {
+          LoggingUtils.getLogger().
+                 info("Application returned non-zero value:"+result);
       }
 
-      isRunning = false;
-      return;
+      /*
+      if(result != null && result.compareTo(0) != 0) {
+         LoggingUtils.getLogger().
+                 warning("Application returned non-zero value:"+result);
+      }
+       * 
+       */
+
+
+       // Enable buttons again
+      setButtons(true);
+/*
+      ProcessUtils.runOnSwing(new Runnable() {
+
+            @Override
+            public void run() {
+               mainWindow.setButtonsEnable(true);
+            }
+         });
+*/
+
+      //workerExecutor = Executors.newSingleThreadExecutor();
+      //workerExecutor.submit(this);
+
+
+//      isRunning = true;
+
+    //  try {
+         
+         //try {
+ //           returnValue = mainWindow.getApplication().execute(options);
+         //} catch (InterruptedException ex) {
+         //   LoggingUtils.getLogger().
+         //           info("Interruption:" + ex.getMessage());
+         //   Thread.currentThread().interrupt();
+         //}
+
+         /*
+         // Enable buttons again
+         ProcessUtils.runOnSwing(new Runnable() {
+
+            @Override
+            public void run() {
+               mainWindow.setButtonsEnable(true);
+            }
+         });
+          * 
+          */
+      /*
+      } catch (Exception e) {
+         LoggingUtils.getLogger().
+                 warning(e.toString());
+                 //warning("Caught exception:"+e.getMessage()
+                 //+"\n"+e.getLocalizedMessage()+"\n"+e.toString());
+         //e.printStackTrace(System.err);
+         isRunning = false;
+         return;
+      }
+       *
+       */
+
+//      isRunning = false;
+ //     return;
    }
    /*
    @Override
@@ -112,21 +241,68 @@ public class ApplicationWorker implements Runnable {
    }
    */
 
+
+   private void setButtons(final boolean enable) {
+            ProcessUtils.runOnSwing(new Runnable() {
+
+         @Override
+         public void run() {
+            mainWindow.setButtonsEnable(enable);
+         }
+      });
+
+   }
+
+   /**
+    * Builds a task out of the application
+    * @return
+    */
+   private Callable<Integer> getTask(final Map<String,AppValue> options) {
+      Callable<Integer> task = new Callable<Integer>() {
+
+         @Override
+         public Integer call() throws Exception {
+            returnValue = mainWindow.getApplication().execute(options);
+            return returnValue;
+         }
+      };
+
+      return task;
+   }
+
+   public void shutdown() {
+      if(workerExecutor == null) {
+         LoggingUtils.getLogger().
+                 warning("Application is not running.");
+         return;
+      }
+
+      workerExecutor.shutdownNow();
+   }
+
    public Integer getReturnValue() {
       return returnValue;
    }
 
+   /*
    public boolean isRunning() {
       return isRunning;
    }
+    *
+    */
 
 
 
    private ProgramPanel mainWindow;
-   private Map<String,AppValue> options;
+   //private Map<String,AppValue> options;
    private Integer returnValue;
 
-   private volatile boolean isRunning;
+   //private volatile boolean isRunning;
+
+   private ExecutorService workerExecutor;
+
+
+
 
    //private  String filename;
 

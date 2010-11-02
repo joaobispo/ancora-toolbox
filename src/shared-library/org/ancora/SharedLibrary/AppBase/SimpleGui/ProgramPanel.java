@@ -80,7 +80,9 @@ public class ProgramPanel extends javax.swing.JPanel {
 
         // Init buttons
         setButtonsEnable(true);
-        worker = null;
+        //worker = null;
+//        worker = new ApplicationWorker(this, optionFile.getMap());
+        worker = new ApplicationWorker(this);
    }
 
     /** This method is called from within the constructor to
@@ -183,14 +185,19 @@ public class ProgramPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_browseButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+
+       /*
        // Check if there is a worker
        if(worker == null) {
           //outputArea.append("Application is not running.");
           System.out.println("Application is not running.");
           return;
        }
+        *
+        */
 
-       workerExecutor.shutdownNow();
+       worker.shutdown();
+       //workerExecutor.shutdownNow();
        
 /*
        workerThread.interrupt();
@@ -207,8 +214,9 @@ public class ProgramPanel extends javax.swing.JPanel {
        System.out.println("Cancel Successful");
  *
  */
-       worker = null;
-       setButtonsEnable(true);
+       
+       //worker = null;
+       //setButtonsEnable(true);
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
@@ -240,14 +248,29 @@ public class ProgramPanel extends javax.swing.JPanel {
           return;
        }
 
-       worker = new ApplicationWorker(this, optionFile.getMap());
+       //worker = new ApplicationWorker(this, optionFile.getMap());
 
        //workerThread = new Thread(worker);
        //workerThread.start();
 
-       workerExecutor = Executors.newSingleThreadExecutor();
-       workerExecutor.submit(worker);
 
+       worker.execute(optionFile.getMap());
+
+       //workerExecutor = Executors.newSingleThreadExecutor();
+       //workerExecutor.submit(worker);
+
+       /*
+       workerExecutor = Executors.newSingleThreadExecutor();
+       workerExecutor.submit(new Runnable() {
+
+
+         @Override
+         public void run() {
+            worker.execute();
+         }
+      });
+        *
+        */
     }//GEN-LAST:event_startButtonActionPerformed
 
    public final void setButtonsEnable(boolean enable) {
@@ -280,7 +303,7 @@ public class ProgramPanel extends javax.swing.JPanel {
    private JFileChooser fc;
    final private App application;
    private ApplicationWorker worker;
-   private ExecutorService workerExecutor;
+   //private ExecutorService workerExecutor;
    //private Thread workerThread;
 
    private static final String OPTION_LAST_USED_FILE = "lastUsedFile";
