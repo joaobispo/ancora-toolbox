@@ -18,12 +18,19 @@
 package org.specs.GraphicalTrace;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
@@ -36,7 +43,6 @@ import org.specs.DToolPlus.DymaLib.FW_3SP.FW_3SP_Decoder;
 import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DToolPlus.DymaLib.DToolReader;
 import org.specs.DymaLib.Interfaces.TraceReader;
-import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnits;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;
@@ -53,13 +59,52 @@ public class Application implements App {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       // Disable security manager for Web Start
+       System.setSecurityManager(null);
+
         LoggingUtils.setupConsoleOnly();
+
+        // Check resources
+        //checkResources();
+
+        // Check if the files for running DToolPlus exist
+        DToolUtils.prepareDtoolMicroblaze();
+        //prepareDtoolMicroblaze();
+
 
         App app = new Application();
         SimpleGui gui = new SimpleGui(app);
         gui.setTitle("Graphical Trace v0.1");
         gui.execute();
     }
+
+    /*
+   private static void prepareDtoolMicroblaze() {
+      for(String resource : microblazeDtoolFiles) {
+         InputStream stream = IoUtils.resourceToStream(resource);
+         File destination = new File(resource);
+         IoUtils.copy(stream, destination);
+      }
+
+   }
+     *
+     */
+
+   /*
+   private static void checkResources() {
+      for(String resource : microblazeDtoolFiles) {
+         ClassLoader cl = Application.class.getClassLoader();
+         URL fileUrl = cl.getResource(resource);
+         try {
+            File newFile = new File(fileUrl.toURI());
+            System.out.println("File:"+newFile.getPath());
+         } catch (URISyntaxException ex) {
+            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
+         }
+      }
+   }
+    * 
+    */
 
    public int execute(Map<String, AppValue> options) throws InterruptedException {
       boolean success = init(options);
@@ -85,7 +130,8 @@ public class Application implements App {
          setup = SystemSetup.getDefaultConfig();
       }
 
-      TraceReader traceReader = (TraceReader)newTraceReader(inputFile, setup);
+      //TraceReader traceReader = (TraceReader)newTraceReader(inputFile, setup);
+      TraceReader traceReader = (TraceReader)DToolReader.newDToolReader(inputFile, setup);
       if(traceReader == null) {
          LoggingUtils.getLogger().
                  warning("traceReader is null.");
@@ -126,7 +172,7 @@ public class Application implements App {
       }
 
       for(TraceUnit traceUnit : traceUnits) {
-         dotty.addBlock(traceUnit);
+         dotty.addUnit(traceUnit);
          /*
          System.out.println("Block "+traceUnit.getIdentifier());
          List<String> insts = traceUnit.getInstructions();
@@ -149,8 +195,14 @@ public class Application implements App {
     * @return a DToolReader loaded with the given file, or null if the object
     * could not be created
     */
+   /*
    public static DToolReader newTraceReader(File elfFile, SystemSetup setup) {
       String systemConfig = "./Configuration Files/systemconfig.xml";
+      //String systemConfigResource = "Configuration Files/systemconfig.xml";
+      //File systemFile = IoUtils.systemResourceToFile(systemConfigResource);
+      //String systemConfig = systemFile.getPath();
+      
+
       String elfFilename = elfFile.getPath();
 
 
@@ -167,6 +219,7 @@ public class Application implements App {
 
       return dtoolReader;
    }
+*/
 
    private boolean init(Map<String, AppValue> options) {
       inputFiles = getFiles(options);
@@ -211,6 +264,8 @@ public class Application implements App {
       String inputTypeName = AppUtils.getString(options, Options.InputType);
       InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
 
+      return InputType.getFiles(options, Options.Input, inputType);
+      /*
       // Is Folder mode
       if (inputType == InputType.FilesInFolder) {
          File inputFolder = AppUtils.getFolder(options, Options.Input);
@@ -237,6 +292,8 @@ public class Application implements App {
       LoggingUtils.getLogger().
               warning("Case not defined:'" + inputType + "'");
       return null;
+       *
+       */
    }
 
    /**
@@ -248,4 +305,15 @@ public class Application implements App {
    private File systemConfigFile;
    private final static InstructionDecoder instructionDecoder = new FW_3SP_Decoder();
 
+   /*
+   public static final List<String> microblazeDtoolFiles = Arrays.asList(
+            "Configuration Files/cpuconfig.dtd",
+            "Configuration Files/deviceconfig.dtd",
+            "Configuration Files/systemconfig.dtd",
+            "Configuration Files/systemconfig.xml",
+            "OPBDevices/OPBTimerCounter/OPBTimerCounter.xml",
+            "OPBDevices/OPBUARTLite/OPBUARTLite.xml",
+            "Processors/FW_3SP/FW_3SP.xml"
+            );
+*/
 }

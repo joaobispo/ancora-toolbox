@@ -54,7 +54,7 @@ public enum Options implements AppOptionEnum, AppOptionMultipleChoice, AppOption
 
    public Enum[] getChoices() {
       if(this == InputType) {
-         return org.specs.GraphicalTrace.InputType.values();
+         return org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType.values();
       }
 
       if(this == TraceUnit) {
