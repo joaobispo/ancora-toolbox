@@ -19,6 +19,7 @@ package org.specs.LoopDetection;
 
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
@@ -29,9 +30,12 @@ import org.specs.DymaLib.LoopDetection.LoopDetectors;
  *
  * @author Joao Bispo
  */
-public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup, AppOptionMultipleSetup {
+public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
+        AppOptionMultipleSetup, AppOptionMultipleChoice {
 
-   Program(AppValueType.string),
+   ProgramFileOrFolder(AppValueType.string),
+   InputType(AppValueType.multipleChoice),
+   OutputFolder(AppValueType.string),
    LoopDetector(AppValueType.multipleSetupList),
    SystemSetup(AppValueType.multipleSetup);
 
@@ -60,6 +64,14 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup, AppOptionMu
    public AppOptionEnumSetup[] getSetups() {
       if(this == LoopDetector) {
          return LoopDetectors.values();
+      }
+
+      return null;
+   }
+
+   public Enum[] getChoices() {
+      if (this == InputType) {
+         return org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType.values();
       }
 
       return null;
