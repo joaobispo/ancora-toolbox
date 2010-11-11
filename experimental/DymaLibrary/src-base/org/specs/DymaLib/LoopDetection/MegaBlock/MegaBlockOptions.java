@@ -17,17 +17,28 @@
 
 package org.specs.DymaLib.LoopDetection.MegaBlock;
 
+import java.io.File;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.ancora.SharedLibrary.EnumUtils;
+import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.TraceUnit.TraceUnits;
+import org.specs.DymaLib.TraceUnit.UnitBuilder;
+import org.specs.DymaLib.TraceUnit.UnitBuilderFactory;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum MegaBlockOptions implements AppOptionEnum {
+public enum MegaBlockOptions implements AppOptionEnum, AppOptionMultipleChoice {
 
-   MaxPatternSize(AppValueType.integer);
+   MaxPatternSize(AppValueType.integer),
+   TraceUnit(AppValueType.multipleChoice),
+   StoreNonLoopInstructions(AppValueType.bool),
+   OnlyCollectLoops(AppValueType.bool);
 
    private MegaBlockOptions(AppValueType type) {
       this.type = type;
@@ -42,4 +53,41 @@ public enum MegaBlockOptions implements AppOptionEnum {
    }
 
    private AppValueType type;
+
+   public Enum[] getChoices() {
+      if (this == TraceUnit) {
+         return TraceUnits.values();
+      }
+
+      return null;
+   }
+
+   /**
+    * Builds a new MegaBlock.
+    *
+    * @param appFile
+    * @param decoder
+    * @return
+    */
+   public static MegaBlockDetector newMegaBlockDetector(File appFile, InstructionDecoder decoder) {
+      AppOptionFile optionFile = AppOptionFile.parseFile(appFile, MegaBlockOptions.class);
+
+      String traceUnitName = AppUtils.getString(optionFile.getMap(), MegaBlockOptions.TraceUnit);
+      TraceUnits traceUnit = EnumUtils.valueOf(TraceUnits.class, traceUnitName);
+      if(traceUnitName == null || traceUnit == null) {
+         return null;
+      }
+      UnitBuilder unitBuilder = UnitBuilderFactory.newUnitBuilder(traceUnit, decoder);
+
+      Integer maxPatternSize = AppUtils.getInteger(optionFile.getMap(), MegaBlockOptions.MaxPatternSize);
+      if(maxPatternSize == null) {
+         return null;
+      }
+
+      boolean storeSequenceInstructions = AppUtils.getBool(optionFile.getMap(), MegaBlockOptions.StoreNonLoopInstructions);
+
+      boolean onlyCollectLoops = AppUtils.getBool(optionFile.getMap(), MegaBlockOptions.OnlyCollectLoops);
+      
+      return new MegaBlockDetector(unitBuilder, maxPatternSize, storeSequenceInstructions, onlyCollectLoops);
+   }
 }

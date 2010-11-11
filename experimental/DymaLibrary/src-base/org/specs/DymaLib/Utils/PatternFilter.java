@@ -23,6 +23,7 @@ package org.specs.DymaLib.Utils;
  * TO REMOVE
  * 
  * @author Joao Bispo
+ * @deprecated
  */
 public class PatternFilter {
 

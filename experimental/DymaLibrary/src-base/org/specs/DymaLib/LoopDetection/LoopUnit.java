@@ -17,29 +17,27 @@
 
 package org.specs.DymaLib.LoopDetection;
 
-import java.io.File;
-import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptions;
-import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
+import java.util.List;
 
 /**
- * List of supported partitioners in this package.
  *
  * @author Joao Bispo
  */
-public enum LoopDetectors implements AppOptionEnumSetup {
-   MegaBlock(MegaBlockOptions.values()),
-   WarpBlock(WarpBlockOptions.values());
+public interface LoopUnit {
 
-   private LoopDetectors(AppOptionEnum[] options) {
-      this.options = options;
-   }
+   List<String> getInstructions();
 
+   List<Integer> getAddresses();
 
-   public AppOptionEnum[] getSetupOptions() {
-      return options;
-   }
+   int getId();
 
-   private final AppOptionEnum[] options;
+   int getNumInstructions();
+
+   int getIterations();
+
+   int getTotalInstructions();
+
+   boolean isLoop();
+
+   boolean areAllInstructionsStored();
 }

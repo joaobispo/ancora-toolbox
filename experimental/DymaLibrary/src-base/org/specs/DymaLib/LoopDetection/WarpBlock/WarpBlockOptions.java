@@ -17,9 +17,13 @@
 
 package org.specs.DymaLib.LoopDetection.WarpBlock;
 
+import java.io.File;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
+import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.LoopDetection.LoopDetector;
 
 /**
  *
@@ -28,7 +32,9 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
 public enum WarpBlockOptions implements AppOptionEnum {
 
    LimitBackwardJump(AppValueType.bool),
-   BackwardJumpMaxSize(AppValueType.integer);
+   BackwardJumpMaxSize(AppValueType.integer),
+   StoreNonLoopInstructions(AppValueType.bool);
+
 
    private WarpBlockOptions(AppValueType type) {
       this.type = type;
@@ -43,4 +49,26 @@ public enum WarpBlockOptions implements AppOptionEnum {
    }
 
    private AppValueType type;
+
+
+   /**
+    * Builds a new WarpBlockDetector
+    * @param appFile
+    * @param decoder
+    * @return
+    */
+   public static LoopDetector newWarpBlockDetector(File appFile, InstructionDecoder decoder) {
+      AppOptionFile optionFile = AppOptionFile.parseFile(appFile, WarpBlockOptions.class);
+
+      Integer backwardJumpMaxSize = AppUtils.getInteger(optionFile.getMap(), WarpBlockOptions.BackwardJumpMaxSize);
+      if(backwardJumpMaxSize == null) {
+         return null;
+      }
+
+      boolean limitBackwardJump = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.LimitBackwardJump);
+
+      boolean storeSequenceInstructions = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.StoreNonLoopInstructions);
+
+      return new WarpBlockDetector(limitBackwardJump, backwardJumpMaxSize, storeSequenceInstructions, decoder);
+   }
 }

@@ -20,6 +20,7 @@ package org.specs.DymaLib.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.Utils.PatternDetector.PatternState;
 
@@ -29,15 +30,21 @@ import org.specs.DymaLib.Utils.PatternDetector.PatternState;
  */
 public class TraceUnitCollector {
 
-   public TraceUnitCollector() {
+   public TraceUnitCollector(boolean storeSequenceInstructions) {
       //traceUnits = new ArrayList<TraceUnit>();
-      tempTraceUnits = null;
-      completeTraceUnits = null;
+      //tempTraceUnits = null;
+      //completeTraceUnits = null;
+      this.storeSequenceInstructions = storeSequenceInstructions;
       //collecting = false;
       //currentState = CollectorState.LOOKING_FOR_PATTERN;
       //repetitions = 0;
       //newCollection = false;
       //patternSize = 0;
+      // Always start with a Sequence
+      completedUnits = new ArrayList<MegaBlockUnit>();
+      // Initialize currentLoop
+      currentLoop = null;
+      initSequence();
    }
 
 
@@ -58,6 +65,14 @@ public class TraceUnitCollector {
    }
 */
 
+   /**
+    * Builds loops.
+    *
+    * @param traceUnit
+    * @param state
+    * @param patternSize
+    */
+   /*
    public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
       switch(state) {
          case NO_PATTERN:
@@ -87,128 +102,80 @@ public class TraceUnitCollector {
             break;
       }
    }
-
-/*
-   public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
-         switch (currentState) {
-            case LOOKING_FOR_PATTERN:
-               stateLookingForPattern(traceUnit, state, patternSize);
-               break;
-
-            case BUILDING_PATTERN:
-               stateBuildingPattern(traceUnit, state, patternSize);
-               break;
-
-            case CHECKING_PATTERN:
-               stateCheckingPattern(traceUnit, state, patternSize);
-               break;
-         }
-      }
-   */
-/*
-   private void stateLookingForPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
-      // Check if there is a pattern
-      if (state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_CHANGED_SIZES) {
-
-         // Start block
-         tempTraceUnits = new ArrayList<TraceUnit>();
-
-         // Prepare Data
-         currentState = CollectorState.BUILDING_PATTERN;
-
-         // Start processing pattern
-         stateBuildingPattern(traceUnit, state, patternSize);
-
-         return;
-      }
-
-   }
 */
-   /*
-      private void stateBuildingPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
-         // Pattern is bulding and continuing
-         if(state == PatternState.PATTERN_STARTED || state == PatternState.PATTERN_UNCHANGED) {
-            // Check size
-            if(tempTraceUnits.size() < patternSize) {
-               tempTraceUnits.add(traceUnit);
-            }
-            
-            if(tempTraceUnits.size() == patternSize) {
-               currentState = CollectorState.CHECKING_PATTERN;
-               completeTraceUnits = tempTraceUnits;
-               tempTraceUnits = new ArrayList<TraceUnit>();
-               repetitions = 1;
-               
-               //stateCheckingPattern(traceUnit, state, patternSize);
-            }
-            
-            return;
-         }
 
-         // Pattern stopped before completing a set
-         tempTraceUnits = null;
-         currentState = CollectorState.LOOKING_FOR_PATTERN;
-         stateLookingForPattern(traceUnit, state, patternSize);
-      }
-
-      private void stateCheckingPattern(TraceUnit traceUnit, PatternState state, int patternSize) {
-         if(state != PatternState.PATTERN_UNCHANGED) {
-            // Pattern stopped before completing a set
-            tempTraceUnits = null;
-            currentState = CollectorState.LOOKING_FOR_PATTERN;
-            stateLookingForPattern(traceUnit, state, patternSize);
-         }
-      }
-
-*/
-   /*
-   public void step(TraceUnit traceUnit) {
-      if(collecting) {
-         if(tempTraceUnits.size() < patternSize) {
-            tempTraceUnits.add(traceUnit);
-            newCollection = false;
-         } else if(tempTraceUnits.size() == patternSize){
-            completeTraceUnits = tempTraceUnits;
-            newCollection = true;
-         } else {
-            newCollection = false;
-         }
-      } else {
-         newCollection = false;
-      }
-   }
-*/
-   /*
-   public List<TraceUnit> getPreviousTraceUnits() {
-      return previousTraceUnits;
-   }
+   /**
+    * Builds LoopUnits.
     * 
+    * @param traceUnit
+    * @param state
+    * @param patternSize
     */
+   public void step(TraceUnit traceUnit, PatternState state, int patternSize) {
+      switch(state) {
+         case NO_PATTERN:
+            addToSequence(traceUnit);
+            break;
+         case PATTERN_STARTED:
+            wrapUpSequence();
+            initLoop(patternSize);
+            addToLoop(traceUnit);
+            break;
+         case PATTERN_UNCHANGED:
+            addToLoop(traceUnit);
+            break;
+         case PATTERN_CHANGED_SIZES:
+            wrapUpLoop();
+            wrapUpSequence();
+            initLoop(patternSize);
+            addToLoop(traceUnit);
+            break;
+         case PATTERN_STOPED:
+            wrapUpLoop();
+            addToSequence(traceUnit);
+            break;
+         default:
+            LoggingUtils.getLogger().
+                    warning("Case not defined:"+state);
+            break;
+      }
+   }
 
+   /*
    public List<TraceUnit> getAndClearUnits() {
       List<TraceUnit> returnList = completeTraceUnits;
       completeTraceUnits = null;
       return returnList;
    }
+*/
 
-   /*
-   public boolean isNewCollection() {
-      return newCollection;
+   public List<MegaBlockUnit> getAndClearUnits() {
+      if(completedUnits.isEmpty()) {
+         return null;
+      }
+
+      List<MegaBlockUnit> returnList = completedUnits;
+      completedUnits = new ArrayList<MegaBlockUnit>();
+      return returnList;
    }
-    *
-    */
-   /*
-   enum CollectorState {
-      LOOKING_FOR_PATTERN,
-      BUILDING_PATTERN,
-      CHECKING_PATTERN;
+
+   public void close() {
+      if(currentLoop.getType() == MegaBlockUnit.Type.Loop) {
+         MegaBlockUnit loop = currentLoop.splitUnit(storeSequenceInstructions);
+         if(loop != null) {
+            completedUnits.add(loop);
+         }
+      }
+
+      // Completed unit here can only be of type Sequence
+      if(currentLoop.getType() != MegaBlockUnit.Type.Sequence) {
+         LoggingUtils.getLogger().
+                 warning("Bug. CurrentLoop should be of type '"+MegaBlockUnit.Type.Sequence+"'");
+      }
+      completedUnits.add(currentLoop);
    }
-    *
-    */
 
-   private List<TraceUnit> tempTraceUnits;
-   private List<TraceUnit> completeTraceUnits;
-
+/*
    private void initList() {
       tempTraceUnits = new ArrayList<TraceUnit>();
    }
@@ -227,9 +194,88 @@ public class TraceUnitCollector {
    private void nullifyList() {
       tempTraceUnits = null;
    }
-   //private boolean newCollection;
-//   private boolean collecting;
-//   private CollectorState currentState;
-   //private int repetitions;
-   //private int patternSize;
+*/
+
+   private void addToSequence(TraceUnit traceUnit) {
+      add(traceUnit, MegaBlockUnit.Type.Sequence);
+   }
+
+   private void addToLoop(TraceUnit traceUnit) {
+      add(traceUnit, MegaBlockUnit.Type.Loop);
+   }
+
+   private void add(TraceUnit traceUnit, MegaBlockUnit.Type type) {
+      if(currentLoop.getType() != type) {
+         LoggingUtils.getLogger().
+                 warning("Bug. LoopUnit of type '"+currentLoop.getType()+
+                 "' should be of type '"+type+"'");
+         return;
+      }
+      currentLoop.addTraceUnit(traceUnit);
+   }
+
+   private void wrapUpSequence() {
+      if(currentLoop.getType() != MegaBlockUnit.Type.Sequence) {
+         LoggingUtils.getLogger().
+                 warning("Bug. LoopUnit of type '"+currentLoop.getType()+
+                 "' should be of type '"+MegaBlockUnit.Type.Sequence+"'");
+         return;
+      }
+
+      // Check number of instructions
+      if(currentLoop.getNumInstructions() != 0) {
+         completedUnits.add(currentLoop);
+      }
+      
+      currentLoop = null;
+   }
+
+   /**
+    * When calling this method, the currentLoop at exit is alway of the type
+    * Sequence.
+    * 
+    */
+   private void wrapUpLoop() {
+      if (currentLoop.getType() != MegaBlockUnit.Type.Loop) {
+         LoggingUtils.getLogger().
+                 warning("Bug. LoopUnit of type '" + currentLoop.getType()
+                 + "' should be of type '" + MegaBlockUnit.Type.Loop + "'");
+         return;
+      }
+
+      // Split Loop
+      MegaBlockUnit loop = currentLoop.splitUnit(storeSequenceInstructions);
+      if(loop != null) {
+         completedUnits.add(loop);
+      }
+   }
+
+   private void initLoop(int patternSize) {
+      if(currentLoop != null) {
+         LoggingUtils.getLogger().
+                 warning("Initializing LoopUnit which is not null.");
+      }
+      currentLoop = new MegaBlockUnit(patternSize);
+   }
+
+   private void initSequence() {
+      if(currentLoop != null) {
+         LoggingUtils.getLogger().
+                 warning("Initializing LoopUnit which is not null.");
+      }
+      currentLoop = new MegaBlockUnit(storeSequenceInstructions);
+   }
+
+   //private List<TraceUnit> tempTraceUnits;
+   //private List<TraceUnit> completeTraceUnits;
+
+   // Single loop unit and a list of completed units?
+   //private List<LoopUnit> loopUnits;
+   private MegaBlockUnit currentLoop;
+   private List<MegaBlockUnit> completedUnits;
+   private boolean storeSequenceInstructions;
+
+
+
+
 }

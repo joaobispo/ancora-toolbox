@@ -22,23 +22,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.TraceUnit.TraceUnit;
+import org.specs.DymaLib.LoopDetection.LoopUnit;
+//import org.specs.DymaLib.LoopDetection.MegaBlockUnit;
 
 
 /**
- * Prints a graphical representation of the execution trace.
+ * Prints a graphical representation of the execution trace, in LoopUnits.
  *
  * @author Joao Bispo
  */
-public class DottyTraceUnit {
+public class DottyLoopUnit {
 
-   public DottyTraceUnit() {
+   public DottyLoopUnit() {
       blockDeclaration = new StringBuilder();
-      //connections = new ArrayList<String>();
       previousId = null;
 
       declaredBlocks = new HashSet<Integer>();
-      //unitAppearences = new HashMap<Integer, Long>();
       declaredConnections = new HashMap<String, Integer>();
    }
 
@@ -51,39 +50,27 @@ public class DottyTraceUnit {
       builder.append("\n");
 
       builder.append(buildConnections());
-      /*
-      for (String connection : connections) {
-         builder.append(connection);
-      }
-       *
-       */
       builder.append("}\n");
 
       return builder.toString();
    }
 
-   public void addUnit(TraceUnit unit) {
+   //public void addUnit(MegaBlockUnit unit) {
+   public void addUnit(LoopUnit unit) {
       // Add declaration
-      int id = unit.getIdentifier();
+      int id = unit.getId();
       if(!declaredBlocks.contains(id)) {
          declaredBlocks.add(id);
          addDeclaration(unit);
-         //unitAppearences.put(id, 1l);
-      } else {
-         //long previous = unitAppearences.get(id);
-         //unitAppearences.put(id, previous+1l);
       }
 
       // Add connection
       if (previousId != null) {
-         // Build connection representation
-         //String connection = String.valueOf(previousId) + "-" + String.valueOf(block.getId());
          String connection = previousId + " -> " + id;
 
          // Check if connection already in map
          if (!declaredConnections.containsKey(connection)) {
             declaredConnections.put(connection, 1);
-            //addConnection(block.getId());
          } else {
             // Increment value
             Integer newValue = declaredConnections.get(connection)+1;
@@ -94,27 +81,23 @@ public class DottyTraceUnit {
       previousId = id;
    }
 
-   private void addDeclaration(TraceUnit block) {
-         blockDeclaration.append(block.getIdentifier());
+//   private void addDeclaration(MegaBlockUnit block) {
+   private void addDeclaration(LoopUnit block) {
+         blockDeclaration.append(block.getId());
          blockDeclaration.append("[label=\"");
-         //builder.append(op.getType()+"-"+op.getValue());
-         //builder.append(op.getValue());
+
          blockDeclaration.append(buildLabel(block));
          blockDeclaration.append("\"");
          blockDeclaration.append(", shape=box");
-//         if(block.getRepetitions() > 1) {
-//            blockDeclaration.append(", style=filled fillcolor=\"lightblue\"");
-//         }
+
+         //if(block.getType() == MegaBlockUnit.Type.Loop) {
+         if(block.isLoop()) {
+            blockDeclaration.append(", style=filled fillcolor=\"lightblue\"");
+         }
+
          blockDeclaration.append("];\n");
    }
 
-   /*
-   private void addConnection(int id) {
-      String connection = previousId + " -> " + id + ";\n";
-      connections.add(connection);
-   }
-    *
-    */
 
    private String buildConnections() {
       StringBuilder builder = new StringBuilder();
@@ -123,35 +106,57 @@ public class DottyTraceUnit {
          builder.append(key);
          // Get value
          Integer value = declaredConnections.get(key);
-         //if(value > 1) {
+
             builder.append(" [label=");
             builder.append(value);
             builder.append("]");
-         //}
+
          builder.append(";\n");
       }
 
       return builder.toString();
    }
 
-   private String buildLabel(TraceUnit block) {
+//   private String buildLabel(MegaBlockUnit block) {
+   private String buildLabel(LoopUnit block) {
       StringBuilder builder = new StringBuilder();
 
-      //builder.append(block.getId());
+
       builder.append("instructions:");
-      builder.append(block.getInstructions().size());
+      builder.append(getFormattedNumInstructions(block));
       builder.append("\\n");
 
-      //builder.append("repetitions:");
-      //builder.append(block.getRepetitions());
-      //builder.append("\\n");
+//      if (block.getType() == MegaBlockUnit.Type.Loop) {
+      if (block.isLoop()) {
+         builder.append("iterations:");
+         builder.append(block.getIterations());
+         builder.append("\\n");
+      }
+
 
       builder.append(buildAddressString(block));
 
       return builder.toString();
    }
 
-   private String buildAddressString(TraceUnit block) {
+   private String getFormattedNumInstructions(LoopUnit block) {
+      float floatAvg = (float) block.getTotalInstructions() / (float) block.getIterations();
+      int intAvg = block.getNumInstructions();
+
+      if ((float) intAvg == floatAvg) {
+         return Integer.toString(intAvg);
+      } else {
+         return Float.toString(floatAvg);
+      }
+   }
+
+   //private String buildAddressString(MegaBlockUnit block) {
+   private String buildAddressString(LoopUnit block) {
+      //if(block.getType() == MegaBlockUnit.Type.Sequence && !block.isSequenceInstructionsStored()) {
+      if(!block.isLoop() && !block.areAllInstructionsStored()) {
+         return incompleteSequenceAddressString(block);
+      }
+
       StringBuilder builder = new StringBuilder();
       
       List<String> insts = block.getInstructions();
@@ -179,11 +184,30 @@ public class DottyTraceUnit {
       return builder.toString();
    }
 
+   //private String incompleteSequenceAddressString(MegaBlockUnit block) {
+   private String incompleteSequenceAddressString(LoopUnit block) {
+      StringBuilder builder = new StringBuilder();
+      List<Integer> addresses = block.getAddresses();
+
+      builder.append(addresses.get(0));
+      builder.append("\\n");
+      if(addresses.size() == 1) {
+         return builder.toString();
+      }
+
+      builder.append("...\\n");
+
+      builder.append(addresses.get(addresses.size()-1));
+      builder.append("\\n");
+
+      return  builder.toString();
+   }
+
    private StringBuilder blockDeclaration;
-   //private List<String> connections;
    private Integer previousId;
    private Set<Integer> declaredBlocks;
-   //private Map<Integer, Long> unitAppearences;
    private Map<String, Integer> declaredConnections;
+
+
 
 }

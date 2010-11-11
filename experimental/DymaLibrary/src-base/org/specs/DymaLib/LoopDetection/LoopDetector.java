@@ -17,6 +17,8 @@
 
 package org.specs.DymaLib.LoopDetection;
 
+import java.util.List;
+
 /**
  * Interface for LoopDetectors
  *
@@ -36,23 +38,36 @@ public interface LoopDetector {
     *
     * @return true if a loop was found in the current step
     */
-   boolean foundLoop();
+   //boolean foundLoop();
 
    /**
     *
     * @return true if a loop terminated in the current step
     */
-   boolean loopEnded();
+   //boolean loopEnded();
 
    /**
     * @return the start address of the loop, or null if no loop was found
     */
-   Integer getStartAddress();
+   //Integer getStartAddress();
 
    /**
     *
     * @return the size, in instructions, of the loop, or null if no loop was
     * found
     */
-   Integer getLoopSize();
+   //Integer getLoopSize();
+
+   /**
+    * Finishes any work that might be unfinished at this point.
+    */
+   public void close();
+
+
+   /**
+    *
+    * @return a list of LoopUnits with the loops found up to this point, or
+    * null if there are no completed loops.
+    */
+   public List<LoopUnit> getAndClearUnits();
 }
