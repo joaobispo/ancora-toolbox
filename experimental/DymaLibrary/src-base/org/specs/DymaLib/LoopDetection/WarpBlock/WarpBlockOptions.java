@@ -31,7 +31,7 @@ import org.specs.DymaLib.LoopDetection.LoopDetector;
  */
 public enum WarpBlockOptions implements AppOptionEnum {
 
-   LimitBackwardJump(AppValueType.bool),
+   //LimitBackwardJump(AppValueType.bool),
    BackwardJumpMaxSize(AppValueType.integer),
    StoreNonLoopInstructions(AppValueType.bool);
 
@@ -65,10 +65,11 @@ public enum WarpBlockOptions implements AppOptionEnum {
          return null;
       }
 
-      boolean limitBackwardJump = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.LimitBackwardJump);
+      //boolean limitBackwardJump = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.LimitBackwardJump);
 
       boolean storeSequenceInstructions = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.StoreNonLoopInstructions);
 
-      return new WarpBlockDetector(limitBackwardJump, backwardJumpMaxSize, storeSequenceInstructions, decoder);
+      //return new WarpBlockDetector(limitBackwardJump, backwardJumpMaxSize, storeSequenceInstructions, decoder);
+      return new WarpBlockDetector(backwardJumpMaxSize, storeSequenceInstructions, decoder);
    }
 }

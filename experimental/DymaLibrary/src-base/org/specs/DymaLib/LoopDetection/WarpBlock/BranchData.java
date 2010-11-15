@@ -26,13 +26,13 @@ public class BranchData {
    public BranchData(int startAddr, int endAddr, int offsetAddr) {
       this.startAddr = startAddr;
       this.endAddr = endAddr;
-      this.offsetAddr = offsetAddr;
+      this.offset = offsetAddr;
    }
 
    public boolean equals(BranchData data) {
       boolean sameStart = startAddr == data.startAddr;
       boolean sameEnd = endAddr == data.endAddr;
-      boolean sameOffset = offsetAddr == data.offsetAddr;
+      boolean sameOffset = offset == data.offset;
 
       return sameEnd && sameOffset && sameStart;
    }
@@ -48,9 +48,28 @@ public class BranchData {
       return builder.toString();
    }
 
+   /**
+    * A BranchData is part of another BranchData if it is "inside" the given
+    * object.
+    *
+    * <p>It is equivalent to test if:
+    * <br> this.startAddr >= givenBranchData.startAddr;
+    * <br> this.endAddr <= givenBranchData.endAddr;
+    * <br> this.offset <= givenBranchData.offset;
+    * @param currentBranchData
+    * @return
+    */
+   boolean isPartOf(BranchData currentBranchData) {
+      boolean insideStart = startAddr >= currentBranchData.startAddr;
+      boolean insideEnd = endAddr <= currentBranchData.endAddr;
+      boolean insideOffset = offset <= currentBranchData.offset;
+
+      return insideEnd && insideOffset && insideStart;
+   }
    
 
    public final int startAddr;
    public final int endAddr;
-   public final int offsetAddr;
+   public final int offset;
+
 }

@@ -28,10 +28,11 @@ import org.specs.DymaLib.Interfaces.InstructionDecoder;
  */
 public class ShortBackwardBranch {
 
-   public ShortBackwardBranch(InstructionDecoder decoder, boolean limitBackwardJump, int backwardJumpMaxSize) {
+   //public ShortBackwardBranch(InstructionDecoder decoder, boolean limitBackwardJump, int backwardJumpMaxSize) {
+   public ShortBackwardBranch(InstructionDecoder decoder) {
       this.decoder = decoder;
-      this.limitBackwardJump = limitBackwardJump;
-      this.backwardJumpMaxSize = backwardJumpMaxSize;
+      //this.limitBackwardJump = limitBackwardJump;
+      //this.backwardJumpMaxSize = backwardJumpMaxSize;
 
 
       completedData = null;
@@ -40,17 +41,41 @@ public class ShortBackwardBranch {
    }
    
    public void step(int address, String instruction) {
+      /*
+      if(address == 496) {
+            System.out.println("Previous Address:"+endAddr);
+            System.out.println("Current Address:"+address);
+            System.out.println("Is Backward:"+backwardBranch(address));
+         }
+*/
       // If != null it means the previous instruction was a Branch
       if (endAddr != null) {
+
+         /*
          if (shortBackwardBranch(address)) {
             buildBranchData(address);
          } else {
             endAddr = null;
          }
-
+          *
+          */
+         // If last instruction was a backward branch, build branch data
+         if (backwardBranch(address)) {
+            buildBranchData(address);
+         }
+         endAddr = null;
       }
 
       // Check for SBB
+      /*
+      if(address == 860) {
+         System.out.println("Address:"+address);
+         System.out.println("Instruction:"+instruction);
+         System.out.println("Is branch?:"+isBranch(instruction));
+         System.out.println("Delay slot:"+currentDelaySlot);
+      }
+       * 
+       */
       if (isBranch(instruction)) {
          endAddr = address;
       }
@@ -86,10 +111,11 @@ public class ShortBackwardBranch {
       }
 
       currentDelaySlot = delaySlot;
+      currentDelaySlot--;
       return false;
    }
 
-
+/*
    private boolean shortBackwardBranch(int currentAddress) {
       // Forward jump
       //if(endAddr >= currentAddress) {
@@ -107,9 +133,36 @@ public class ShortBackwardBranch {
 
       return true;
    }
+   */
+   private boolean backwardBranch(int currentAddress) {
+// Forward jump
+      //if(endAddr >= currentAddress) {
+      if(currentAddress == endAddr) {
+         LoggingUtils.getLogger().
+                 warning("Jump to itself.");
+         return true;
+      }
+
+      if(currentAddress > endAddr) {
+         return false;
+      }
+
+      // If limit, check maximum size
+      /*
+      if(limitBackwardJump) {
+         int offset = endAddr - currentAddress;
+         if(offset > backwardJumpMaxSize) {
+            return false;
+         }
+      }
+       *
+       */
+
+      return true;
+   }
 
       private void buildBranchData(int address) {
-               int offset = endAddr - address;
+         int offset = endAddr - address;
          int endAddress = endAddr;
          int startAddress = address;
 
@@ -120,18 +173,20 @@ public class ShortBackwardBranch {
          }
 
          completedData = new BranchData(startAddress, endAddress, offset);
-         endAddr = null;
+         //endAddr = null;
    }
 
    private Integer endAddr;
 
    private InstructionDecoder decoder;
-   private boolean limitBackwardJump;
-   private int backwardJumpMaxSize;
+   //private boolean limitBackwardJump;
+   //private int backwardJumpMaxSize;
 
    private Integer currentDelaySlot;
 
    private BranchData completedData;
+
+
 
 
 

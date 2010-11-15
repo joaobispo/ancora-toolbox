@@ -38,7 +38,8 @@ import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
  */
 public class WarpBlockDetector implements LoopDetector {
 
-   public WarpBlockDetector(boolean limitBackwardJump, int backwardJumpMaxSize,
+//   public WarpBlockDetector(boolean limitBackwardJump, int backwardJumpMaxSize,
+   public WarpBlockDetector(int backwardJumpMaxSize,
            boolean storeSequenceInstructions, InstructionDecoder decoder) {
       /*
       this.limitBackwardJump = limitBackwardJump;
@@ -68,8 +69,10 @@ public class WarpBlockDetector implements LoopDetector {
 */
       foundLoops = new ArrayList<LoopUnit>();
       this.storeSequenceInstructions = storeSequenceInstructions;
+      this.backwardJumpMaxSize = backwardJumpMaxSize;
 
-      sbb = new ShortBackwardBranch(decoder, limitBackwardJump, backwardJumpMaxSize);
+      //sbb = new ShortBackwardBranch(decoder, limitBackwardJump, backwardJumpMaxSize);
+      sbb = new ShortBackwardBranch(decoder);
       currentBranchData = null;
 
       //currentTraceUnits = null;
@@ -79,8 +82,17 @@ public class WarpBlockDetector implements LoopDetector {
 
 
    private void processBranchData(BranchData branchData) {
+      boolean invalidBranchData = branchData.offset > backwardJumpMaxSize;
+
       // It was a sequence, a loop will start now
       if(currentBranchData == null) {
+         // If invalid, ignore branch data
+         
+         if(invalidBranchData) {
+            return;
+         }
+                   
+         
          newUnit();
          //LoopUnit sequenceUnit = newUnit();
          //foundLoops.add(sequenceUnit);
@@ -92,7 +104,8 @@ public class WarpBlockDetector implements LoopDetector {
 
       // Check if is new iteration of current loop
       
-      if(currentBranchData.equals(branchData)) {
+      //if(currentBranchData.equals(branchData)) {
+      if(branchData.isPartOf(currentBranchData)) {
 //         System.out.println("New iteration of the loop");
          //retireCurrentInstructions();
          return;
@@ -104,10 +117,23 @@ public class WarpBlockDetector implements LoopDetector {
 //      System.out.println("New:"+branchData);
       // There is the start of a possible new loop
       newUnit();
+
+
       //LoopUnit loopUnit = newUnit();
       //foundLoops.add(loopUnit);
-      startLoop();
-      currentBranchData = branchData;
+
+      if(invalidBranchData) {
+         startSequence();
+         currentBranchData = null;
+      } else {
+         startLoop();
+   //            System.out.println("--Break Loop--");
+   //   System.out.println("Previous Loop:"+currentBranchData);
+   //   System.out.println("New Loop:"+branchData);
+
+         currentBranchData = branchData;
+      }
+
    }
 
    private void addInstruction(int address, String instruction) {
@@ -327,8 +353,8 @@ public class WarpBlockDetector implements LoopDetector {
       BranchData branchData = sbb.getAndClearData();
 
       if(branchData != null) {
-         System.out.println("------DATA-------");
-         System.out.println(branchData);
+  //       System.out.println("------DATA-------");
+  //       System.out.println(branchData);
          processBranchData(branchData);
       }
 
@@ -579,6 +605,7 @@ public class WarpBlockDetector implements LoopDetector {
    private ShortBackwardBranch sbb;
    private BranchData currentBranchData;
    private boolean storeSequenceInstructions;
+   private int backwardJumpMaxSize;
 
    // LOOP UNIT DATA
    private int currentTotalInstructions;
