@@ -15,20 +15,26 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction;
+package org.specs.DymaLib.LowLevelInstruction.Elements;
 
 /**
- * Represents an Operand.
+ * Represents a carry.
  *
  * @author Joao Bispo
  */
-public class Operand {
-
+public class Carry {
    /**
     * INSTANCE VARIABLES
     */
-   private int value;
-   private int type;
-   private boolean isInput;
-   private boolean isImmutable;
+   public int value;
+   public int enabled;
+   public int immutable;
+
+   /*
+   public final static int UNUSED = 0;
+   public final static int TYPE_LIVE_IN = 1;
+   public final static int TYPE_LITERAL = 2;
+   public final static int TYPE_INTERNAL_DATA = 3;
+    * 
+    */
 }

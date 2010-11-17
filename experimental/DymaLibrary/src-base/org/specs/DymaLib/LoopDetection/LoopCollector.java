@@ -15,35 +15,39 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.TraceUnit;
+package org.specs.DymaLib.LoopDetection;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Builds TraceUnit objects from the incoming trace.
+ * Collects unique loops.
  *
  * @author Joao Bispo
  */
-public interface UnitBuilder {
+public class LoopCollector {
 
-   /**
-    * Feeds an instruction to this UnitBuilder.
-    * 
-    * @param address
-    * @param instruction
-    */
-   void nextInstruction(int address, String instruction);
+   public LoopCollector() {
+      loops = new ArrayList<LoopUnit>();
+      ids = new HashSet<Integer>();
+   }
 
-   /**
-    * Indicates that the stream of instructions has ended.
-    */
-   void close();
+   public List<LoopUnit> getLoops() {
+      return loops;
+   }
 
-   /**
-    *
-    * @return a list of the TraceUnits found. After returning lists, they are
-    * cleared from the UnitBuilder. Returns null if there are no TraceUnits at
-    * the moment
-    */
-   List<TraceUnit> getAndClearUnits();
+   public void addLoop(LoopUnit loop) {
+      int id = loop.getId();
+      if (ids.contains(id)) {
+         return;
+      }
+
+      ids.add(id);
+      loops.add(loop);
+   }
+
+   private List<LoopUnit> loops;
+   private Set<Integer> ids;
 }

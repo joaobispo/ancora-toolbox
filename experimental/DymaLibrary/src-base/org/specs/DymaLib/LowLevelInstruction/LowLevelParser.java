@@ -15,20 +15,21 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.TraceUnit;
+package org.specs.DymaLib.LowLevelInstruction;
 
 import java.util.List;
+import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 
 /**
- * Builds TraceUnit objects from the incoming trace.
+ * Decodes an assembly instruction in its correspondent LowLevelInstructions.
  *
  * @author Joao Bispo
  */
-public interface UnitBuilder {
+public interface LowLevelParser {
 
    /**
-    * Feeds an instruction to this UnitBuilder.
-    * 
+    * Feeds an instruction to this LowLevelDecoder.
+    *
     * @param address
     * @param instruction
     */
@@ -41,9 +42,20 @@ public interface UnitBuilder {
 
    /**
     *
-    * @return a list of the TraceUnits found. After returning lists, they are
-    * cleared from the UnitBuilder. Returns null if there are no TraceUnits at
-    * the moment
+    * @return a list of the LowLevelInstructions found. After returning a non-null
+    * list, it is cleared from the UnitBuilder. Returns null if there are no
+    * LowLevelInstructions at the moment.
     */
-   List<TraceUnit> getAndClearUnits();
+   List<LowLevelInstruction> getAndClearUnits();
+
+   /**
+    * Processes the given instructions and returns an object with the information
+    * already parsed.
+    *
+    * @param addresses
+    * @param instructions
+    * @return
+    */
+   List<LowLevelInstruction> parseInstructions(List<Integer> addresses,
+           List<String> instructions);
 }

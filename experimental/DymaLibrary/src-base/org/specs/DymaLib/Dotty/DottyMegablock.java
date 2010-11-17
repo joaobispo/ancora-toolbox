@@ -15,21 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction;
+package org.specs.DymaLib.Dotty;
 
 /**
- * Represents a carry.
- *
+ * Graphic representation of a MegaBlock
+ * TODO
  * @author Joao Bispo
  */
-public class Carry {
-   /**
-    * INSTANCE VARIABLES
-    */
-   private boolean value;
-   private int type;
+public class DottyMegablock {
 
-   public final static int TYPE_LIVE_IN = 0;
-   public final static int TYPE_LITERAL = 1;
-   public final static int TYPE_INTERNAL_DATA = 2;
 }
