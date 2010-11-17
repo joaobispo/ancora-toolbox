@@ -64,7 +64,7 @@ public class LoopDetection implements App {
 
        LoopDetection loopDetection = new LoopDetection();
        SimpleGui simpleGui = new SimpleGui(loopDetection);
-       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.3");
+       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.4");
        simpleGui.execute();
     }
 
@@ -129,6 +129,10 @@ public class LoopDetection implements App {
          return false;
       }
 
+      writeDotFilesForEachElfProgram = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachElfProgram);
+      writeDotFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachMegablock);   
+      writeTxtFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteTxtFilesForEachMegablock);
+
       return true;
    }
 
@@ -178,7 +182,7 @@ public class LoopDetection implements App {
 
       LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
               detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop,
-              instructionNames);
+              instructionNames, writeDotFilesForEachMegablock, writeTxtFilesForEachMegablock);
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
@@ -206,7 +210,9 @@ public class LoopDetection implements App {
       testInstructionNumber(traceCount, loopInstCount);
 
       // Build Dotty
-      buildDotty(fileIndex, detectorIndex, dotty);
+      if(writeDotFilesForEachElfProgram) {
+         buildDotty(fileIndex, detectorIndex, dotty);
+      }
    }
 
 
@@ -254,6 +260,9 @@ public class LoopDetection implements App {
    private List<File> inputFiles;
    private File outputFolder;
    private File systemConfigFile;
+   private boolean writeDotFilesForEachElfProgram;
+   private boolean writeDotFilesForEachMegablock;
+   private boolean writeTxtFilesForEachMegablock;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
    private Integer iterationsThreshold;
