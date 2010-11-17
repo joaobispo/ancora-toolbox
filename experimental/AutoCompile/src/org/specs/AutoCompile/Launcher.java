@@ -41,6 +41,7 @@ public class Launcher {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       System.setSecurityManager(null);
        LoggingUtils.setupConsoleOnly();
        LoggingUtils.getRootLogger().setLevel(Level.INFO);
 
