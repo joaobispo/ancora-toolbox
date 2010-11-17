@@ -17,6 +17,7 @@
 
 package org.specs.LoopDetection;
 
+import org.specs.DymaLib.Utils.LoopDiskWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,7 @@ import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
-import org.specs.DymaLib.Stats.SllAnalyser;
 
 /**
  *
@@ -76,17 +75,10 @@ public class LoopDetection implements App {
       }
 
       for (int fileIndex = 0; fileIndex < inputFiles.size(); fileIndex++) {
-         //for (int detectorIndex = 0; detectorIndex < loopDetectors.size(); detectorIndex++) {
          for (int detectorIndex = 0; detectorIndex < loopDetectorNames.size(); detectorIndex++) {
             detectLoops(fileIndex, detectorIndex);
          }
       }
-      /*
-      for (LoopDetector loopDetector : loopDetectors) {
-         detectLoops(loopDetector);
-      }
-       *
-       */
       
 
       return 0;
@@ -113,14 +105,6 @@ public class LoopDetection implements App {
          return false;
       }
 
-      /*
-      elfFile = AppUtils.getExistingFile(options, AppOptions.ProgramFileOrFolder);
-      if (elfFile == null) {
-         LoggingUtils.getLogger().
-                 warning("Could not open program file.");
-         return false;
-      }
-      */
 
       String systemConfigFilename = AppUtils.getString(options, AppOptions.SystemSetup);
       systemConfigFile = new File(systemConfigFilename);
@@ -149,9 +133,7 @@ public class LoopDetection implements App {
 
 
    private void initLoopDetectors(List<String> loopDetectors) {
-      //this.loopDetectors = new ArrayList<LoopDetector>();
       loopDetectorNames = new ArrayList<String>();
-      //loopDetectorTypes = new ArrayList<LoopDetectors>();
       loopDetectorSetups = new ArrayList<File>();
 
       for(String loopDetectorName : loopDetectors) {
@@ -159,25 +141,13 @@ public class LoopDetection implements App {
          String name = (String)returnValues.get(0);
          File setup = (File)returnValues.get(1);
 
-         /*
-         LoopDetector loopDetector = LoopUtils.newLoopDetector(name, setup, DECODER);
-         if(loopDetector == null) {
-            continue;
-         }
-          *
-          */
-
-         //this.loopDetectors.add(loopDetector);
-         //loopDetectorNames.add(setup.getName());
          loopDetectorNames.add(name);
-         //loopDetectorTypes.add(EnumUtils.valueOf(LoopDetectors.class, name));
          loopDetectorSetups.add(setup);
       }
 
    }
 
 
-   //private void detectLoops(LoopDetector loopDetector) throws InterruptedException {
    private void detectLoops(int fileIndex, int detectorIndex) throws InterruptedException {
       File elfFile = inputFiles.get(fileIndex);
       String detectorName = loopDetectorNames.get(detectorIndex);
@@ -193,9 +163,6 @@ public class LoopDetection implements App {
       loopCollector = new LoopCollector();
       loopInstCount = 0;
 
-      //LoopDetector loopDetector = loopDetectors.get(detectorIndex);
-
-
       // Instantiate System
       SystemSetup setup = SystemSetup.buildConfig(systemConfigFile);
       if (setup == null) {
@@ -203,13 +170,12 @@ public class LoopDetection implements App {
       }
 
       TraceReader traceReader = DToolReader.newDToolReader(elfFile, setup);
-      LowLevelParser lowLevelParser = new MbLowLevelParser();
       String instruction = null;
       int traceCount = 0;
       boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
 
       LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
-              detectorSetup.getName(), iterationsThreshold, lowLevelParser, isStraighLineLoop);
+              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop);
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
@@ -217,7 +183,6 @@ public class LoopDetection implements App {
 
          List<LoopUnit> loops = loopDetector.getAndClearUnits();
          processLoops(loops);
-         ///loopWriter.addLoops(loops, isStraighLineLoop);
          loopWriter.addLoops(loops);
          
 
@@ -233,25 +198,12 @@ public class LoopDetection implements App {
 
       
       loopWriter.addLoops(loops);
-      //loopWriter.addLoops(loops, isStraighLineLoop);
       
-      //System.out.println("LoopUnits:"+loops.size());
       // Test #instructions
       testInstructionNumber(traceCount, loopInstCount);
-      //testInstructionNumber(traceCount, loops);
 
       // Build Dotty
-//      buildDotty(fileIndex, detectorIndex, loops);
       buildDotty(fileIndex, detectorIndex, dotty);
-
-      // Characterize MegaBlocks
-      /*
-      if(detectorName.equals(LoopDetectors.MegaBlock.name())) {
-         characterizeMegablocks(loopCollector);
-      }
-       *
-       */
-
    }
 
 
@@ -270,15 +222,6 @@ public class LoopDetection implements App {
    }
 
    private void testInstructionNumber(int traceCount, int loopCount) {
-   //private void testInstructionNumber(int traceCount, List<LoopUnit> loops) {
-      /*
-      int loopCount = 0;
-      for (LoopUnit unit : loops) {
-         loopCount += unit.getTotalInstructions();
-
-      }
-       *
-       */
 
       if (traceCount != loopCount) {
          LoggingUtils.getLogger().
@@ -291,13 +234,6 @@ public class LoopDetection implements App {
    }
 
       private void buildDotty(int fileIndex, int detectorIndex, DottyLoopUnit dotty) {
-      //private void buildDotty(int fileIndex, int detectorIndex, List<LoopUnit> loops) {
-/*
-         DottyLoopUnit dotty = new DottyLoopUnit();
-         for (LoopUnit unit : loops) {
-            dotty.addUnit(unit);
-         }
-*/
          // Build name
          String inputFilename = inputFiles.get(fileIndex).getName();
          inputFilename = ParseUtils.removeSuffix(inputFilename, ".");
@@ -308,63 +244,13 @@ public class LoopDetection implements App {
          IoUtils.write(new File(outputFolder, inputFilename), dotty.generateDot());
    }
 
-      /*
-   private void characterizeLoop(LoopUnit unit) {
-      if(!unit.isLoop()) {
-         return;
-      }
-
-      List<MbInstruction> mbInsts = MicroBlazeParser.getMbInstructions(
-              unit.getAddresses(), unit.getInstructions());
-      processMbInsts(mbInsts);
-
-   }
-       *
-       */
-/*
-   private void processMbInsts(List<MbInstruction> mbInsts) {
-      for(MbInstruction mbInstruction : mbInsts) {
-         System.out.println(mbInstruction);
-      }
-   }
-*/
-
-/*
-   private void characterizeMegablocks(LoopCollector loopCollector) {
-      for(LoopUnit megaBlock : loopCollector.getLoops()) {
-         characterizeMegablock(megaBlock);
-      }
-   }
-*/
-      /*
-   private void characterizeMegablock(LoopUnit megaBlock) {
-
-      List<LowLevelInstruction> insts = MbLowLevelParser.getMbInstructions(
-              megaBlock.getAddresses(), megaBlock.getInstructions());
-
-      // Get information from the MegaBlock
-
-      System.out.println("MegaBlock Start:");
-      for(LowLevelInstruction instruction : insts) {
-         System.out.println(instruction);
-      }
-      System.out.println("-------MegaBlock End-------");
-
-      System.out.println(SllAnalyser.analyse(insts));
-      System.out.println("---------------------------");
-   }
-*/
 
    /**
     *
     */
    private List<File> inputFiles;
    private File outputFolder;
-   //private File elfFile;
    private File systemConfigFile;
-   //private List<LoopDetector> loopDetectors;
-   //private List<String> loopDetectorNames;
-   //private List<LoopDetectors> loopDetectorTypes;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
    private Integer iterationsThreshold;
@@ -378,7 +264,10 @@ public class LoopDetection implements App {
     * Decoder for MicroBlaze instructions.
     */
    public static final InstructionDecoder DECODER = new FW_3SP_Decoder();
-
+   /**
+    * Low Level Instructions parser for MicroBlaze instructions.
+    */
+   public static final LowLevelParser LOW_LEVEL_PARSER = new MbLowLevelParser();
 
 
 
