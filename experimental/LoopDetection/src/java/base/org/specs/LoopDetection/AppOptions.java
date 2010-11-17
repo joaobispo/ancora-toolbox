@@ -36,6 +36,7 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
    ProgramFileOrFolder(AppValueType.string),
    InputType(AppValueType.multipleChoice),
    OutputFolder(AppValueType.string),
+   IterationsThreshold(AppValueType.integer),
    LoopDetector(AppValueType.multipleSetupList),
    SystemSetup(AppValueType.multipleSetup);
 

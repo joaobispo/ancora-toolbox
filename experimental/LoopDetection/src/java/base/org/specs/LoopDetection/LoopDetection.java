@@ -17,8 +17,6 @@
 
 package org.specs.LoopDetection;
 
-import com.sun.xml.internal.messaging.saaj.util.ParseUtil;
-import com.sun.xml.internal.ws.util.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +31,21 @@ import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DToolPlus.Config.SystemSetup;
+import org.specs.DToolPlus.DToolUtils;
 import org.specs.DToolPlus.DymaLib.DToolReader;
 import org.specs.DToolPlus.DymaLib.FW_3SP.FW_3SP_Decoder;
+import org.specs.DToolPlus.DymaLib.LowLevelInstruction.MbLowLevelParser;
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.Interfaces.TraceReader;
+import org.specs.DymaLib.LoopDetection.LoopCollector;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
+import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.Stats.SllAnalyser;
 
 /**
  *
@@ -53,10 +57,14 @@ public class LoopDetection implements App {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       System.setSecurityManager(null);
        LoggingUtils.setupConsoleOnly();
+
+       DToolUtils.prepareDtoolMicroblaze();
+
        LoopDetection loopDetection = new LoopDetection();
        SimpleGui simpleGui = new SimpleGui(loopDetection);
-       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.1");
+       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.3");
        simpleGui.execute();
     }
 
@@ -130,6 +138,12 @@ public class LoopDetection implements App {
       }
       initLoopDetectors(detectors);
 
+      iterationsThreshold = AppUtils.getInteger(options, AppOptions.IterationsThreshold);
+      if(iterationsThreshold == null) {
+         System.out.println("Could not get iterations threshold.");
+         return false;
+      }
+
       return true;
    }
 
@@ -173,6 +187,12 @@ public class LoopDetection implements App {
       if (loopDetector == null) {
          return;
       }
+
+      // Stats
+      dotty = new DottyLoopUnit();
+      loopCollector = new LoopCollector();
+      loopInstCount = 0;
+
       //LoopDetector loopDetector = loopDetectors.get(detectorIndex);
 
 
@@ -183,12 +203,23 @@ public class LoopDetection implements App {
       }
 
       TraceReader traceReader = DToolReader.newDToolReader(elfFile, setup);
+      LowLevelParser lowLevelParser = new MbLowLevelParser();
       String instruction = null;
       int traceCount = 0;
+      boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
+
+      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
+              detectorSetup.getName(), iterationsThreshold, lowLevelParser, isStraighLineLoop);
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
          loopDetector.step(address, instruction);
+
+         List<LoopUnit> loops = loopDetector.getAndClearUnits();
+         processLoops(loops);
+         ///loopWriter.addLoops(loops, isStraighLineLoop);
+         loopWriter.addLoops(loops);
+         
 
          // Check if work should be interrupted
          if (Thread.currentThread().isInterrupted()) {
@@ -198,20 +229,56 @@ public class LoopDetection implements App {
 
       loopDetector.close();
       List<LoopUnit> loops = loopDetector.getAndClearUnits();
+      processLoops(loops);
+
+      
+      loopWriter.addLoops(loops);
+      //loopWriter.addLoops(loops, isStraighLineLoop);
+      
       //System.out.println("LoopUnits:"+loops.size());
       // Test #instructions
-      testInstructionNumber(traceCount, loops);
+      testInstructionNumber(traceCount, loopInstCount);
+      //testInstructionNumber(traceCount, loops);
 
       // Build Dotty
-      buildDotty(fileIndex, detectorIndex, loops);
+//      buildDotty(fileIndex, detectorIndex, loops);
+      buildDotty(fileIndex, detectorIndex, dotty);
+
+      // Characterize MegaBlocks
+      /*
+      if(detectorName.equals(LoopDetectors.MegaBlock.name())) {
+         characterizeMegablocks(loopCollector);
+      }
+       *
+       */
+
    }
 
-   private void testInstructionNumber(int traceCount, List<LoopUnit> loops) {
+
+   private void processLoops(List<LoopUnit> loops) {
+      if(loops == null) {
+         return;
+      }
+
+      for(LoopUnit unit : loops) {
+         loopInstCount += unit.getTotalInstructions();
+         dotty.addUnit(unit);
+         if(unit.isLoop()) {
+            loopCollector.addLoop(unit);
+         }
+      }
+   }
+
+   private void testInstructionNumber(int traceCount, int loopCount) {
+   //private void testInstructionNumber(int traceCount, List<LoopUnit> loops) {
+      /*
       int loopCount = 0;
       for (LoopUnit unit : loops) {
          loopCount += unit.getTotalInstructions();
 
       }
+       *
+       */
 
       if (traceCount != loopCount) {
          LoggingUtils.getLogger().
@@ -223,13 +290,14 @@ public class LoopDetection implements App {
       //System.out.println("Loop Count:"+loopCount);
    }
 
-      private void buildDotty(int fileIndex, int detectorIndex, List<LoopUnit> loops) {
-
+      private void buildDotty(int fileIndex, int detectorIndex, DottyLoopUnit dotty) {
+      //private void buildDotty(int fileIndex, int detectorIndex, List<LoopUnit> loops) {
+/*
          DottyLoopUnit dotty = new DottyLoopUnit();
          for (LoopUnit unit : loops) {
             dotty.addUnit(unit);
          }
-
+*/
          // Build name
          String inputFilename = inputFiles.get(fileIndex).getName();
          inputFilename = ParseUtils.removeSuffix(inputFilename, ".");
@@ -239,6 +307,53 @@ public class LoopDetection implements App {
          
          IoUtils.write(new File(outputFolder, inputFilename), dotty.generateDot());
    }
+
+      /*
+   private void characterizeLoop(LoopUnit unit) {
+      if(!unit.isLoop()) {
+         return;
+      }
+
+      List<MbInstruction> mbInsts = MicroBlazeParser.getMbInstructions(
+              unit.getAddresses(), unit.getInstructions());
+      processMbInsts(mbInsts);
+
+   }
+       *
+       */
+/*
+   private void processMbInsts(List<MbInstruction> mbInsts) {
+      for(MbInstruction mbInstruction : mbInsts) {
+         System.out.println(mbInstruction);
+      }
+   }
+*/
+
+/*
+   private void characterizeMegablocks(LoopCollector loopCollector) {
+      for(LoopUnit megaBlock : loopCollector.getLoops()) {
+         characterizeMegablock(megaBlock);
+      }
+   }
+*/
+      /*
+   private void characterizeMegablock(LoopUnit megaBlock) {
+
+      List<LowLevelInstruction> insts = MbLowLevelParser.getMbInstructions(
+              megaBlock.getAddresses(), megaBlock.getInstructions());
+
+      // Get information from the MegaBlock
+
+      System.out.println("MegaBlock Start:");
+      for(LowLevelInstruction instruction : insts) {
+         System.out.println(instruction);
+      }
+      System.out.println("-------MegaBlock End-------");
+
+      System.out.println(SllAnalyser.analyse(insts));
+      System.out.println("---------------------------");
+   }
+*/
 
    /**
     *
@@ -252,11 +367,23 @@ public class LoopDetection implements App {
    //private List<LoopDetectors> loopDetectorTypes;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
+   private Integer iterationsThreshold;
+
+   // STATS
+   private DottyLoopUnit dotty;
+   private LoopCollector loopCollector;
+   private int loopInstCount;
 
    /**
     * Decoder for MicroBlaze instructions.
     */
    public static final InstructionDecoder DECODER = new FW_3SP_Decoder();
+
+
+
+
+
+
 
 
 
