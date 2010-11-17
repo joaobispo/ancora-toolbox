@@ -16,6 +16,7 @@
  */
 package org.ancora.SharedLibrary;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,8 +25,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +38,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Methods for quick and simple manipulation of files, folders and other
@@ -480,7 +487,210 @@ public class IoUtils {
       return fileList;
    }
 
-   
+   public static boolean copy(File source, File destination) {
+      InputStream in = null;
+      boolean success = true;
+      try {
+         File f1 = source;
+         in = new FileInputStream(f1);
+         return copy(in, destination);
+      } catch (FileNotFoundException ex) {
+         Logger.getLogger(IoUtils.class.getName()).log(Level.SEVERE, null, ex);
+         success = false;
+      } finally {
+         try {
+            in.close();
+         } catch (IOException ex) {
+            Logger.getLogger(IoUtils.class.getName()).log(Level.SEVERE, null, ex);
+         }
+      }
+
+      return success;
+   }
+
+      /**
+       * TODO: Clean method
+       * @param source
+       * @param destination
+       * @return
+       */
+   public static boolean copy(InputStream source, File destination) {
+      boolean success = true;
+      try {
+         //File f1 = source;
+         File f2 = destination;
+         // Create folders for f2
+         f2.getParentFile().mkdirs();
+         //InputStream in = new FileInputStream(f1);
+         InputStream in = source;
+
+         //For Append the file.
+//      OutputStream out = new FileOutputStream(f2,true);
+
+         //For Overwrite the file.
+         OutputStream out = new FileOutputStream(f2);
+
+         byte[] buf = new byte[1024];
+         int len;
+         while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+         }
+         in.close();
+         out.close();
+         //System.out.println("'"+source.getName()+"' Copied file to '"+destination.getPath()+"'.");
+         System.out.println("Copied file to '"+destination.getPath()+"'.");
+      } catch (IOException e) {
+         System.out.println(e.toString());
+         success = false;
+      }
+
+      return success;
+   }
+
+   public static boolean deleteFolderContents(File folder) {
+      if(!folder.isDirectory()) {
+         System.err.println("Not a folder");
+         return false;
+      }
+
+      for(File file : folder.listFiles()) {
+         if(file.isDirectory()) {
+            deleteFolderContents(file);
+
+         }
+         file.delete();
+
+      }
+
+      return true;
+   }
+
+   public static InputStream resourceToStream(String resourceName) {
+   //public static File resourceToFile(String resourceName) {
+      //Obtain the current classloader
+      ClassLoader classLoader = IoUtils.class.getClassLoader();
+
+      // Load the file as a resource
+      //URL fileUrl = ClassLoader.getSystemResource(resourceName);
+      //URL fileUrl = classLoader.getResource(resourceName);
+      InputStream stream = classLoader.getResourceAsStream(resourceName);
+      return stream;
+
+      /*
+      //if(fileUrl == null) {
+      if(stream == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find resource '"+resourceName+"'");
+         return null;
+      }
+      // TODO: WRITE AS STREAM
+      // Turn the resource into a File object
+      File file;
+      try {
+         file = new File(fileUrl.toURI());
+      } catch (URISyntaxException ex) {
+         LoggingUtils.getLogger().
+                 warning(ex.toString());
+         return null;
+      }
+
+      if(!file.exists()) {
+         LoggingUtils.getLogger().
+                 warning("Resource '"+file.getPath()+"' does not exist.");
+      }
+      
+      return file;
+       * 
+       */
+   }
+
+    /**
+     * Copies the given resources to the current path.
+     *
+     */
+   /*
+    public static void copyResourcesToLocal(List<String> filenames){
+      for(String filename : filenames) {
+         copyResourcesToLocal(filename);
+         /*
+         // Check if exists
+         File file = new File(filename);
+         if(file.exists()) {
+            continue;
+         }
+
+         File resourceFile = IoUtils.systemResourceToFile(filename);
+         IoUtils.copy(resourceFile, file);
+          * 
+          */
+   /*
+      }
+    }
+    *
+    */
+
+   /**
+    * Copies the given resources to the current path.
+    *
+    */
+   /*
+   public static void copyResourcesToLocal(String filename) {
+      // Check if exists
+      File file = new File(filename);
+      if (file.exists()) {
+         return;
+      }
+
+      File resourceFile = IoUtils.resourceToFile(filename);
+      IoUtils.copy(resourceFile, file);
+
+   }
+    * 
+    */
+   public static boolean extractZipResource(String resource, File folder) {
+      boolean success = true;
+      if (!folder.isDirectory()) {
+         LoggingUtils.getLogger().
+                 warning("Given folder '" + folder.getPath() + "' does not exist.");
+         return false;
+      }
+
+      InputStream is = IoUtils.class.getResourceAsStream(resource);
+      ZipInputStream zis = new ZipInputStream(is);
+
+      ZipEntry entry;
+      try {
+         while ((entry = zis.getNextEntry()) != null) {
+            File outFile = new File(folder, entry.getName());
+            System.out.println("Unzipping '" + outFile.getPath() + "'.");
+
+            int size;
+            byte[] buffer = new byte[2048];
+
+
+            FileOutputStream fos = new FileOutputStream(outFile);
+            BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length);
+
+            while ((size = zis.read(buffer, 0, buffer.length)) != -1) {
+               bos.write(buffer, 0, size);
+            }
+            bos.flush();
+            bos.close();
+
+         }
+         zis.close();
+         is.close();
+
+      } catch (IOException ex) {
+         Logger.getLogger(IoUtils.class.getName()).log(Level.SEVERE, null, ex);
+         success = false;
+      }
+
+
+      return success;
+   }
+
+
    //
    //DEFINITIONS
    //
@@ -514,4 +724,5 @@ public class IoUtils {
       private String extension;
       private String separator;
    }
+
 }

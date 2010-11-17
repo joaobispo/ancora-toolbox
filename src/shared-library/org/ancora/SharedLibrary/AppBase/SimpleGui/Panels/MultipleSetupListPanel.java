@@ -235,7 +235,13 @@ public class MultipleSetupListPanel extends AppOptionPanel
       AppOptionEnumSetup setup = setups.get(choice);
       Class setupOptionsClass = EnumUtils.getClass((Enum[])setup.getSetupOptions());
       elementsFiles.add(new AppOptionFile(setupOptionsClass));
-      elementsOptionPanels.add(new AppFilePanel(setupOptionsClass));
+
+      //elementsOptionPanels.add(new AppFilePanel(setupOptionsClass));
+      AppFilePanel newPanel = new AppFilePanel(setupOptionsClass);
+      newPanel.add(new javax.swing.JSeparator(),0);
+      newPanel.add(new javax.swing.JSeparator());
+      elementsOptionPanels.add(newPanel);
+
 
       // Refresh
       updateElementsComboBox();

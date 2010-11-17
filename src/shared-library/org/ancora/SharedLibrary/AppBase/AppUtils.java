@@ -178,6 +178,23 @@ public class AppUtils {
     *
     * @param map a table with values
     * @param option an option
+    * @return the folder mapped to the given option. If the folder does not
+    * exist, returns null.
+    */
+   public static File getExistingFolder(Map<String, AppValue> map, AppOptionEnum option) {
+      String foldername = getString(map, option);
+      File folder = new File(foldername);
+      if(!folder.isDirectory()) {
+         return null;
+      }
+
+      return folder;
+   }
+
+   /**
+    *
+    * @param map a table with values
+    * @param option an option
     * @return the file mapped to the given option. If the file does not
     * exist, returns null.
     */

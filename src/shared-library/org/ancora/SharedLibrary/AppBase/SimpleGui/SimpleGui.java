@@ -37,7 +37,7 @@ public class SimpleGui {
    }
 
     /**
-     * Starts the GUI
+     * Starts the GUI.
      */
     public void execute() {
 
@@ -49,6 +49,24 @@ public class SimpleGui {
             }
         });
     }
+
+    /**
+     * Starts the GUI. Blocks unit the GUI exits.
+     */
+    /*
+    public void executeAndWait() {
+
+       java.awt.EventQueue.invokeLater(new Runnable() {
+         @Override
+            public void run() {
+                //mainWindow.setVisible(true);
+            frame.launchGui();
+            }
+        });
+
+    }
+     * 
+     */
 
     public void setTitle(String windowTitle) {
        mainWindow.setTitle(windowTitle);

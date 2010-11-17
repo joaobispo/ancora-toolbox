@@ -30,13 +30,15 @@ import org.ancora.SharedLibrary.ProcessUtils;
 /**
  * Launches an App object from the ProgramPanel.
  *
+ * TODO: Extract Runnable ApplicationRunner from this class.
+ *
  * @author Joao Bispo
  */
 public class ApplicationWorker {
 
    public ApplicationWorker(ProgramPanel programPanel) {
       this.mainWindow = programPanel;
-      this.returnValue = null;
+//      this.returnValue = null;
       workerExecutor = null;
 
    }
@@ -89,6 +91,7 @@ public class ApplicationWorker {
          LoggingUtils.getLogger().
                  //warning("Caught Exception:"+ex.getMessage());
                  warning(ex.toString());
+         ex.printStackTrace();
       }
 
       if (result == null) {
@@ -126,7 +129,7 @@ public class ApplicationWorker {
 
          @Override
          public Integer call() throws Exception {
-            returnValue = mainWindow.getApplication().execute(options);
+            Integer returnValue = mainWindow.getApplication().execute(options);
             return returnValue;
          }
       };
@@ -144,14 +147,17 @@ public class ApplicationWorker {
       workerExecutor.shutdownNow();
    }
 
+   /*
    public Integer getReturnValue() {
       return returnValue;
    }
+    *
+    */
 
 
 
    private ProgramPanel mainWindow;
-   private Integer returnValue;
+   //private Integer returnValue;
    private ExecutorService workerExecutor;
 
 

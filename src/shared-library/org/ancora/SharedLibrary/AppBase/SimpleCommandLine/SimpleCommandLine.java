@@ -63,17 +63,16 @@ public class SimpleCommandLine {
       Map<String, AppValue> map = AppOptionFile.parseFile(optionFile, optionClass).getMap();
 
 
-      //try {
+      try {
          return application.execute(map);
-   /*
+   
    } catch (InterruptedException ex) {
          LoggingUtils.getLogger().
                  info("Cancelling application.");
          Thread.currentThread().interrupt();
          return -1;
       }
-    * 
-    */
+    
    }
 
    /**

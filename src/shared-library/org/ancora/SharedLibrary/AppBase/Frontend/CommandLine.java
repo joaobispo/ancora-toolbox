@@ -84,9 +84,9 @@ public class CommandLine {
       }
 
 
-     // try {
+      try {
          return app.execute(options);
-   /*
+   
    } catch (InterruptedException ex) {
          LoggingUtils.getLogger().
                  info("Cancelling application.");
@@ -94,7 +94,7 @@ public class CommandLine {
          Thread.currentThread().interrupt();
          return -1;
       }
-*/
+
    }
 
    private Map<String, AppValue> parseArguments(String[] args) {

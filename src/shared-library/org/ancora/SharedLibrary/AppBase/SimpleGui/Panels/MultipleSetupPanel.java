@@ -118,7 +118,12 @@ public class MultipleSetupPanel extends AppOptionPanel
       // Get setup options and create option file for element
       Class setupOptionsClass = EnumUtils.getClass((Enum[])setup.getSetupOptions());
        this.setupFile = new AppOptionFile(setupOptionsClass);
-      this.setupOptionsPanel = new AppFilePanel(setupOptionsClass);
+
+       //this.setupOptionsPanel = new AppFilePanel(setupOptionsClass);
+       AppFilePanel newPanel = new AppFilePanel(setupOptionsClass);
+       newPanel.add(new javax.swing.JSeparator(),0);
+       newPanel.add(new javax.swing.JSeparator());
+      this.setupOptionsPanel = newPanel;
 
       //setups = new ArrayList<AppOptionEnumSetup>();
 //      setups.addAll(Arrays.asList(setupList.getSetups()));

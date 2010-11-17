@@ -246,6 +246,28 @@ public class BitUtils {
             return longA > longB;
     }
 
+    /**
+    * Fuses the lower 16 bits of two ints.
+    *
+    * TODO: Verify correcteness.
+    * <p>Ex.:
+    * upper16 = 1001
+    * lower16 = 101
+    * result = 00000000000010010000000000000101
+    *
+    * @param upper16
+    * @param lower16
+    * @return
+    */
+   public static int fuseImm(int upper16, int lower16){
+      // Mask the 16 bits of each one
+      upper16 = upper16 & Integer.parseInt("0000FFFF", 16);
+      lower16 = lower16 & Integer.parseInt("0000FFFF", 16);
+      // Shift Upper16
+      upper16 = upper16 << 16;
+      // Merge
+      return upper16 | lower16;
+   }
 
    ///
    // CONSTANTS

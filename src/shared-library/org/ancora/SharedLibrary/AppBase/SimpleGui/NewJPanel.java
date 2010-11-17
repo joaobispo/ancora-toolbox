@@ -49,6 +49,7 @@ public class NewJPanel extends javax.swing.JPanel {
       jComboBox1 = new javax.swing.JComboBox();
       jButton2 = new javax.swing.JButton();
       jCheckBox1 = new javax.swing.JCheckBox();
+      jSeparator1 = new javax.swing.JSeparator();
 
       jLabel1.setText("jLabel1");
 
@@ -92,6 +93,7 @@ public class NewJPanel extends javax.swing.JPanel {
                   .addGap(18, 18, 18)
                   .addComponent(jCheckBox1)))
             .addContainerGap(153, Short.MAX_VALUE))
+         .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,7 +108,9 @@ public class NewJPanel extends javax.swing.JPanel {
                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(jButton2)
                .addComponent(jCheckBox1))
-            .addContainerGap(237, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(221, Short.MAX_VALUE))
       );
    }// </editor-fold>//GEN-END:initComponents
 
@@ -125,6 +129,7 @@ public class NewJPanel extends javax.swing.JPanel {
    private javax.swing.JCheckBox jCheckBox1;
    private javax.swing.JComboBox jComboBox1;
    private javax.swing.JLabel jLabel1;
+   private javax.swing.JSeparator jSeparator1;
    private javax.swing.JTextField jTextField1;
    // End of variables declaration//GEN-END:variables
 
