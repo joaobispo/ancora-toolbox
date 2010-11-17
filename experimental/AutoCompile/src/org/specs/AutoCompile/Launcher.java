@@ -220,7 +220,11 @@ public class Launcher {
 
       IoUtils.safeFolder("./targets");
       input = cl.getResourceAsStream(TARGET_RESOURCE);
-      IoUtils.copy(input, new File(TARGET_FILE));
+      if(input == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not access resource '"+TARGET_RESOURCE+"'");
+      }
+      IoUtils.copy(input, new File(".", TARGET_FILE));
    }
 
    // VARIABLES
@@ -228,7 +232,7 @@ public class Launcher {
 
 
    private final static String CONFIG_RESOURCE = "org/specs/AutoCompile/config.dat";
-   private final static String TARGET_RESOURCE = "org/specs/AutoCompile/targets/microblaze.mbgcc.option";
+   private final static String TARGET_RESOURCE = "org/specs/AutoCompile/Targets/microblaze.mbgcc.option";
    private final static String TARGET_FILE = "./targets/microblaze.mbgcc.option";
 
 
