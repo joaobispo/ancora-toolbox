@@ -1,0 +1,12 @@
+TargetOption.target = MicroBlaze
+TargetOption.compiler = mb-gcc
+TargetOption.optimizationFlags += -O0
+TargetOption.optimizationFlags += -O1
+TargetOption.optimizationFlags += -O2
+TargetOption.optimizationFlags += -O3
+TargetOption.optimizationFlags += -Os
+TargetOption.outputFlag = -o
+TargetOption.launchCommand = mb-gcc 
+TargetOption.outputExtension = elf
+TargetOption.inputExtensions += c
+TargetOption.inputExtensions += h

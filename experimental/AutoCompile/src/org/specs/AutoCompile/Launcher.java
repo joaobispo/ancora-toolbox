@@ -19,6 +19,7 @@ package org.specs.AutoCompile;
 
 import org.ancora.SharedLibrary.AppBase.SimpleCommandLine.SimpleCommandLine;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ancora.SharedLibrary.AppBase.App;
@@ -27,6 +28,7 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
+import org.ancora.SharedLibrary.IoUtils;
 import org.specs.AutoCompile.Job.JobOption;
 
 /**
@@ -41,6 +43,9 @@ public class Launcher {
     public static void main(String[] args) {
        LoggingUtils.setupConsoleOnly();
        LoggingUtils.getRootLogger().setLevel(Level.INFO);
+
+       // Copy files to current folder
+       copyNecessaryFiles();
 
        // Create autocompile application
        App autoCompile = buildAutoCompileApp();
@@ -205,8 +210,28 @@ public class Launcher {
       return aComp;
    }
 
+   private static void copyNecessaryFiles() {
+      // Copy CONFIG_FILE to run folder
+      ClassLoader cl = Launcher.class.getClassLoader();
+      InputStream input = null;
+
+      input = cl.getResourceAsStream(CONFIG_RESOURCE);
+      IoUtils.copy(input, new File(".", CONFIG_FILE));
+
+      IoUtils.safeFolder("./targets");
+      input = cl.getResourceAsStream(TARGET_RESOURCE);
+      IoUtils.copy(input, new File(TARGET_FILE));
+   }
+
    // VARIABLES
    private final static String CONFIG_FILE = "config.dat";
+
+
+   private final static String CONFIG_RESOURCE = "org/specs/AutoCompile/config.dat";
+   private final static String TARGET_RESOURCE = "org/specs/AutoCompile/targets/microblaze.mbgcc.option";
+   private final static String TARGET_FILE = "./targets/microblaze.mbgcc.option";
+
+
 
 
 
