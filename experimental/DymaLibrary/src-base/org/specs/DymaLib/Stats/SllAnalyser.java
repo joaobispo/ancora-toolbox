@@ -56,7 +56,7 @@ public class SllAnalyser {
             continue;
          }
 
-         if(inst.operands[i].type != Operand.TYPE_LIVE_IN) {
+         if(inst.operands[i].type != Operand.TYPE_REGISTER) {
             continue;
          }
 
@@ -74,7 +74,7 @@ public class SllAnalyser {
             continue;
          }
 
-         if(operand.type != Operand.TYPE_LIVE_IN) {
+         if(operand.type != Operand.TYPE_REGISTER) {
             continue;
          }
 
@@ -129,6 +129,6 @@ public class SllAnalyser {
    /**
     * INSTANCE VARIABLES
     */
-   Set<Integer> liveIns;
-   Set<Integer> written;
+   private Set<Integer> liveIns;
+   private Set<Integer> written;
 }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.ParseUtils;
+import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
@@ -34,14 +35,6 @@ import org.specs.DymaLib.Stats.SllAnalyser;
  * @author Joao Bispo
  */
 public class LoopDiskWriter {
-
-   /*
-   public LoopDiskWriter(File outputFolder, String programFilename,
-           String setupName, int iterationsThreshold) {
-      this(outputFolder, programFilename, setupName, iterationsThreshold, null);
-   }
-    * 
-    */
 
    /**
     * Creates a new LoopDiskWriter.
@@ -56,13 +49,14 @@ public class LoopDiskWriter {
     */
    public LoopDiskWriter(File outputFolder, String programFilename, 
            String setupName, int iterationsThreshold, LowLevelParser lowLevelParser,
-           boolean straightLoops) {
+           boolean straightLoops, Enum[] instructionNames) {
       this.outputFolder = outputFolder;
       this.programFilename = programFilename;
       this.setupName = setupName;
       this.iterationsThreshold = iterationsThreshold;
       this.lowLevelParser = lowLevelParser;
       this.straightLineLoops = straightLoops;
+      this.instructionNames = instructionNames;
 
       loopCount = 0;
       writtenLoops = new HashSet<Integer>();
@@ -70,14 +64,6 @@ public class LoopDiskWriter {
 
    }
 
-   /*
-   public void addLoops(List<LoopUnit> loops) {
-      addLoops(loops, false);
-   }
-    * 
-    */
-
-   //public void addLoops(List<LoopUnit> loops, boolean isStraightLineLoop) {
    public void addLoops(List<LoopUnit> loops) {
       if(loops == null) {
          return;
@@ -100,17 +86,21 @@ public class LoopDiskWriter {
          }
 
          // Write current loop
-         StringBuilder builder = new StringBuilder();
-         builder.append(ParseUtils.removeSuffix(programFilename, "."));
-         builder.append(".");
-         builder.append(setupName);
-         builder.append(".");
-         builder.append(loopCount);
-         builder.append(".txt");
+         StringBuilder baseFilename = new StringBuilder();
+         baseFilename.append(ParseUtils.removeSuffix(programFilename, "."));
+         baseFilename.append(".");
+         baseFilename.append(setupName);
+         baseFilename.append(".");
+         baseFilename.append(loopCount);
+         
+         String txtFilename = baseFilename.toString() + ".txt";
+         String dottyFilename = baseFilename.toString() + ".dotty";
 
-         String body = buildBody(unit);
-         IoUtils.write(new File(outputFolder, builder.toString()), body);
-         //IoUtils.write(new File(outputFolder, builder.toString()), unit.toString());
+         String txtBody = buildBody(unit);
+         IoUtils.write(new File(outputFolder, txtFilename), txtBody);
+
+         writeDotty(dottyFilename, unit);
+         
 
          // House cleaning
          writtenLoops.add(unit.getId());
@@ -137,6 +127,20 @@ public class LoopDiskWriter {
       return builder.toString();
    }
 
+
+   private void writeDotty(String dottyFilename, LoopUnit unit) {
+      if (!straightLineLoops) {
+         return;
+      }
+
+      List<LowLevelInstruction> llInsts =
+              lowLevelParser.parseInstructions(unit.getAddresses(), unit.getInstructions());
+
+      String dottyBody = DottyStraigthLineLoop.generateDotty(llInsts, instructionNames);
+
+      IoUtils.write(new File(outputFolder, dottyFilename), dottyBody);
+   }
+
    private File outputFolder;
    private String programFilename;
    private String setupName;
@@ -146,6 +150,8 @@ public class LoopDiskWriter {
 
    private LowLevelParser lowLevelParser;
    private boolean straightLineLoops;
+   private Enum[] instructionNames;
+
 
 
 }

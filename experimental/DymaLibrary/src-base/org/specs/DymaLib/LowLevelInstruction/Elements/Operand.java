@@ -79,9 +79,9 @@ public class Operand {
    public int isImmutable;
    //public int active;
 
-   public final static int TYPE_LIVE_IN = 0;
+   public final static int TYPE_REGISTER = 0;
    public final static int TYPE_LITERAL = 1;
-   public final static int TYPE_INTERNAL_DATA = 2;
+   //public final static int TYPE_INTERNAL_DATA = 2;
    
    public final static int FLOW_INPUT = 0;
    public final static int FLOW_OUTPUT = 1;
