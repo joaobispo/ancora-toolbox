@@ -77,8 +77,14 @@ public class AutoCompile implements App {
 */
 
       // Get Target Options
-      String target = AppUtils.getString(jobOptions, JobOption.processor);
-      String compiler = AppUtils.getString(jobOptions, JobOption.compiler);
+      
+      // For now, use only what we have
+      //String target = AppUtils.getString(jobOptions, JobOption.processor);
+      String target = "MicroBlaze";
+      String compiler = "mb-gcc";
+      //String compiler = AppUtils.getString(jobOptions, JobOption.compiler);
+
+
       File targetConfig = targets.getTargetConfig(target, compiler);
       if(targetConfig == null) {
          LoggingUtils.getLogger().
