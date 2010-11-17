@@ -45,6 +45,7 @@ import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
  *
@@ -173,9 +174,11 @@ public class LoopDetection implements App {
       String instruction = null;
       int traceCount = 0;
       boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
+      Enum[] instructionNames = InstructionName.values();
 
       LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
-              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop);
+              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop,
+              instructionNames);
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
