@@ -49,7 +49,8 @@ public class LoopDiskWriter {
     */
    public LoopDiskWriter(File outputFolder, String programFilename, 
            String setupName, int iterationsThreshold, LowLevelParser lowLevelParser,
-           boolean straightLoops, Enum[] instructionNames) {
+           boolean straightLoops, Enum[] instructionNames, boolean writeDottyForStraighLineLoops,
+           boolean writeTxtFilesForLoops) {
       this.outputFolder = outputFolder;
       this.programFilename = programFilename;
       this.setupName = setupName;
@@ -57,6 +58,8 @@ public class LoopDiskWriter {
       this.lowLevelParser = lowLevelParser;
       this.straightLineLoops = straightLoops;
       this.instructionNames = instructionNames;
+      this.writeDottyForStraighLineLoops = writeDottyForStraighLineLoops;
+      this.writeTxtForLoops = writeTxtFilesForLoops;
 
       loopCount = 0;
       writtenLoops = new HashSet<Integer>();
@@ -96,9 +99,8 @@ public class LoopDiskWriter {
          String txtFilename = baseFilename.toString() + ".txt";
          String dottyFilename = baseFilename.toString() + ".dotty";
 
-         String txtBody = buildBody(unit);
-         IoUtils.write(new File(outputFolder, txtFilename), txtBody);
 
+         writeTxt(txtFilename, unit);
          writeDotty(dottyFilename, unit);
          
 
@@ -127,9 +129,21 @@ public class LoopDiskWriter {
       return builder.toString();
    }
 
+   private void writeTxt(String txtFilename, LoopUnit unit) {
+      if(!writeTxtForLoops) {
+         return;
+      }
+
+      String txtBody = buildBody(unit);
+      IoUtils.write(new File(outputFolder, txtFilename), txtBody);
+   }
 
    private void writeDotty(String dottyFilename, LoopUnit unit) {
       if (!straightLineLoops) {
+         return;
+      }
+
+      if(!writeDottyForStraighLineLoops) {
          return;
       }
 
@@ -147,10 +161,16 @@ public class LoopDiskWriter {
    private int iterationsThreshold;
    private int loopCount;
    private Set<Integer> writtenLoops;
+   private boolean writeDottyForStraighLineLoops;
+   private boolean writeTxtForLoops;
+
 
    private LowLevelParser lowLevelParser;
    private boolean straightLineLoops;
    private Enum[] instructionNames;
+
+
+
 
 
 
