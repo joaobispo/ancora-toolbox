@@ -553,13 +553,13 @@ public class IoUtils {
          return false;
       }
 
+      System.out.println("Deleting contents of folder '"+folder.getName()+"'");
       for(File file : folder.listFiles()) {
          if(file.isDirectory()) {
             deleteFolderContents(file);
-
          }
          file.delete();
-
+         System.out.println("Deleted '"+file.delete()+"'");
       }
 
       return true;
