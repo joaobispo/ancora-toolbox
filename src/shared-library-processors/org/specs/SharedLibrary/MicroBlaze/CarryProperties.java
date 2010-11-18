@@ -52,6 +52,8 @@ public class CarryProperties {
       aMap.put(InstructionName.addk, new CarryProperties(false, false));
       aMap.put(InstructionName.addkc, new CarryProperties(true, false));
 
+      aMap.put(InstructionName.src, new CarryProperties(true, true));
+
       aMap.put(InstructionName.rsub, new CarryProperties(false, true));
       aMap.put(InstructionName.rsubc, new CarryProperties(true, true));
       aMap.put(InstructionName.rsubi, new CarryProperties(false, true));
