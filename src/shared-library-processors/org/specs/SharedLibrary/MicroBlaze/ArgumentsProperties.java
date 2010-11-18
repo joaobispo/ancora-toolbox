@@ -125,6 +125,7 @@ public class ArgumentsProperties {
       aMap.put(sh, readReadRead);
       aMap.put(shi, readReadRead);
       aMap.put(sra, writeRead);
+      aMap.put(src, writeRead);
       aMap.put(srl, writeRead);
       aMap.put(sw, readReadRead);
       aMap.put(swi, readReadRead);
