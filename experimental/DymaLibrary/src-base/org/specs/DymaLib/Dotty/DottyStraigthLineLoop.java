@@ -48,6 +48,8 @@ public class DottyStraigthLineLoop {
 
       declarations = new ArrayList<String>();
       connections = new ArrayList<String>();
+
+      connectOperationsDirectly = false;
    }
 
    public static String generateDotty(List<LowLevelInstruction> instructions,
@@ -106,34 +108,31 @@ public class DottyStraigthLineLoop {
             continue;
          }
 
-         addOutputOperand(operand, operationId);
-         /*
-         // Outputs are always declared
-         String operandId = OPERAND_PREFIX + operandCounter;
-         operandCounter++;
+         
+               // Add carry-out
+         Carry carryOut = instruction.carries[LowLevelInstruction.CARRY_OUT_INDEX];
+         if (connectOperationsDirectly) {
 
-         String operandName = null;
-         if (operand.type == Operand.TYPE_REGISTER) {
-            operandName = "r" + operand.value;
-            // Add output register to written set
-            registersIds.put(Integer.toString(operand.value), operandId);
+            // EXPERIMENT
+            if (operand.type == Operand.TYPE_REGISTER) {
+               // Add output register to written set
+               registersIds.put(Integer.toString(operand.value), operationId);
+            }
+
+            if (carryOut.enabled == LowLevelInstruction.ENABLED) {
+               // Put carry out output list
+               registersIds.put(CARRY_NAME, operationId);
+            }
+
          } else {
-            operandName = Integer.toString(operand.value);
+            addOutputOperand(operand, operationId);
+            addCarryOut(carryOut, operationId);
          }
-
-         declarations.add(DottyUtils.declaration(operandId, operandName,
-                 DottyUtils.SHAPE_BOX, null));
-
-
-         // Connect operand
-         connections.add(DottyUtils.connection(operationId, operandId, null));
-*/
-
       }
 
-      // Add carry-out
-      Carry carryOut = instruction.carries[LowLevelInstruction.CARRY_OUT_INDEX];
-      addCarryOut(carryOut, operationId);
+
+      
+
    }
 
    private void close() {
@@ -337,6 +336,8 @@ public class DottyStraigthLineLoop {
    
    private Map<String,String> registersIds;
    private Map<String,List<String>> liveInsIds;
+
+   private boolean connectOperationsDirectly;
 
 
 

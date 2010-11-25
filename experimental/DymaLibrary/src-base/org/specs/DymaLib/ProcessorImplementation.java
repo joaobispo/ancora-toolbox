@@ -15,39 +15,19 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection;
+package org.specs.DymaLib;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
 
 /**
- * Collects unique loops.
+ * Interface which can store implementations needed for a specific processor.
  *
  * @author Joao Bispo
  */
-public class LoopCollector {
+public interface ProcessorImplementation {
 
-   public LoopCollector() {
-      loops = new ArrayList<LoopUnit>();
-      ids = new HashSet<Integer>();
-   }
-
-   public List<LoopUnit> getLoops() {
-      return loops;
-   }
-
-   public void addLoop(LoopUnit loop) {
-      int id = loop.getId();
-      if (ids.contains(id)) {
-         return;
-      }
-
-      ids.add(id);
-      loops.add(loop);
-   }
-
-   private List<LoopUnit> loops;
-   private Set<Integer> ids;
+   InstructionDecoder getInstructionDecoder();
+   LowLevelParser getLowLevelParser();
+   Enum[] getInstructionNames();
 }

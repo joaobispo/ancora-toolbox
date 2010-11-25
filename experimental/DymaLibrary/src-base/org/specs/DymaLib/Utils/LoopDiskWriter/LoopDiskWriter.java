@@ -15,14 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils;
+package org.specs.DymaLib.Utils.LoopDiskWriter;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
-import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
@@ -42,24 +41,27 @@ public class LoopDiskWriter {
     * <br>LowLevelParser can be null, if we are not interested in extracting
     * additional information from Straight-Line Loops.
     * @param outputFolder
-    * @param programFilename
+    * @param baseFilename
     * @param setupName
     * @param iterationsThreshold
     * @param lowLevelParser
     */
-   public LoopDiskWriter(File outputFolder, String programFilename, 
-           String setupName, int iterationsThreshold, LowLevelParser lowLevelParser,
-           boolean straightLoops, Enum[] instructionNames, boolean writeDottyForStraighLineLoops,
-           boolean writeTxtFilesForLoops) {
+//   public LoopDiskWriter(File outputFolder, String baseFilename,
+//           String setupName, int iterationsThreshold, LowLevelParser lowLevelParser,
+//           boolean loopsAreStraightLine, Enum[] instructionNames, boolean writeDottyForStraighLineLoops,
+//           boolean writeTxtFilesForLoops) {
+   public LoopDiskWriter(File outputFolder, String baseFilename,
+           String setupName, LowLevelParser lowLevelParser, DiskWriterSetup setup,
+           boolean loopsAreStraightLine, Enum[] instructionNames) {
       this.outputFolder = outputFolder;
-      this.programFilename = programFilename;
+      this.programFilename = baseFilename;
       this.setupName = setupName;
-      this.iterationsThreshold = iterationsThreshold;
+      this.iterationsThreshold = setup.iterationsThreshold;
       this.lowLevelParser = lowLevelParser;
-      this.straightLineLoops = straightLoops;
+      this.straightLineLoops = loopsAreStraightLine;
       this.instructionNames = instructionNames;
-      this.writeDottyForStraighLineLoops = writeDottyForStraighLineLoops;
-      this.writeTxtForLoops = writeTxtFilesForLoops;
+      this.writeDottyForStraighLineLoops = setup.writeDottyForStraighLineLoops;
+      this.writeTxtForLoops = setup.writeTxtFilesForLoops;
 
       loopCount = 0;
       writtenLoops = new HashSet<Integer>();
@@ -90,17 +92,20 @@ public class LoopDiskWriter {
 
          // Write current loop
          StringBuilder baseFilename = new StringBuilder();
-         baseFilename.append(ParseUtils.removeSuffix(programFilename, "."));
+         //baseFilename.append(ParseUtils.removeSuffix(programFilename, "."));
+         baseFilename.append(programFilename);
          baseFilename.append(".");
          baseFilename.append(setupName);
          baseFilename.append(".");
          baseFilename.append(loopCount);
          
-         String txtFilename = baseFilename.toString() + ".txt";
-         String dottyFilename = baseFilename.toString() + ".dotty";
+         //String txtFilename = baseFilename.toString() + ".txt";
+         String blockFilename = baseFilename.toString() + BLOCK_EXTENSION;
+         //String dottyFilename = baseFilename.toString() + ".dotty";
+         String dottyFilename = baseFilename.toString() + DOT_EXTENSION;
 
 
-         writeTxt(txtFilename, unit);
+         writeBlock(blockFilename, unit);
          writeDotty(dottyFilename, unit);
          
 
@@ -129,7 +134,7 @@ public class LoopDiskWriter {
       return builder.toString();
    }
 
-   private void writeTxt(String txtFilename, LoopUnit unit) {
+   private void writeBlock(String txtFilename, LoopUnit unit) {
       if(!writeTxtForLoops) {
          return;
       }
@@ -169,7 +174,8 @@ public class LoopDiskWriter {
    private boolean straightLineLoops;
    private Enum[] instructionNames;
 
-
+   public static final String DOT_EXTENSION = ".dotty";
+   public static final String BLOCK_EXTENSION = ".block";
 
 
 
