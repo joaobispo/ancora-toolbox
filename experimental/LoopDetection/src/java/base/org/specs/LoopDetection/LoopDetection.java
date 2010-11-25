@@ -17,7 +17,7 @@
 
 package org.specs.LoopDetection;
 
-import org.specs.DymaLib.Utils.LoopDiskWriter;
+import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,19 +33,21 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
-import org.specs.DToolPlus.DymaLib.DToolReader;
-import org.specs.DToolPlus.DymaLib.FW_3SP.FW_3SP_Decoder;
-import org.specs.DToolPlus.DymaLib.LowLevelInstruction.MbLowLevelParser;
+import org.specs.DymaLib.DToolReader;
+//import org.specs.DymaLib.FW_3SP.FW_3SP_Decoder;
+//import org.specs.DymaLib.LowLevelInstruction.MbLowLevelParser;
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+//import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.Interfaces.TraceReader;
-import org.specs.DymaLib.LoopDetection.LoopCollector;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
-import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
-import org.specs.SharedLibrary.MicroBlaze.InstructionName;
+//import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.MbImplementation;
+import org.specs.DymaLib.ProcessorImplementation;
+import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
+//import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
  *
@@ -64,12 +66,13 @@ public class LoopDetection implements App {
 
        LoopDetection loopDetection = new LoopDetection();
        SimpleGui simpleGui = new SimpleGui(loopDetection);
-       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.4");
+       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.5");
        simpleGui.execute();
     }
 
    public int execute(Map<String, AppValue> options) throws InterruptedException {
       // Initialize
+      processor = new MbImplementation();
       boolean success = init(options);
       if(!success) {
          return -1;
@@ -123,15 +126,23 @@ public class LoopDetection implements App {
       }
       initLoopDetectors(detectors);
 
+      File diskWriterSetupfile = AppUtils.getExistingFile(options, AppOptions.LoopWriterSetup);
+      if( diskWriterSetupfile == null) {
+         System.out.println("Could not open disk writer setup file.");
+         return false;
+      }
+      diskWriterSetup = DiskWriterSetup.newSetup(diskWriterSetupfile);
+
+      /*
       iterationsThreshold = AppUtils.getInteger(options, AppOptions.IterationsThreshold);
       if(iterationsThreshold == null) {
          System.out.println("Could not get iterations threshold.");
          return false;
-      }
+      }*/
 
       writeDotFilesForEachElfProgram = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachElfProgram);
-      writeDotFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachMegablock);   
-      writeTxtFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteTxtFilesForEachMegablock);
+      //writeDotFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachMegablock);
+      //writeTxtFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteTxtFilesForEachMegablock);
 
       return true;
    }
@@ -158,14 +169,15 @@ public class LoopDetection implements App {
       String detectorName = loopDetectorNames.get(detectorIndex);
       File detectorSetup = loopDetectorSetups.get(detectorIndex);
       LoopDetector loopDetector = LoopUtils.newLoopDetector(detectorName,
-              detectorSetup, DECODER);
+              detectorSetup, processor.getInstructionDecoder());
+//              detectorSetup, DECODER);
       if (loopDetector == null) {
          return;
       }
 
       // Stats
       dotty = new DottyLoopUnit();
-      loopCollector = new LoopCollector();
+      //loopCollector = new LoopFilter();
       loopInstCount = 0;
 
       // Instantiate System
@@ -178,11 +190,20 @@ public class LoopDetection implements App {
       String instruction = null;
       int traceCount = 0;
       boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
-      Enum[] instructionNames = InstructionName.values();
+      //Enum[] instructionNames = InstructionName.values();
+      Enum[] instructionNames = processor.getInstructionNames();
+      String baseFilename = ParseUtils.removeSuffix(elfFile.getName(), ".");
 
-      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
-              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop,
-              instructionNames, writeDotFilesForEachMegablock, writeTxtFilesForEachMegablock);
+      //LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
+//      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
+//              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop,
+//              instructionNames, writeDotFilesForEachMegablock, writeTxtFilesForEachMegablock);
+      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
+              detectorSetup.getName(), processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
+              //detectorSetup.getName(), LOW_LEVEL_PARSER, diskWriterSetup, isStraighLineLoop,
+              instructionNames);
+
+
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
@@ -225,7 +246,7 @@ public class LoopDetection implements App {
          loopInstCount += unit.getTotalInstructions();
          dotty.addUnit(unit);
          if(unit.isLoop()) {
-            loopCollector.addLoop(unit);
+            //loopCollector.addLoop(unit);
          }
       }
    }
@@ -261,25 +282,27 @@ public class LoopDetection implements App {
    private File outputFolder;
    private File systemConfigFile;
    private boolean writeDotFilesForEachElfProgram;
-   private boolean writeDotFilesForEachMegablock;
-   private boolean writeTxtFilesForEachMegablock;
+   //private boolean writeDotFilesForEachMegablock;
+   //private boolean writeTxtFilesForEachMegablock;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
-   private Integer iterationsThreshold;
+   //private Integer iterationsThreshold;
+   private DiskWriterSetup diskWriterSetup;
+   private ProcessorImplementation processor;
 
    // STATS
    private DottyLoopUnit dotty;
-   private LoopCollector loopCollector;
+   //private LoopFilter loopCollector;
    private int loopInstCount;
 
    /**
     * Decoder for MicroBlaze instructions.
     */
-   public static final InstructionDecoder DECODER = new FW_3SP_Decoder();
+   //public static final InstructionDecoder DECODER = new FW_3SP_Decoder();
    /**
     * Low Level Instructions parser for MicroBlaze instructions.
     */
-   public static final LowLevelParser LOW_LEVEL_PARSER = new MbLowLevelParser();
+   //public static final LowLevelParser LOW_LEVEL_PARSER = new MbLowLevelParser();
 
 
 

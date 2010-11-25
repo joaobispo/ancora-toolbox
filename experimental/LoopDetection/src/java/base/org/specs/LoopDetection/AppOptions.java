@@ -25,6 +25,7 @@ import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.specs.DToolPlus.Config.SystemOptions;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
+import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptions;
 
 /**
  *
@@ -36,10 +37,11 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
    ProgramFileOrFolder(AppValueType.string),
    InputType(AppValueType.multipleChoice),
    OutputFolder(AppValueType.string),
-   IterationsThreshold(AppValueType.integer),
    WriteDotFilesForEachElfProgram(AppValueType.bool),
-   WriteTxtFilesForEachMegablock(AppValueType.bool),
-   WriteDotFilesForEachMegablock(AppValueType.bool),
+   LoopWriterSetup(AppValueType.multipleSetup),
+   //IterationsThreshold(AppValueType.integer),
+   //WriteTxtFilesForEachMegablock(AppValueType.bool),
+   //WriteDotFilesForEachMegablock(AppValueType.bool),
    LoopDetector(AppValueType.multipleSetupList),
    SystemSetup(AppValueType.multipleSetup);
 
@@ -60,6 +62,9 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
    public AppOptionEnum[] getSetupOptions() {
       if(this == SystemSetup) {
          return SystemOptions.values();
+      }
+      if(this == LoopWriterSetup) {
+         return DiskWriterOptions.values();
       }
 
       return null;
