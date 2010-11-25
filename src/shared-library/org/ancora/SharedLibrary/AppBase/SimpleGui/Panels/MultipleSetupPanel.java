@@ -22,26 +22,18 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
-import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.AppFilePanel;
 import org.ancora.SharedLibrary.AppBase.SimpleGui.Interfaces.SetupPanel;
 import org.ancora.SharedLibrary.EnumUtils;
-import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
@@ -409,7 +401,8 @@ public class MultipleSetupPanel extends AppOptionPanel
       if(!show) {
          remove(currentOptionsPanel);
          currentOptionsPanel = null;
-         repaint();
+         revalidate();
+         //repaint();
          return;
       }
 
@@ -431,7 +424,7 @@ public class MultipleSetupPanel extends AppOptionPanel
 
       
       // TODO: Is it repaint necessary here, or revalidate on panel solves it?
-      repaint();
+      //repaint();
       //System.out.println("SetupPanel Repainted");
    }
 

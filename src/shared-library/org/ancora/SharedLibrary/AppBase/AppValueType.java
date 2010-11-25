@@ -46,6 +46,7 @@ public enum AppValueType {
    multipleChoiceStringList("+="),
    /**
     * One complete setup. Value stores the path to a file in AppOptionFile format.
+    * <p>To use this option, AppOptionEnum must implement interface AppOptionMultipleSetup.
     */
    multipleSetup("="),
    /**
