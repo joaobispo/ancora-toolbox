@@ -39,9 +39,6 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
    OutputFolder(AppValueType.string),
    WriteDotFilesForEachElfProgram(AppValueType.bool),
    LoopWriterSetup(AppValueType.multipleSetup),
-   //IterationsThreshold(AppValueType.integer),
-   //WriteTxtFilesForEachMegablock(AppValueType.bool),
-   //WriteDotFilesForEachMegablock(AppValueType.bool),
    LoopDetector(AppValueType.multipleSetupList),
    SystemSetup(AppValueType.multipleSetup);
 

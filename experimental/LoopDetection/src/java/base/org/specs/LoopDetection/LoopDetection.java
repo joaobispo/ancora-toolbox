@@ -34,20 +34,15 @@ import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
 import org.specs.DymaLib.DToolReader;
-//import org.specs.DymaLib.FW_3SP.FW_3SP_Decoder;
-//import org.specs.DymaLib.LowLevelInstruction.MbLowLevelParser;
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
-//import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
-//import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-//import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
  *
@@ -133,16 +128,7 @@ public class LoopDetection implements App {
       }
       diskWriterSetup = DiskWriterSetup.newSetup(diskWriterSetupfile);
 
-      /*
-      iterationsThreshold = AppUtils.getInteger(options, AppOptions.IterationsThreshold);
-      if(iterationsThreshold == null) {
-         System.out.println("Could not get iterations threshold.");
-         return false;
-      }*/
-
       writeDotFilesForEachElfProgram = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachElfProgram);
-      //writeDotFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachMegablock);
-      //writeTxtFilesForEachMegablock = AppUtils.getBool(options, AppOptions.WriteTxtFilesForEachMegablock);
 
       return true;
    }
@@ -170,14 +156,12 @@ public class LoopDetection implements App {
       File detectorSetup = loopDetectorSetups.get(detectorIndex);
       LoopDetector loopDetector = LoopUtils.newLoopDetector(detectorName,
               detectorSetup, processor.getInstructionDecoder());
-//              detectorSetup, DECODER);
       if (loopDetector == null) {
          return;
       }
 
       // Stats
       dotty = new DottyLoopUnit();
-      //loopCollector = new LoopFilter();
       loopInstCount = 0;
 
       // Instantiate System
@@ -190,17 +174,11 @@ public class LoopDetection implements App {
       String instruction = null;
       int traceCount = 0;
       boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
-      //Enum[] instructionNames = InstructionName.values();
       Enum[] instructionNames = processor.getInstructionNames();
       String baseFilename = ParseUtils.removeSuffix(elfFile.getName(), ".");
 
-      //LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, elfFile.getName(),
-//      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
-//              detectorSetup.getName(), iterationsThreshold, LOW_LEVEL_PARSER, isStraighLineLoop,
-//              instructionNames, writeDotFilesForEachMegablock, writeTxtFilesForEachMegablock);
       LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
               detectorSetup.getName(), processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
-              //detectorSetup.getName(), LOW_LEVEL_PARSER, diskWriterSetup, isStraighLineLoop,
               instructionNames);
 
 
@@ -259,21 +237,17 @@ public class LoopDetection implements App {
                  + "from loop instruction count (" + loopCount + ").");
       }
 
-      //System.out.println("Trace Count:"+traceCount);
-      //System.out.println("Loop Count:"+loopCount);
    }
 
       private void buildDotty(int fileIndex, int detectorIndex, DottyLoopUnit dotty) {
          // Build name
          String inputFilename = inputFiles.get(fileIndex).getName();
          inputFilename = ParseUtils.removeSuffix(inputFilename, ".");
-         //inputFilename = inputFilename + "." + loopDetectorNames.get(detectorIndex);
          inputFilename = inputFilename + "." + loopDetectorSetups.get(detectorIndex).getName();
          inputFilename = inputFilename + ".dotty";
          
          IoUtils.write(new File(outputFolder, inputFilename), dotty.generateDot());
    }
-
 
    /**
     *
@@ -282,35 +256,13 @@ public class LoopDetection implements App {
    private File outputFolder;
    private File systemConfigFile;
    private boolean writeDotFilesForEachElfProgram;
-   //private boolean writeDotFilesForEachMegablock;
-   //private boolean writeTxtFilesForEachMegablock;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
-   //private Integer iterationsThreshold;
    private DiskWriterSetup diskWriterSetup;
    private ProcessorImplementation processor;
 
    // STATS
    private DottyLoopUnit dotty;
-   //private LoopFilter loopCollector;
    private int loopInstCount;
-
-   /**
-    * Decoder for MicroBlaze instructions.
-    */
-   //public static final InstructionDecoder DECODER = new FW_3SP_Decoder();
-   /**
-    * Low Level Instructions parser for MicroBlaze instructions.
-    */
-   //public static final LowLevelParser LOW_LEVEL_PARSER = new MbLowLevelParser();
-
-
-
-
-
-
-
-
-
 
 }
