@@ -243,4 +243,12 @@ public class ProcessUtils {
       return interfaces.contains(anInterface);
    }
 
+   /**
+    * Turns off Security Manager, for Java WebStart, and setups the logger.
+    */
+   public static void programStandardInit() {
+      System.setSecurityManager(null);
+      LoggingUtils.setupConsoleOnly();
+   }
+
 }
