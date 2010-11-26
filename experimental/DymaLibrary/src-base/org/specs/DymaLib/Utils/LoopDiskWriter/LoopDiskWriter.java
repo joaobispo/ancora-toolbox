@@ -119,7 +119,32 @@ public class LoopDiskWriter {
    private String buildBody(LoopUnit unit) {
       StringBuilder builder = new StringBuilder();
       
-      builder.append(unit.toString());
+      //builder.append(unit.toString());
+
+
+      builder.append("iterations:");
+      builder.append(unit.getIterations());
+      builder.append("\n");
+
+
+      builder.append("sequence instructions: ");
+      builder.append(unit.getNumInstructions());
+      builder.append("\n");
+      builder.append("instructions x iterations: ");
+      builder.append(unit.getNumInstructions() * unit.getIterations());
+      builder.append("\n");
+      
+      builder.append(BlockParser.BLOCK_BEGIN);
+      builder.append("\n");
+      for(int i=0; i<unit.getInstructions().size(); i++) {
+         builder.append(unit.getAddresses().get(i));
+         builder.append(BlockParser.ADDRESS_INSTRUCTION_SEPARATOR);
+         builder.append(unit.getInstructions().get(i));
+         builder.append("\n");
+      }
+      builder.append(BlockParser.BLOCK_END);
+      builder.append("\n");
+
 
       // Get information from the Straigh-Line Loop
       if(straightLineLoops) {
