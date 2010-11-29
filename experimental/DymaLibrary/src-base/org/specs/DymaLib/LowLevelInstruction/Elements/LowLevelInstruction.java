@@ -17,7 +17,6 @@
 
 package org.specs.DymaLib.LowLevelInstruction.Elements;
 
-import java.util.Map;
 import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
@@ -27,8 +26,10 @@ import org.specs.SharedLibrary.MicroBlaze.InstructionName;
  */
 public class LowLevelInstruction {
 
-   public LowLevelInstruction(int mappable, int address, int op, Operand[] operands, Carry[] carries) {
-      this.mappable = mappable;
+   //public LowLevelInstruction(int mappable, int address, int op, Operand[] operands, Carry[] carries) {
+   public LowLevelInstruction(InstructionFlags flags, int address, int op, Operand[] operands, Carry[] carries) {
+      //this.mappable = mappable;
+      this.flags = flags;
       this.address = address;
       this.op = op;
       this.operands = operands;
@@ -83,33 +84,13 @@ public class LowLevelInstruction {
       return builder.toString();
    }
 
-   
-
-   /*
-   public LowLevelInstruction() {
-      operands = new Operand[3];
-      carries = new Carry[2];
-
-      for(int i=0; i<NUM_MAX_OPERANDS; i++) {
-         operands[i] = new Operand();
-      }
-
-      carries[0] = new Carry();
-      carries[1] = new Carry();
-   }
-    *
-    */
-
 
 
 
    /**
     * INSTANCE VARIABLES
     */
-   /**
-    * Used for a more efficient encoding, if needed.
-    */
-   //public int instructionType;
+
 
    /**
     *
@@ -119,6 +100,7 @@ public class LowLevelInstruction {
    public int op;
    public Operand[] operands;
    public Carry[] carries;
+   public InstructionFlags flags;
 
    public final static int NUM_MAX_OPERANDS = 3;
 
