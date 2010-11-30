@@ -15,26 +15,17 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Mapping.Representation;
-
-import java.util.List;
+package org.specs.DymaLib.LowLevelInstruction;
 
 /**
- * Represents a CGRA configuration, during a cycle.
+ * Utility methods for Low-Level Instructions.
  *
  * @author Joao Bispo
  */
-public class Cycle {
-
-   public Cycle(int numCycle, List<Pe> pes, List<Exit> exits) {
-      this.numCycle = numCycle;
-      this.pes = pes;
-      this.exits = exits;
-   }
+public class LliUtils {
 
    
 
-   public int numCycle;
-   public List<Pe> pes;
-   public List<Exit> exits;
+   public final static int ENABLED = 1;
+   public final static int DISABLED = 0;
 }

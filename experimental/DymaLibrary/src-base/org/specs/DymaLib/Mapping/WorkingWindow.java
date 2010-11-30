@@ -36,6 +36,7 @@ public class WorkingWindow {
       //this.windowSize = windowsSize;
       backPointer = null;
       frontPointer = null;
+      newestElementIndex = -1;
 //      currentCycles = new ArrayList<WorkingCycle>();
       currentElements = new WorkingCycle[windowsSize];
 
@@ -51,6 +52,23 @@ public class WorkingWindow {
       int evalPointer = value + 1;
       if(evalPointer == size) {
          return 0;
+      }
+      else {
+         return evalPointer;
+      }
+   }
+
+   public static int modulePrevious(Integer value, int size) {
+      // empty
+      if(value == null) {
+         LoggingUtils.getLogger().
+                 warning("Null value");
+         return 0;
+      }
+
+      int evalPointer = value - 1;
+      if(evalPointer == -1) {
+         return size-1;
       }
       else {
          return evalPointer;
@@ -145,11 +163,86 @@ public class WorkingWindow {
          frontPointer = moduleNext(frontPointer, currentElements.length);
       }
       
+      newestElementIndex++;
       currentElements[frontPointer] = element;
 
       return true;
    }
 
+   /**
+    * Returns the element indicated by the given index. If the element does
+    * not exist, the method inserts new elements until there is one of the
+    * asked index, unless the window get full. In that case, no elements are
+    * added and null is returned.
+    *
+    * @param a
+    * @return
+    */
+
+   public static Integer getDistance(int index, int newestElementIndex, int size) {
+      // Check index
+      if(index > newestElementIndex) {
+         LoggingUtils.getLogger().
+                 warning("Given index ("+index+") is bigger than the newest index ("+newestElementIndex+").");
+         return null;
+      }
+
+      int distance = newestElementIndex - index;
+      if(distance >= size) {
+         LoggingUtils.getLogger().
+                 warning("Given index ("+index+") is out of the window size ("+size+") for the current newest index ("+newestElementIndex+").");
+         return null;
+      }
+
+
+      return distance;
+
+
+   }
+
+   /**
+    *
+    * @param a
+    * @return
+    */
+   public WorkingCycle getElement(int index) {
+      Integer distance = getDistance(index, newestElementIndex, currentElements.length);
+      if(distance == null) {
+         return null;
+      }
+
+      // Transform index
+      int transfIndex = frontPointer;
+      for(int i=0; i<distance; i++) {
+         transfIndex = modulePrevious(transfIndex, currentElements.length);
+      }
+
+      return currentElements[transfIndex];
+   }
+
+   public Integer getNewerIndex() {
+      if(isEmpty()) {
+         return null;
+      }
+
+      return newestElementIndex;
+   }
+
+   public Integer getOldestIndex() {
+      if(isEmpty()) {
+         return null;
+      }
+
+      // Calculate distance
+      int tempBackPointer = backPointer;
+      int distance = 0;
+      while(tempBackPointer != frontPointer) {
+         tempBackPointer = moduleNext(tempBackPointer, currentElements.length);
+         distance++;
+      }
+
+      return newestElementIndex-distance;
+   }
 
    /**
     * INSTANCE VARIABLES
@@ -158,6 +251,7 @@ public class WorkingWindow {
    private Integer frontPointer;
    private Integer backPointer;
    private WorkingCycle[] currentElements;
+   private Integer newestElementIndex;
 
    @Override
    public String toString() {
@@ -183,6 +277,7 @@ public class WorkingWindow {
       */
       return builder.toString();
    }
+
 
 
 }

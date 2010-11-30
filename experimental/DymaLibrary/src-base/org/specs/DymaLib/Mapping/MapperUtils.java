@@ -17,11 +17,21 @@
 
 package org.specs.DymaLib.Mapping;
 
+import org.specs.DymaLib.Mapping.Representation.Configuration;
+import org.specs.DymaLib.Mapping.Representation.Cycle;
+import org.specs.DymaLib.Mapping.Tables.WorkingCycle;
+
 /**
  * Utility methods related to mapping.
  * 
  * @author Joao Bispo
  */
 public class MapperUtils {
+
+   public static void addMapping(Configuration configuration, WorkingCycle cycle) {
+      // Create cycle
+      Cycle newCycle = new Cycle(cycle.cycleNumber, cycle.mappedPes, cycle.exits);
+      configuration.cycles.add(newCycle);
+   }
 
 }

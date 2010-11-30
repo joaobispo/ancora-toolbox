@@ -17,6 +17,7 @@
 
 package org.specs.DymaLib.Mapping.Representation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,12 @@ import java.util.List;
  * @author Joao Bispo
  */
 public class Configuration {
+
+   public Configuration() {
+      cycles = new ArrayList<Cycle>();
+   }
+
+
 
    public List<Cycle> cycles;
    public int numLoopLiveouts;

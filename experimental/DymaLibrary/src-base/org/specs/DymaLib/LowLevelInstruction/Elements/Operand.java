@@ -24,11 +24,12 @@ package org.specs.DymaLib.LowLevelInstruction.Elements;
  */
 public class Operand {
 
-   public Operand(int value, int type, int flow, int isImmutable) {
+   public Operand(int value, int type, int flow, int isImmutable, Integer isLiveIn) {
       this.value = value;
       this.type = type;
       this.flow = flow;
       this.isImmutable = isImmutable;
+      this.isLiveIn = isLiveIn;
    }
 
 
@@ -77,6 +78,7 @@ public class Operand {
    public int type;
    public int flow;
    public int isImmutable;
+   public Integer isLiveIn;
    //public int active;
 
    public final static int TYPE_REGISTER = 0;

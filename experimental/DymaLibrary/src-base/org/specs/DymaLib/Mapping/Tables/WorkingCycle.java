@@ -20,6 +20,7 @@ package org.specs.DymaLib.Mapping.Tables;
 import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;
+import org.specs.DymaLib.Mapping.Representation.Exit;
 import org.specs.DymaLib.Mapping.Representation.Pe;
 
 /**
@@ -44,5 +45,6 @@ public class WorkingCycle {
 
    public CycleAvaliability cycleAval;
    public List<Pe> mappedPes;
+   public List<Exit> exits;
    public final int cycleNumber;
 }

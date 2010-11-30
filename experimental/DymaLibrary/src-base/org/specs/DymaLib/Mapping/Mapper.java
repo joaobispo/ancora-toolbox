@@ -17,8 +17,10 @@
 
 package org.specs.DymaLib.Mapping;
 
+import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;
+import org.specs.DymaLib.Mapping.Representation.Configuration;
 import org.specs.DymaLib.Mapping.Tables.LivenessTable;
 import org.specs.DymaLib.Mapping.Tables.RegisterTable;
 import org.specs.DymaLib.Mapping.Tables.WorkingCycle;
@@ -36,6 +38,7 @@ public class Mapper {
       registerTable = new RegisterTable();
       workingWindow = new WorkingWindow(windowSize);
       cycleNumber = 0;
+      configuration = new Configuration();
    }
 
 
@@ -46,32 +49,148 @@ public class Mapper {
     * @return true if instruction could be mapped, false otherwise.
     */
    public boolean nextInstruction(LowLevelInstruction lli) {
-      //System.out.println(workingWindow);
-      workingWindow.pushNewerElement(new WorkingCycle(arch, cycleNumber));
-      cycleNumber++;
 
-      if(workingWindow.isFull()) {
-         workingWindow.popOldestElement();
-         //System.out.println(workingWindow.popOldestElement());
-      }
+
+      //testAddInstructionWithMethod(lli);
+      retireIfFull();
+      updateTables(lli);
       
       return true;
    }
 
+   private WorkingCycle getWorkingCycle(int aCycleNumber) {
+      // If empty, create a new cycle
+      if(workingWindow.isEmpty()) {
+         newCycle();
+      }
+
+      // If is just one index after the newer, create cycle
+      if(aCycleNumber == workingWindow.getNewerIndex()+1) {
+         newCycle();
+      }
+
+      if(aCycleNumber > workingWindow.getNewerIndex() ||
+              aCycleNumber < workingWindow.getOldestIndex()) {
+         LoggingUtils.getLogger().
+                 warning("Index '"+aCycleNumber+"' out of window ("+workingWindow.getOldestIndex()+
+                 " to "+workingWindow.getNewerIndex()+")");
+         return null;
+      }
+
+      WorkingCycle wCycle = workingWindow.getElement(aCycleNumber);
+
+
+      // If wCycle == null, add cycles until it gets to the desired one.
+      /*
+      if(wCycle == null) {
+         if(!workingWindow.isFull()) {
+            newCycle();
+         } else {
+            LoggingUtils.getLogger().
+                 warning("Window got full! CycleNumber:"+aCycleNumber);
+            return null;
+         }
+
+         wCycle = workingWindow.getElement(aCycleNumber);
+      }
+*/
+      return wCycle;
+
+   }
+
+   private void updateTables(LowLevelInstruction lli) {
+      // Check live-ins
+      throw new UnsupportedOperationException("Not yet implemented");
+   }
+
+   public void testAddInstructionDirectly(LowLevelInstruction lli) {
+      // This part needs to be reworked - only put new cycle if needed.
+      workingWindow.pushNewerElement(new WorkingCycle(arch, cycleNumber));
+      System.out.println(workingWindow.getElement(cycleNumber));
+      cycleNumber++;
+
+
+
+      // If full, retire cycle
+      if (workingWindow.isFull()) {
+         WorkingCycle cycle = workingWindow.popOldestElement();
+         // Add cycle to configuration
+         MapperUtils.addMapping(configuration, cycle);
+      }
+   }
+
+   public void testAddInstructionWithMethod(LowLevelInstruction lli) {
+      // This part needs to be reworked - only put new cycle if needed.
+      getWorkingCycle(cycleNumber);
+      System.out.println(workingWindow.getElement(cycleNumber-1));
+      /*
+      workingWindow.pushNewerElement(new WorkingCycle(arch, cycleNumber));
+      System.out.println(workingWindow.getElement(cycleNumber));
+      cycleNumber++;
+*/
+
+      retireIfFull();
+      // If full, retire cycle
+//      if (workingWindow.isFull()) {
+//         WorkingCycle cycle = workingWindow.popOldestElement();
+         // Add cycle to configuration
+//         MapperUtils.addMapping(configuration, cycle);
+//         retireInstructionFromWindow();
+//      }
+   }
+
+
+   private void newCycle() {
+            workingWindow.pushNewerElement(new WorkingCycle(arch, cycleNumber));
+            cycleNumber++;
+   }
+
    public void close() {
       while(!workingWindow.isEmpty()) {
-         System.out.println(workingWindow);
-         workingWindow.popOldestElement();
-         //System.out.println(workingWindow.popOldestElement());
+         //WorkingCycle cycle = workingWindow.popOldestElement();
+         //MapperUtils.addMapping(configuration, cycle);
+         retireInstructionFromWindow();
       }
+   }
+
+
+   private void retireIfFull() {
+      // If full, retire cycle
+      if (workingWindow.isFull()) {
+         retireInstructionFromWindow();
+      }
+   }
+
+   private void retireInstructionFromWindow() {
+         WorkingCycle cycle = workingWindow.popOldestElement();
+
+         if(cycle == null) {
+            LoggingUtils.getLogger().
+                 warning("Window is already empty.");
+            return;
+         }
+
+         MapperUtils.addMapping(configuration, cycle);
    }
 
    /**
     * INSTANCE VARIABLES
     */
+   // Working Data
    private LivenessTable livenessTable;
    private RegisterTable registerTable;
+
+   // Definitions
    private Architecture arch;
+
+   // Temporary Storage
    private WorkingWindow workingWindow;
    private int cycleNumber;
+   private Configuration configuration;
+
+
+
+
+
+
 }
