@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.AppBase.App;
+import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Utilities.ProgressCounter;
+import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
@@ -114,8 +116,19 @@ public class Application implements App {
     * @param partitionerId
     */
    private void processFile(LoopDetectors partitionerId, File elfFile) {
+      // Get System Setup
+      String systemSetupFilename = AppUtils.getString(options, Options.SystemSetup);
+      SystemSetup config = SystemSetup.buildConfig(new File(systemSetupFilename));
+
+      if(config == null) {
+         LoggingUtils.getLogger().
+                 warning("Using default settings for MicroBlaze Simulator.");
+         config = SystemSetup.getDefaultConfig();
+      }
+      
+      
       // Create a TraceReader from the file
-      TraceReader traceReader = Utils.newTraceReader(elfFile);
+      TraceReader traceReader = Utils.newTraceReader(elfFile, config);
       if(traceReader == null) {
          LoggingUtils.getLogger().
                  warning("traceReader is null.");

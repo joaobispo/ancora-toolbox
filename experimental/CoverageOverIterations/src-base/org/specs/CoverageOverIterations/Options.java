@@ -31,7 +31,8 @@ import org.ancora.SharedLibrary.AppBase.AppValueType;
 public enum Options implements AppOptionEnum, AppOptionMultipleSetup {
    FolderWithPrograms(AppValueType.string),
    OutputFolder(AppValueType.string),
-   LoopDetectors(AppValueType.multipleSetupList);
+   LoopDetectors(AppValueType.multipleSetupList),
+   SystemSetup(AppValueType.string);;
    //LoopDetectors(AppValueType.string);
 
    private Options(AppValueType type) {

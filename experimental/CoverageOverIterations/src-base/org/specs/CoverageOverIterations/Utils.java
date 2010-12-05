@@ -26,10 +26,11 @@ import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
 import org.specs.DToolPlus.Utilities.EasySystem;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
-import org.specs.DToolPlus.DymaLib.DToolReader;
+import org.specs.DymaLib.DToolReader;
 import system.SysteM;
 
 /**
@@ -83,17 +84,32 @@ public class Utils {
 
 
    /**
+    * Instantiates a DToolReader loaded with an Elf file and default SysteM
+    * configuration.
+    *
+    * @param elfFile
+    * @return
+    */
+   /*
+   public static DToolReader newTraceReader(File elfFile) {
+      return newTraceReader(elfFile, null);
+   }
+    * 
+    */
+
+   /**
     * Instantiates a DToolReader loaded with an Elf file.
     *
     * @param elfFile
+    * @param config
     * @return a DToolReader loaded with the given file, or null if the object
     * could not be created
     */
-   public static DToolReader newTraceReader(File elfFile) {
+   public static DToolReader newTraceReader(File elfFile, SystemSetup config) {
       String systemConfig = "./Configuration Files/systemconfig.xml";
       String elfFilename = elfFile.getPath();
 
-      SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, false);
+      SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, config);
       if(originalSystem == null) {
          LoggingUtils.getLogger().
                  warning("Could not create SysteM object.");

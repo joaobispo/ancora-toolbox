@@ -21,6 +21,7 @@ import org.specs.DymaLib.Interfaces.TraceReader;
 
 
 /**
+ * Accumulator variable which
  *
  * @author Joao Bispo
  */
