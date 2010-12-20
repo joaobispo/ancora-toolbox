@@ -106,6 +106,21 @@ public class EnumUtils {
    }
 
    /**
+    *
+    * @param <K>
+    * @param values
+    * @return a list with the string representation of the enums
+    */
+   public static <K extends Enum> List<String> buildListToString(K[] values) {
+      List<String> aList = new ArrayList<String>();
+      for (K anEnum : values) {
+         aList.add(anEnum.toString());
+      }
+
+      return aList;
+   }
+
+   /**
     * Returns the class of the enum correspondent to the values of the given
     * array.
     *

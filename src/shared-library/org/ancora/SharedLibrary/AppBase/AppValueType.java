@@ -43,6 +43,10 @@ public enum AppValueType {
     * A list of predefined strings, from which we can choose only one.
     */
    multipleChoice("="),
+   /**
+    * A list of predefined strings, from which we can choose multiple strings.
+    * <p>To use this option, AppOptionEnum must implement interface AppOptionMultipleChoice.
+    */
    multipleChoiceStringList("+="),
    /**
     * One complete setup. Value stores the path to a file in AppOptionFile format.

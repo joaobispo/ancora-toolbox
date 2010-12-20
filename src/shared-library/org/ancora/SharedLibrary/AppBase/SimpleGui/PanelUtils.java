@@ -251,7 +251,8 @@ public class PanelUtils {
             return null;
          }
 
-         return new MultipleChoicePanel(panelLabel, EnumUtils.buildList(choices));
+//         return new MultipleChoicePanel(panelLabel, EnumUtils.buildList(choices));
+         return new MultipleChoicePanel(panelLabel, EnumUtils.buildListToString(choices));
       }
 
       if(type == AppValueType.multipleChoiceStringList) {
@@ -262,7 +263,8 @@ public class PanelUtils {
             return null;
          }
 
-         return new MultipleChoiceListPanel(panelLabel, EnumUtils.buildList(choices));
+         //return new MultipleChoiceListPanel(panelLabel, EnumUtils.buildList(choices));
+         return new MultipleChoiceListPanel(panelLabel, EnumUtils.buildListToString(choices));
       }
 
       if(type == AppValueType.multipleSetupList) {

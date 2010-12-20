@@ -57,6 +57,23 @@ public class ParseUtils {
    }
 
    /**
+    * Tries to parse a String into a integer. If an exception happens, returns null.
+    *
+    * @param integer a String representing an integer.
+    * @return the intenger represented by the string, or null if it couldn't be parsed.
+    */
+   public static Integer parseInteger(String integer) {
+      Integer intResult = null;
+      try {
+         intResult = Integer.parseInt(integer);
+      } catch (NumberFormatException e) {
+         return null;
+      }
+
+      return intResult;
+   }
+
+   /**
     * Tries to parse a String into a long. If an exception happens, warns the
     * user and returns a 0.
     *
