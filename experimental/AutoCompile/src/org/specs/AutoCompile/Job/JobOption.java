@@ -31,14 +31,14 @@ public enum JobOption implements AppOptionEnum, AppOptionMultipleChoice {
 
    //inttest(AppValueType.integer),
    //booltest(AppValueType.bool),
-   outputFolder(AppValueType.string),
-   sourceFilesFolder(AppValueType.string),
+   OutputFolder(AppValueType.string),
+   SourcePath(AppValueType.string),
    //inputFolderMode(AppValueType.string),
-   inputFolderMode(AppValueType.multipleChoice),
+   SourcePathMode(AppValueType.multipleChoice),
    //processor(AppValueType.string),
    //compiler(AppValueType.string),
-   compilerFlags(AppValueType.stringList),
-   optimizationFlags(AppValueType.stringList);
+   CompilerFlags(AppValueType.multipleChoiceStringList),
+   OptimizationFlags(AppValueType.multipleChoiceStringList);
 /*
    inttest("inttest", AppValueType.integer),
    booltest("booltest", AppValueType.bool),
@@ -68,8 +68,12 @@ public enum JobOption implements AppOptionEnum, AppOptionMultipleChoice {
 
    public Enum[] getChoices() {
       switch(this) {
-         case inputFolderMode:
+         case SourcePathMode:
             return SourceMode.values();
+         case OptimizationFlags:
+            return  OptimizationFlag.values();
+         case CompilerFlags:
+            return MbGccFlag.values();
          default:
             return null;
       }

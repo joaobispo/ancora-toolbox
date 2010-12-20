@@ -48,7 +48,7 @@ public class JobUtils {
       String outputFlag = AppUtils.getString(targetOptions, TargetOption.outputFlag);
 
       // Get compiler flags
-      List<String> otherFlags = AppUtils.getStringList(jobOptions, JobOption.compilerFlags);
+      List<String> otherFlags = AppUtils.getStringList(jobOptions, JobOption.CompilerFlags);
 
       // Get list of programs to compile
       List<ProgramSource> sources = getProgramSources(jobOptions, targetOptions);
@@ -67,7 +67,7 @@ public class JobUtils {
       }
 
       // Get output folder
-      String outputFoldername = AppUtils.getString(jobOptions, JobOption.outputFolder);
+      String outputFoldername = AppUtils.getString(jobOptions, JobOption.OutputFolder);
       File outputFolder = IoUtils.safeFolder(outputFoldername);
       if(outputFolder == null) {
          LoggingUtils.getLogger().
@@ -101,7 +101,7 @@ public class JobUtils {
 
    private static List<ProgramSource> getProgramSources(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
       // Get mode
-      String modeString = AppUtils.getString(jobOptions, JobOption.inputFolderMode);
+      String modeString = AppUtils.getString(jobOptions, JobOption.SourcePathMode);
       SourceMode mode = EnumUtils.valueOf(SourceMode.class, modeString);
       if(mode == null) {
          LoggingUtils.getLogger().
@@ -110,12 +110,20 @@ public class JobUtils {
          return null;
       }
 
-      if(mode == SourceMode.folder) {
+      if(mode == SourceMode.folders) {
          return getSourcesFolderMode(jobOptions, targetOptions);
       }
 
-      if(mode == SourceMode.singleFile) {
+      if(mode == SourceMode.files) {
          return getSourcesFileMode(jobOptions, targetOptions);
+      }
+
+      if(mode == SourceMode.singleFile) {
+         return getSourcesSingleFileMode(jobOptions, targetOptions);
+      }
+
+      if(mode == SourceMode.singleFolder) {
+         return getSourcesSingleFolderMode(jobOptions, targetOptions);
       }
 
       LoggingUtils.getLogger().
@@ -134,7 +142,7 @@ public class JobUtils {
       // Get available optimizations
       List<String> availableOpts = AppUtils.getStringList(targetOptions, TargetOption.optimizationFlags);
       // Get job optimizations
-      List<String> jobOpts = AppUtils.getStringList(jobOptions, JobOption.optimizationFlags);
+      List<String> jobOpts = AppUtils.getStringList(jobOptions, JobOption.OptimizationFlags);
 
       List<String> parsedOpts = new ArrayList<String>();
 
@@ -218,7 +226,7 @@ public class JobUtils {
       // Get extensions
       List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
       // Get source folder
-      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.sourceFilesFolder);
+      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.SourcePath);
       File sourceFolder = new File(sourceFoldername);
       if (!sourceFolder.isDirectory()) {
          LoggingUtils.getLogger().
@@ -237,6 +245,8 @@ public class JobUtils {
             continue;
          }
 
+         programSources.add(singleFolderProgramSource(folder, extensions, sourceFoldername));
+         /*
          // Get source files for program
          List<File> files = IoUtils.getFilesRecursive(folder, new HashSet<String>(extensions));
          List<String> sourceFilenames = new ArrayList<String>();
@@ -246,10 +256,32 @@ public class JobUtils {
 
          String baseFilename = folder.getName();
          programSources.add(new ProgramSource(sourceFilenames, sourceFoldername, baseFilename));
-
+*/
       }
 
       return programSources;
+   }
+
+
+   private static List<ProgramSource> getSourcesSingleFolderMode(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
+      // INIT
+       // Get extensions
+      List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
+      // Get source folder
+      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.SourcePath);
+      File sourceFolder = new File(sourceFoldername);
+      if (!sourceFolder.isDirectory()) {
+         LoggingUtils.getLogger().
+                 warning("Could not open '" + sourceFolder.getPath() + "' as folder.");
+         return null;
+      }
+
+       List<ProgramSource> programSources = new ArrayList<ProgramSource>();
+       String parentFoldername = sourceFolder.getParent();
+
+       programSources.add(singleFolderProgramSource(sourceFolder, extensions, parentFoldername));
+
+       return programSources;
    }
 
    /**
@@ -263,7 +295,7 @@ public class JobUtils {
       // Get extensions
       List<String> extensions = AppUtils.getStringList(targetOptions, TargetOption.inputExtensions);
       // Get source folder
-      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.sourceFilesFolder);
+      String sourceFoldername = AppUtils.getString(jobOptions, JobOption.SourcePath);
       File sourceFolder = new File(sourceFoldername);
       if (!sourceFolder.isDirectory()) {
          LoggingUtils.getLogger().
@@ -277,18 +309,68 @@ public class JobUtils {
       // Each file is a program
       List<ProgramSource> programSources = new ArrayList<ProgramSource>();
       for (File file : files) {
+         ProgramSource newProgramSource = singleFileProgramSource(file, sourceFoldername);
+         programSources.add(newProgramSource);
+         /*
          List<String> sourceFilenames = new ArrayList<String>();
          //sourceFilenames.add(file.getName());
          sourceFilenames.add(file.getPath());
          
          String baseFilename = IoUtils.removeExtension(file.getName());
          programSources.add(new ProgramSource(sourceFilenames, sourceFoldername, baseFilename));
+          * 
+          */
       }
 
 
       return programSources;
    }
 
+   /**
+    * The source is a single .c file which is a program.
+    *
+    * @param jobOptions
+    * @param targetOptions
+    * @return
+    */
+   private static List<ProgramSource> getSourcesSingleFileMode(Map<String, AppValue> jobOptions, Map<String, AppValue> targetOptions) {
+      // Get source folder
+      String sourceFilename = AppUtils.getString(jobOptions, JobOption.SourcePath);
+      File sourceFile = new File(sourceFilename);
+      if (!sourceFile.isFile()) {
+         LoggingUtils.getLogger().
+                 warning("Could not open '" + sourceFile.getPath() + "' as file.");
+         return null;
+      }
+
+       // The file is a program
+      List<ProgramSource> programSources = new ArrayList<ProgramSource>();
+      String sourceFoldername = sourceFile.getParent();
+
+      programSources.add(singleFileProgramSource(sourceFile, sourceFoldername));
+      return programSources;
+   }
+
+   private static ProgramSource singleFileProgramSource(File file, String sourceFoldername) {
+      List<String> sourceFilenames = new ArrayList<String>();
+      sourceFilenames.add(file.getPath());
+
+      String baseFilename = IoUtils.removeExtension(file.getName());
+      return new ProgramSource(sourceFilenames, sourceFoldername, baseFilename);
+   }
+
+   
+   private static ProgramSource singleFolderProgramSource(File folder, List<String> extensions, String sourceFoldername) {
+      // Get source files for program
+         List<File> files = IoUtils.getFilesRecursive(folder, new HashSet<String>(extensions));
+         List<String> sourceFilenames = new ArrayList<String>();
+         for (File file : files) {
+            sourceFilenames.add(file.getPath());
+         }
+
+         String baseFilename = folder.getName();
+         return new ProgramSource(sourceFilenames, sourceFoldername, baseFilename);
+   }
 
 
 }

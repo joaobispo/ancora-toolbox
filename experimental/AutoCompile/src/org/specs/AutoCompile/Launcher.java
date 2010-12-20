@@ -58,7 +58,7 @@ public class Launcher {
        if(args.length == 0) {
           SimpleGui gui = new SimpleGui(autoCompile);
           //MainWindow gui = new MainWindow(autoCompile);
-          gui.setTitle("AutoCompile v0.1");
+          gui.setTitle("AutoCompile v0.2");
           gui.execute();
           return;
        }

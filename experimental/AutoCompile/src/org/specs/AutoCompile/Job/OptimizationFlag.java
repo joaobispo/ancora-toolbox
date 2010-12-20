@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Ancora Research Group.
+ *  Copyright 2010 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,20 +18,26 @@
 package org.specs.AutoCompile.Job;
 
 /**
- * Distiguishes between two situations about the given source folder:
- *
- * 1) files: Each .c file inside the source folder is a program;
- * 3) folders: Each folder inside the source folder is a program;
- * 1) singleFile: the source folder is interpreted as a single file, which corresponds to a program;
- * 2) singleFolder: The files inside the source folder is a program;
- * 
+ * Optimization flags
  *
  * @author Joao Bispo
  */
-public enum SourceMode {
-   files,
-   folders,
-   singleFile,
-   singleFolder;
+public enum OptimizationFlag {
+
+   O0,
+   O1,
+   O2,
+   O3,
+   Os;
+
+
+   /**
+    * String representation of the flag, to be used as an argument for the compiler.
+    */
+   @Override
+   public String toString() {
+      return "-"+this.name();
+   }
+
 
 }
