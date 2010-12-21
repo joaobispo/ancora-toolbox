@@ -50,6 +50,10 @@ public class JobUtils {
       // Get compiler flags
       List<String> otherFlags = AppUtils.getStringList(jobOptions, JobOption.CompilerFlags);
 
+      // Add stack size
+      String stackSize = AppUtils.getString(jobOptions, JobOption.StackSize);
+      otherFlags.addAll(getStackSizeArgument(stackSize));
+
       // Get list of programs to compile
       List<ProgramSource> sources = getProgramSources(jobOptions, targetOptions);
       if(sources == null) {
@@ -370,6 +374,15 @@ public class JobUtils {
 
          String baseFilename = folder.getName();
          return new ProgramSource(sourceFilenames, sourceFoldername, baseFilename);
+   }
+
+   private static List<String> getStackSizeArgument(String stackSize) {
+      List<String> arguments = new ArrayList<String>(2);
+
+      arguments.add("-Wl,-defsym");
+      arguments.add("-Wl,_STACK_SIZE="+stackSize);
+
+      return arguments;
    }
 
 

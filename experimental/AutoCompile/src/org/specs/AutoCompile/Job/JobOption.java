@@ -38,7 +38,8 @@ public enum JobOption implements AppOptionEnum, AppOptionMultipleChoice {
    //processor(AppValueType.string),
    //compiler(AppValueType.string),
    CompilerFlags(AppValueType.multipleChoiceStringList),
-   OptimizationFlags(AppValueType.multipleChoiceStringList);
+   OptimizationFlags(AppValueType.multipleChoiceStringList),
+   StackSize(AppValueType.string);
 /*
    inttest("inttest", AppValueType.integer),
    booltest("booltest", AppValueType.bool),
