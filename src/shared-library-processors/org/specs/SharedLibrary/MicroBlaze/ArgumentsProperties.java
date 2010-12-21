@@ -91,6 +91,9 @@ public class ArgumentsProperties {
       aMap.put(braid, singleRead);
       aMap.put(brlid, writeRead);
       aMap.put(bralid, writeRead);
+      aMap.put(bsrl, writeReadRead);
+      aMap.put(bsra, writeReadRead);
+      aMap.put(bsll, writeReadRead);
       aMap.put(bsrli, writeReadRead);
       aMap.put(bsrai, writeReadRead);
       aMap.put(bslli, writeReadRead);
