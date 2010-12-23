@@ -43,8 +43,15 @@ import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
+import org.specs.LoopDetection.LoopProcessors.LoopProcessors;
+import org.specs.LoopDetection.Worker.LoopDetectorWorker;
+import org.specs.LoopDetection.Worker.LoopDetectorWorkerResults;
 
 /**
+ * Detects and extract loops.
+ * 
+ * <p>The purpose of this class is to handle the configuration of the program,
+ * and passing that configuration to the appropriate objects.
  *
  * @author Ancora Group <ancora.codigo@gmail.com>
  */
@@ -75,7 +82,14 @@ public class LoopDetection implements App {
 
       for (int fileIndex = 0; fileIndex < inputFiles.size(); fileIndex++) {
          for (int detectorIndex = 0; detectorIndex < loopDetectorNames.size(); detectorIndex++) {
-            detectLoops(fileIndex, detectorIndex);
+            // Build JobInfo
+            File elfFile = inputFiles.get(fileIndex);
+            String detectorName = loopDetectorNames.get(detectorIndex);
+            File detectorSetup = loopDetectorSetups.get(detectorIndex);
+            LoopJobInfo jobInfo = new LoopJobInfo(elfFile, outputFolder, detectorName, detectorSetup, processor);
+//            detectLoops(fileIndex, detectorIndex);
+            //detectLoops(jobInfo);
+            detectLoops2(jobInfo);
          }
       }
       
@@ -106,11 +120,16 @@ public class LoopDetection implements App {
 
 
       String systemConfigFilename = AppUtils.getString(options, AppOptions.SystemSetup);
-      systemConfigFile = new File(systemConfigFilename);
+      File systemConfigFile = new File(systemConfigFilename);
       if (!systemConfigFile.exists()) {
          LoggingUtils.getLogger().
                  info("MicroBlaze setup file '" + systemConfigFilename + "' not found.");
          return false;
+      }
+
+      systemSetup = SystemSetup.buildConfig(systemConfigFile);
+      if (systemSetup == null) {
+         systemSetup = SystemSetup.getDefaultConfig();
       }
 
       // Extract loop detectors
@@ -150,12 +169,18 @@ public class LoopDetection implements App {
    }
 
 
-   private void detectLoops(int fileIndex, int detectorIndex) throws InterruptedException {
-      File elfFile = inputFiles.get(fileIndex);
-      String detectorName = loopDetectorNames.get(detectorIndex);
-      File detectorSetup = loopDetectorSetups.get(detectorIndex);
+   //private void detectLoops(int fileIndex, int detectorIndex) throws InterruptedException {
+   private void detectLoops(LoopJobInfo jobInfo) throws InterruptedException {
+      //File elfFile = inputFiles.get(fileIndex);
+      //String detectorName = loopDetectorNames.get(detectorIndex);
+      //File detectorSetup = loopDetectorSetups.get(detectorIndex);
+      File elfFile = jobInfo.elfFile;
+      String detectorName = jobInfo.detectorName;
+      File detectorSetup = jobInfo.detectorSetup;
+
       LoopDetector loopDetector = LoopUtils.newLoopDetector(detectorName,
               detectorSetup, processor.getInstructionDecoder());
+//              detectorSetup, jobInfo.processor.getInstructionDecoder());
       if (loopDetector == null) {
          return;
       }
@@ -163,24 +188,33 @@ public class LoopDetection implements App {
       // Stats
       dotty = new DottyLoopUnit();
       loopInstCount = 0;
+      removedInstCount = 0l;
+
 
       // Instantiate System
+      /*
       SystemSetup setup = SystemSetup.buildConfig(systemConfigFile);
       if (setup == null) {
          setup = SystemSetup.getDefaultConfig();
       }
+       * 
+       */
 
-      TraceReader traceReader = DToolReader.newDToolReader(elfFile, setup);
+      //TraceReader traceReader = DToolReader.newDToolReader(elfFile, setup);
+      TraceReader traceReader = DToolReader.newDToolReader(elfFile, systemSetup);
       String instruction = null;
       int traceCount = 0;
-      boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
-      Enum[] instructionNames = processor.getInstructionNames();
+      //boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
+      //Enum[] instructionNames = processor.getInstructionNames();
       String baseFilename = ParseUtils.removeSuffix(elfFile.getName(), ".");
-
+/*
       LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
               detectorSetup.getName(), processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
               instructionNames);
-
+*/
+      // Create loopWriter
+      //LoopDiskWriter loopWriter = newLoopDiskWriter(elfFile, setup, detectorName, detectorSetup);
+      LoopDiskWriter loopWriter = newLoopDiskWriter(elfFile, systemSetup, detectorName, detectorSetup);
 
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
@@ -210,8 +244,16 @@ public class LoopDetection implements App {
 
       // Build Dotty
       if(writeDotFilesForEachElfProgram) {
-         buildDotty(fileIndex, detectorIndex, dotty);
+//         buildDotty(fileIndex, detectorIndex, dotty);
+         buildDotty(elfFile, detectorSetup, outputFolder, dotty);
       }
+
+      System.out.println("Executed Instructions:"+baseFilename+"\t"+traceCount);
+      // Show total instructions vs removed instructions
+ //     System.out.println(baseFilename+"\t"+traceCount+"\t"+removedInstCount);
+      //System.out.println("Total Instructions:"+traceCount);
+      //System.out.println("After Transformations:"+(traceCount-removedInstCount));
+      //System.out.println("Removed Instructions:"+removedInstCount);
    }
 
 
@@ -220,30 +262,34 @@ public class LoopDetection implements App {
          return;
       }
 
+
       for(LoopUnit unit : loops) {
          loopInstCount += unit.getTotalInstructions();
          dotty.addUnit(unit);
          if(unit.isLoop()) {
             //loopCollector.addLoop(unit);
          }
+         
+ //        removedInstCount += LoopMapping.removedInst(unit);
       }
+
    }
 
    private void testInstructionNumber(int traceCount, int loopCount) {
-
       if (traceCount != loopCount) {
          LoggingUtils.getLogger().
                  warning("Trace instruction count (" + traceCount + ") different "
                  + "from loop instruction count (" + loopCount + ").");
       }
-
    }
 
-      private void buildDotty(int fileIndex, int detectorIndex, DottyLoopUnit dotty) {
+      //private void buildDotty(int fileIndex, int detectorIndex, DottyLoopUnit dotty) {
+      private void buildDotty(File elfFile, File detectorSetup, File outputFolder, DottyLoopUnit dotty) {
          // Build name
-         String inputFilename = inputFiles.get(fileIndex).getName();
+         //String inputFilename = inputFiles.get(fileIndex).getName();
+         String inputFilename = elfFile.getName();
          inputFilename = ParseUtils.removeSuffix(inputFilename, ".");
-         inputFilename = inputFilename + "." + loopDetectorSetups.get(detectorIndex).getName();
+         inputFilename = inputFilename + "." + detectorSetup.getName();
          inputFilename = inputFilename + ".dotty";
          
          IoUtils.write(new File(outputFolder, inputFilename), dotty.generateDot());
@@ -254,7 +300,8 @@ public class LoopDetection implements App {
     */
    private List<File> inputFiles;
    private File outputFolder;
-   private File systemConfigFile;
+   //private File systemConfigFile;
+   private SystemSetup systemSetup;
    private boolean writeDotFilesForEachElfProgram;
    private List<String> loopDetectorNames;
    private List<File> loopDetectorSetups;
@@ -264,5 +311,58 @@ public class LoopDetection implements App {
    // STATS
    private DottyLoopUnit dotty;
    private int loopInstCount;
+   private long removedInstCount;
+
+   private LoopDiskWriter newLoopDiskWriter(File elfFile, SystemSetup setup,
+           String detectorName, File detectorSetup) {
+
+      boolean isStraighLineLoop = detectorName.equals(LoopDetectors.MegaBlock.name());
+      Enum[] instructionNames = processor.getInstructionNames();
+      String baseFilename = ParseUtils.removeSuffix(elfFile.getName(), ".");
+
+      LoopDiskWriter loopWriter = new LoopDiskWriter(outputFolder, baseFilename,
+              detectorSetup.getName(), processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
+              instructionNames);
+
+      return loopWriter;
+   }
+
+   private void detectLoops2(LoopJobInfo jobInfo) throws InterruptedException {
+      LoopDetectorWorker worker = LoopDetectorWorker.newLoopWorker(jobInfo, systemSetup);
+      LoopProcessors loopProcessors = LoopProcessors.newLoopProcessors(diskWriterSetup, jobInfo);
+
+      worker.getLoopProcessors().addAll(loopProcessors.asList());
+
+      //worker.getLoopProcessors().addAll(buildLoopProcessors(jobInfo));
+      LoopDetectorWorkerResults results = worker.run();
+
+      // Process results
+      processResults(jobInfo, loopProcessors);
+
+      String baseFilename = ParseUtils.removeSuffix(jobInfo.elfFile.getName(), ".");
+      System.out.println("Executed Instructions:"+baseFilename+"\t"+results.executedInstructions);
+   }
+
+   private void processResults(LoopJobInfo jobInfo, LoopProcessors loopProcessors) {
+      // Write Dotty
+      if(writeDotFilesForEachElfProgram) {  
+         buildDotty(jobInfo.elfFile, jobInfo.detectorSetup, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());
+      }
+   }
+
+   /*
+   private List<LoopProcessor> buildLoopProcessors(LoopJobInfo jobInfo) {
+      List<LoopProcessor> list = new ArrayList<LoopProcessor>();
+
+      // Disk Writer
+      LoopWriter loopWriter = LoopWriter.newLoopWriter(diskWriterSetup, jobInfo);
+      if(loopWriter != null) {
+         list.add(loopWriter);
+      }
+      
+      return list;
+   }
+    *
+    */
 
 }
