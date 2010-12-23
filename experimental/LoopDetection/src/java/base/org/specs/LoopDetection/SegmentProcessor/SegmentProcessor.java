@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessor;
+package org.specs.LoopDetection.SegmentProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +25,14 @@ import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 
 /**
+ * Applies a LoopDetector to a TraceReader and processes the code according to
+ * the registered SegmentProcessorJobs.
  *
  * @author Joao Bispo
  */
-public class LoopProcessor {
+public class SegmentProcessor {
 
-   public LoopProcessor() {
+   public SegmentProcessor() {
 //   public LoopProcessor(LoopDetectionInfo jobInfo) {
 //   public LoopProcessor(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
 //           SystemSetup systemSetup) {
@@ -38,7 +40,7 @@ public class LoopProcessor {
       //this.loopDetector = loopDetector;
       //this.systemSetup = systemSetup;
 
-      this.loopProcessors = new ArrayList<LoopProcessorJob>();
+      this.loopProcessors = new ArrayList<SegmentProcessorJob>();
    }
 
 
@@ -61,7 +63,8 @@ public class LoopProcessor {
     */
 
 //   public LoopProcessorResults run() throws InterruptedException {
-   public LoopProcessorResults run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
+//   public LoopProcessorResults run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
+   public int run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
 
       //TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
 
@@ -91,7 +94,8 @@ public class LoopProcessor {
       // Test #instructions
       testInstructionNumber(traceCount, loopInstCount);
 
-      return new LoopProcessorResults(traceCount);
+      //return new LoopProcessorResults(traceCount);
+      return traceCount;
    }
 
    private void testInstructionNumber(int traceCount, int loopCount) {
@@ -122,12 +126,12 @@ public class LoopProcessor {
     * @param unit
     */
    private void processLoop(CodeSegment unit) {
-      for(LoopProcessorJob loopProcessor : loopProcessors) {
-         loopProcessor.processLoop(unit);
+      for(SegmentProcessorJob loopProcessor : loopProcessors) {
+         loopProcessor.processSegment(unit);
       }
    }
 
-   public List<LoopProcessorJob> getLoopProcessors() {
+   public List<SegmentProcessorJob> getLoopProcessors() {
       return loopProcessors;
    }
 
@@ -140,7 +144,7 @@ public class LoopProcessor {
    //private final LoopDetector loopDetector;
    //private final SystemSetup systemSetup;
 
-   private final List<LoopProcessorJob> loopProcessors;
+   private final List<SegmentProcessorJob> loopProcessors;
 
 
 

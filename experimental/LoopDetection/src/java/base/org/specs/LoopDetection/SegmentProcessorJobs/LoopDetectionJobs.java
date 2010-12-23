@@ -15,14 +15,14 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessorJobs;
+package org.specs.LoopDetection.SegmentProcessorJobs;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.LoopDetection.LoopDetectionInfo;
-import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
+import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
 
 /**
  *
@@ -51,8 +51,8 @@ public class LoopDetectionJobs {
       return new LoopDetectionJobs(dottyWriter, loopWriter);
    }
 
-   public List<LoopProcessorJob> asList() {
-      List<LoopProcessorJob> list = new ArrayList<LoopProcessorJob>();
+   public List<SegmentProcessorJob> asList() {
+      List<SegmentProcessorJob> list = new ArrayList<SegmentProcessorJob>();
 
       list.add(loopWriter);
       list.add(dottyWriter);

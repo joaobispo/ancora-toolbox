@@ -15,17 +15,17 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessorJobs;
+package org.specs.LoopDetection.SegmentProcessorJobs;
 
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
-import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
+import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
 
 /**
  *
  * @author Joao Bispo
  */
-public class DottyWriter implements LoopProcessorJob {
+public class DottyWriter implements SegmentProcessorJob {
 
    public DottyWriter() {
       dotty = new DottyLoopUnit();
@@ -33,7 +33,7 @@ public class DottyWriter implements LoopProcessorJob {
 
 
 
-   public void processLoop(CodeSegment loopUnit) {
+   public void processSegment(CodeSegment loopUnit) {
       dotty.addUnit(loopUnit);
    }
 

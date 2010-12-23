@@ -15,20 +15,20 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessorJobs;
+package org.specs.LoopDetection.SegmentProcessorJobs;
 
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import org.specs.LoopDetection.LoopDetectionInfo;
-import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
+import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
 import org.specs.LoopDetection.Utils;
 
 /**
  *
  * @author Joao Bispo
  */
-public class LoopWriter implements LoopProcessorJob {
+public class LoopWriter implements SegmentProcessorJob {
 
    public LoopWriter(LoopDiskWriter loopWriter) {
       this.loopWriter = loopWriter;
@@ -45,7 +45,7 @@ public class LoopWriter implements LoopProcessorJob {
          // Create loopWriter
       //LoopDiskWriter loopWriter = Utils.newLoopDiskWriter(diskWriterSetup, jobInfo);
 
-   public void processLoop(CodeSegment loopUnit) {
+   public void processSegment(CodeSegment loopUnit) {
       loopWriter.addLoop(loopUnit);
    }
 

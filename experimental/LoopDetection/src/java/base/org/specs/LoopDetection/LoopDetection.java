@@ -43,9 +43,9 @@ import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.MicroBlaze.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-import org.specs.LoopDetection.LoopProcessorJobs.LoopDetectionJobs;
-import org.specs.LoopDetection.LoopProcessor.LoopProcessor;
-import org.specs.LoopDetection.LoopProcessor.LoopProcessorResults;
+import org.specs.LoopDetection.SegmentProcessorJobs.LoopDetectionJobs;
+import org.specs.LoopDetection.SegmentProcessor.SegmentProcessor;
+//import org.specs.LoopDetection.SegmentProcessor.LoopProcessorResults;
 
 /**
  * Detects and extract loops.
@@ -328,7 +328,7 @@ public class LoopDetection implements App {
    }
 
    private void detectLoops2(LoopDetectionInfo jobInfo) throws InterruptedException {
-      LoopProcessor worker = new LoopProcessor();
+      SegmentProcessor worker = new SegmentProcessor();
       //LoopProcessor worker = new LoopProcessor(jobInfo);
       //LoopProcessor worker = LoopProcessor.newLoopWorker(jobInfo, systemSetup);
       LoopDetectionJobs loopProcessors =
@@ -351,13 +351,15 @@ public class LoopDetection implements App {
       TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
       
 
-      LoopProcessorResults results = worker.run(traceReader, loopDetector);
+//      LoopProcessorResults results = worker.run(traceReader, loopDetector);
+      int executedInst = worker.run(traceReader, loopDetector);
 
       // Process results
       processResults(jobInfo, loopProcessors);
 
       String baseFilename = ParseUtils.removeSuffix(jobInfo.elfFile.getName(), ".");
-      System.out.println("Executed Instructions:"+baseFilename+"\t"+results.executedInstructions);
+      //System.out.println("Executed Instructions:"+baseFilename+"\t"+results.executedInstructions);
+      System.out.println("Executed Instructions:"+baseFilename+"\t"+executedInst);
    }
 
    private void processResults(LoopDetectionInfo jobInfo, LoopDetectionJobs loopProcessors) {

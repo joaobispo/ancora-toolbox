@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessor;
+package org.specs.LoopDetection.SegmentProcessor;
 
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 
@@ -24,8 +24,8 @@ import org.specs.DymaLib.LoopDetection.CodeSegment;
  *
  * @author Joao Bispo
  */
-public interface LoopProcessorJob {
+public interface SegmentProcessorJob {
 
-   public void processLoop(CodeSegment loopUnit);
+   public void processSegment(CodeSegment segment);
 
 }
