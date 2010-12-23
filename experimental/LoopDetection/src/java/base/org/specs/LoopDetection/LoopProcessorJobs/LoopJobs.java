@@ -22,7 +22,7 @@ import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.LoopDetection.LoopProcessorInfo;
-import org.specs.LoopDetection.Worker.LoopProcessorJob;
+import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 
 /**
  *

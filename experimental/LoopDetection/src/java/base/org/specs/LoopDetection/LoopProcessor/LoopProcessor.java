@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.Worker;
+package org.specs.LoopDetection.LoopProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ import org.specs.LoopDetection.LoopProcessorInfo;
  *
  * @author Joao Bispo
  */
-public class LoopDetectorWorker {
+public class LoopProcessor {
 
-   public LoopDetectorWorker(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
+   public LoopProcessor(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
            SystemSetup systemSetup) {
       this.jobInfo = jobInfo;
       this.loopDetector = loopDetector;
@@ -44,7 +44,7 @@ public class LoopDetectorWorker {
    }
 
 
-   public static LoopDetectorWorker newLoopWorker(LoopProcessorInfo jobInfo,
+   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo,
            SystemSetup systemSetup) {
       LoopDetector loopDetector = LoopUtils.newLoopDetector(jobInfo.detectorName,
               jobInfo.detectorSetup, jobInfo.processor.getInstructionDecoder());
@@ -55,10 +55,10 @@ public class LoopDetectorWorker {
          return null;
       }
 
-      return new LoopDetectorWorker(jobInfo, loopDetector, systemSetup);
+      return new LoopProcessor(jobInfo, loopDetector, systemSetup);
    }
 
-   public LoopDetectorWorkerResults run() throws InterruptedException {
+   public LoopProcessorResults run() throws InterruptedException {
 
       TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
 
@@ -88,7 +88,7 @@ public class LoopDetectorWorker {
       // Test #instructions
       testInstructionNumber(traceCount, loopInstCount);
 
-      return new LoopDetectorWorkerResults(traceCount);
+      return new LoopProcessorResults(traceCount);
    }
 
    private void testInstructionNumber(int traceCount, int loopCount) {

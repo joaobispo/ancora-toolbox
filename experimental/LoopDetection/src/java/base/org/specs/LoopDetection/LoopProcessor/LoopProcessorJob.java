@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.Worker;
+package org.specs.LoopDetection.LoopProcessor;
 
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 

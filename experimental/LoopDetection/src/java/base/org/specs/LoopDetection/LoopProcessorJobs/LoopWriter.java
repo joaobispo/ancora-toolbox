@@ -23,7 +23,7 @@ import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import org.specs.LoopDetection.LoopProcessorInfo;
-import org.specs.LoopDetection.Worker.LoopProcessorJob;
+import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 import org.specs.LoopDetection.Utils;
 
 /**

@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.Worker;
+package org.specs.LoopDetection.LoopProcessor;
 
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import org.specs.LoopDetection.LoopProcessorJobs.DottyWriter;
@@ -25,9 +25,9 @@ import org.specs.LoopDetection.LoopProcessorJobs.LoopWriter;
  *
  * @author Joao Bispo
  */
-public class LoopDetectorWorkerResults {
+public class LoopProcessorResults {
 
-   public LoopDetectorWorkerResults(int executedInstructions) {
+   public LoopProcessorResults(int executedInstructions) {
       this.executedInstructions = executedInstructions;
    }
 

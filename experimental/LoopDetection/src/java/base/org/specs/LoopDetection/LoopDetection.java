@@ -44,8 +44,8 @@ import org.specs.DymaLib.MicroBlaze.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.LoopDetection.LoopProcessorJobs.LoopJobs;
-import org.specs.LoopDetection.Worker.LoopDetectorWorker;
-import org.specs.LoopDetection.Worker.LoopDetectorWorkerResults;
+import org.specs.LoopDetection.LoopProcessor.LoopProcessor;
+import org.specs.LoopDetection.LoopProcessor.LoopProcessorResults;
 
 /**
  * Detects and extract loops.
@@ -328,13 +328,13 @@ public class LoopDetection implements App {
    }
 
    private void detectLoops2(LoopProcessorInfo jobInfo) throws InterruptedException {
-      LoopDetectorWorker worker = LoopDetectorWorker.newLoopWorker(jobInfo, systemSetup);
+      LoopProcessor worker = LoopProcessor.newLoopWorker(jobInfo, systemSetup);
       LoopJobs loopProcessors = LoopJobs.newLoopProcessors(diskWriterSetup, jobInfo);
 
       worker.getLoopProcessors().addAll(loopProcessors.asList());
 
       //worker.getLoopProcessors().addAll(buildLoopProcessors(jobInfo));
-      LoopDetectorWorkerResults results = worker.run();
+      LoopProcessorResults results = worker.run();
 
       // Process results
       processResults(jobInfo, loopProcessors);

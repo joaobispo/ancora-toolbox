@@ -19,7 +19,7 @@ package org.specs.LoopDetection.LoopProcessorJobs;
 
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
-import org.specs.LoopDetection.Worker.LoopProcessorJob;
+import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 
 /**
  *
