@@ -20,7 +20,7 @@ package org.specs.DymaLib.LoopDetection;
 import java.io.File;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
 import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptions;
 import org.specs.DymaLib.TraceUnit.TraceUnit;

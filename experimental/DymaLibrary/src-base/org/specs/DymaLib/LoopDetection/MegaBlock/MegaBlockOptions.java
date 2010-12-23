@@ -24,7 +24,7 @@ import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
 import org.ancora.SharedLibrary.EnumUtils;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.TraceUnit.TraceUnits;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;
 import org.specs.DymaLib.TraceUnit.UnitBuilderFactory;

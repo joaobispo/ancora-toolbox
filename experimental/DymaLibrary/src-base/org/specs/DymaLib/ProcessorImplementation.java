@@ -17,7 +17,6 @@
 
 package org.specs.DymaLib;
 
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
 
 /**

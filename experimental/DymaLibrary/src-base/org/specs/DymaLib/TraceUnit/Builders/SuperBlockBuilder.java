@@ -20,7 +20,7 @@ package org.specs.DymaLib.TraceUnit.Builders;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.BitUtils;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;
 

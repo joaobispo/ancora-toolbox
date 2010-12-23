@@ -19,7 +19,7 @@ package org.specs.DymaLib.MicroBlaze;
 
 
 import org.ancora.SharedLibrary.EnumUtils;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 import org.specs.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.specs.SharedLibrary.MicroBlaze.Utilities.InstructionParsing;

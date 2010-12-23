@@ -22,7 +22,7 @@ import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 
 /**

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
