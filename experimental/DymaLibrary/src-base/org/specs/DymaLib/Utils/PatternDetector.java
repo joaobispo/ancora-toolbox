@@ -55,6 +55,12 @@ public class PatternDetector {
 
    }
 
+   public int getMaxPatternSize() {
+      return maxPatternSize;
+   }
+
+   
+
    /**
     * Gives another value to check for pattern.
     *

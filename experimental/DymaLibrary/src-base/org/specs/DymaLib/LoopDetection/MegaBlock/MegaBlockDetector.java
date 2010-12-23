@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;
 import org.specs.DymaLib.Utils.PatternDetector;
@@ -103,6 +104,10 @@ public class MegaBlockDetector implements LoopDetector {
       return returnList;
    }
 
+   public String getId() {
+      return LoopDetectors.MegaBlock.name() + patternDetector.getMaxPatternSize();
+   }
+   
    private UnitBuilder unitBuilder;
    private PatternDetector patternDetector;
    private TraceUnitCollector collector;

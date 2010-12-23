@@ -26,10 +26,8 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
-import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
-import org.specs.DymaLib.TraceUnit.Builders.SuperBlockBuilder;
+import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
-import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
 
 /**
  * Detects Warp-style blocks. (NOT WORKING)l
@@ -502,6 +500,10 @@ public class WarpBlockDetector implements LoopDetector {
       return returnList;
    }
 
+   public String getId() {
+      return LoopDetectors.WarpBlock.name() + backwardJumpMaxSize;
+   }
+
    /*
    private void addToSequence(int address, String instruction) {
       instBuilder.nextInstruction(address, instruction);
@@ -616,5 +618,7 @@ public class WarpBlockDetector implements LoopDetector {
 
    private Set<Integer> currentIds;
    private List<TraceUnit> currentTraceUnits;
+
+
 
 }

@@ -27,6 +27,13 @@ import java.util.List;
 public interface LoopDetector {
 
    /**
+    * Uniquely identifies this Detector and its particular configuration.
+    * 
+    * @return
+    */
+   String getId();
+
+   /**
     * A step of the loop detector.
     * 
     * @param address
