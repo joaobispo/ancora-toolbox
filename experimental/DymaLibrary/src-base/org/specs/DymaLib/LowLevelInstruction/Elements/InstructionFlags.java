@@ -30,6 +30,8 @@ public class InstructionFlags {
    public final static int ENABLED = 1;
    public final static int DISABLED = 0;
    
-   public final static int TYPE_MEMORY = 0;
-   public final static int TYPE_GENERAL = 1;
+   public final static int TYPE_LOAD = 0;
+   public final static int TYPE_STORE = 1;
+   public final static int TYPE_EXIT = 2;
+   public final static int TYPE_GENERAL = 3;
 }

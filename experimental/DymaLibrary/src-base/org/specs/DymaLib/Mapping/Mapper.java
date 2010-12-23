@@ -17,10 +17,17 @@
 
 package org.specs.DymaLib.Mapping;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.LowLevelInstruction.LliUtils;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;
 import org.specs.DymaLib.Mapping.Representation.Configuration;
+import org.specs.DymaLib.Mapping.Representation.PeInput;
 import org.specs.DymaLib.Mapping.Tables.LivenessTable;
 import org.specs.DymaLib.Mapping.Tables.RegisterTable;
 import org.specs.DymaLib.Mapping.Tables.WorkingCycle;
@@ -39,6 +46,7 @@ public class Mapper {
       workingWindow = new WorkingWindow(windowSize);
       cycleNumber = 0;
       configuration = new Configuration();
+      constantLiveouts = new HashMap<String, Integer>();
    }
 
 
@@ -49,11 +57,26 @@ public class Mapper {
     * @return true if instruction could be mapped, false otherwise.
     */
    public boolean nextInstruction(LowLevelInstruction lli) {
+      // If not mappable, don't bother with mapping
+      if(lli.flags.mappable == LliUtils.DISABLED) {
+         processUnmappable(lli);
+         return true;
+      }
+
+      // Process inputs
+      List<PeInput> peInputs = LliUtils.processInputs(lli);
 
 
-      //testAddInstructionWithMethod(lli);
+      // Check dependencies
+
+
+      // Get first available cycle counting from this cycle
+
+
+      // Make space for possible new cycle
       retireIfFull();
-      updateTables(lli);
+      // Update
+      //updateTables(lli, cycle, pePosition);
       
       return true;
    }
@@ -98,9 +121,55 @@ public class Mapper {
 
    }
 
-   private void updateTables(LowLevelInstruction lli) {
+   private void updateTables(LowLevelInstruction lli, int cycle, int pePosition) {
       // Check live-ins
-      throw new UnsupportedOperationException("Not yet implemented");
+
+      // Process inputs
+      for(Operand operand : lli.operands) {
+         if(operand.flow != Operand.FLOW_INPUT) {
+            continue;
+         }
+
+         if(operand.type != Operand.TYPE_REGISTER) {
+            continue;
+         }
+
+         if(operand.isLiveIn != LliUtils.ENABLED) {
+            continue;
+         }
+
+         // Add live-in
+         livenessTable.liveIns.add(operand.value);
+
+      }
+
+      // Process outputs
+      for (Operand operand : lli.operands) {
+         if (operand.flow != Operand.FLOW_OUTPUT) {
+            continue;
+         }
+
+         if (operand.type != Operand.TYPE_REGISTER) {
+            continue;
+         }
+
+         // If immutable, means we have to store the value of this live-out.
+         if(operand.isImmutable == LliUtils.ENABLED) {
+            String register = LliUtils.extractRegisterFromConstantRegister(operand.value);
+            Integer value = LliUtils.extractImmediateFromConstantRegister(operand.value);
+            constantLiveouts.put(register, value);
+            continue;
+         }
+
+         // Add liveout to tables
+         if(!livenessTable.liveOuts.contains(operand.value)) {
+            livenessTable.liveOuts.add(operand.value);
+//            livenessTable.liveOutsList.add(operand.value);
+         }
+
+         registerTable.updateTable(operand.value, cycle, pePosition);
+
+      }
    }
 
    public void testAddInstructionDirectly(LowLevelInstruction lli) {
@@ -146,24 +215,78 @@ public class Mapper {
    }
 
    public void close() {
-      while(!workingWindow.isEmpty()) {
+      if(workingWindow.isEmpty()) {
+         return;
+      }
+      //while(!workingWindow.isEmpty()) {
+      // Get to the last line
+      while(workingWindow.getNewerIndex() - workingWindow.getOldestIndex() != 0) {
          //WorkingCycle cycle = workingWindow.popOldestElement();
          //MapperUtils.addMapping(configuration, cycle);
-         retireInstructionFromWindow();
+         retireInstructionFromWindow(true);
       }
+
+      // There is only one line left
+      retireInstructionFromWindow(false);
    }
 
 
    private void retireIfFull() {
       // If full, retire cycle
       if (workingWindow.isFull()) {
-         retireInstructionFromWindow();
+         retireInstructionFromWindow(true);
       }
    }
 
-   private void retireInstructionFromWindow() {
+   private void retireInstructionFromWindow(boolean checkLastDefinition) {
          WorkingCycle cycle = workingWindow.popOldestElement();
 
+      if (checkLastDefinition) {
+         // Check if this cycle has the last definition for any of the current
+         // liveout values
+         int retiringCycle = cycle.cycleNumber;
+         List<String> registersToReplicate = new ArrayList<String>();
+         for (String register : registerTable.registerTable.keySet()) {
+            int lastDefinitionCycle = registerTable.getCycle(register);
+            
+            if (lastDefinitionCycle > retiringCycle) {
+               continue;
+            }
+
+            if (lastDefinitionCycle < retiringCycle) {
+               LoggingUtils.getLogger().
+                       warning("Check: retiring cycle '" + retiringCycle + "' greater "
+                       + "than last definition cycle '" + lastDefinitionCycle + "'.");
+
+            }
+            
+            registersToReplicate.add(register);
+         }
+
+         // For each register, add a MOVE in the next cycle
+
+         /*
+         for (MappedPe pe : cycle.mappedPes) {
+            for (Operand operand : pe.outputRegisters) {
+               Integer lastDefinitionCycle = registerTable.getCycle(operand.value);
+               if (lastDefinitionCycle > retiringCycle) {
+                  continue;
+               }
+
+               if (lastDefinitionCycle < retiringCycle) {
+                  LoggingUtils.getLogger().
+                          warning("Check: retiring cycle '" + retiringCycle + "' greater "
+                          + "than last definition cycle '" + lastDefinitionCycle + "'.");
+
+               }
+
+               // They are equal. Add to the list of registers to replicate
+
+            }
+
+         }
+         */
+      }
          if(cycle == null) {
             LoggingUtils.getLogger().
                  warning("Window is already empty.");
@@ -173,12 +296,20 @@ public class Mapper {
          MapperUtils.addMapping(configuration, cycle);
    }
 
+      private void processUnmappable(LowLevelInstruction lli) {
+      // Even if not mappable, can contribute to live-outs
+      int cycle = -1; // Won't be used
+      int pePosition = -1; // Won't be used
+      updateTables(lli, cycle, pePosition);
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    // Working Data
    private LivenessTable livenessTable;
    private RegisterTable registerTable;
+   private Map<String, Integer> constantLiveouts;
 
    // Definitions
    private Architecture arch;
@@ -187,6 +318,8 @@ public class Mapper {
    private WorkingWindow workingWindow;
    private int cycleNumber;
    private Configuration configuration;
+
+
 
 
 

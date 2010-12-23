@@ -31,12 +31,42 @@ public class RegisterTable {
       registerTable = new HashMap<String, RtInfo>();
    }
 
+   public void updateTable(String register, int cycle, int pePosition) {
+      registerTable.put(register, new RtInfo(cycle, pePosition));
+   }
 
+   public Integer getCycle(String register) {
+      RtInfo info = registerTable.get(register);
+      if(info == null) {
+         return null;
+      }
 
+      return info.cycle;
+   }
+
+   public Integer getPePosition(String register) {
+      RtInfo info = registerTable.get(register);
+      if(info == null) {
+         return null;
+      }
+
+      return info.pePosition;
+   }
+   
    public Map<String, RtInfo> registerTable;
 
    public class RtInfo {
+
+      public RtInfo(int cycle, int pePosition) {
+         this.cycle = cycle;
+         this.pePosition = pePosition;
+      }
+
+      //public static RtInfo newConstant(int constantValue);
+
+      //boolean isConstant;
       int cycle;
       int pePosition;
+      //boolean isSavedRegister;
    }
 }

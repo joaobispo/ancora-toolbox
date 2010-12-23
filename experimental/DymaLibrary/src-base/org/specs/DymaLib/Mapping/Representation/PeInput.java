@@ -24,8 +24,17 @@ package org.specs.DymaLib.Mapping.Representation;
  */
 public class PeInput {
 
+   public PeInput(Type type, String value, Integer position) {
+      this.type = type;
+      this.value = value;
+      this.position = position;
+   }
+
+
+
    public Type type;
    public String value;
+   public Integer position;
 
    public enum Type {
       Pe,

@@ -19,13 +19,11 @@ package org.specs.DymaLib.Dotty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.specs.DymaLib.LowLevelInstruction.Elements.Carry;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.LowLevelInstruction.LliUtils;
 
 /**
  * Graphic representation of a MegaBlock
@@ -40,8 +38,8 @@ public class DottyStraigthLineLoop {
       operandCounter = 0;
       operantionCounter = 0;
       
-      liveIns = new HashSet<Integer>();
-      written = new HashSet<Integer>();
+//      liveIns = new HashSet<Integer>();
+//      written = new HashSet<Integer>();
 
       registersIds = new HashMap<String,String>();
       liveInsIds = new HashMap<String,List<String>>();
@@ -72,7 +70,8 @@ public class DottyStraigthLineLoop {
       //operantionCounter++;
 
       String color = null;
-      if(instruction.mappable == LowLevelInstruction.DISABLED) {
+      //if(instruction.mappable == LowLevelInstruction.DISABLED) {
+      if(instruction.flags.mappable == LliUtils.DISABLED) {
          color = DottyUtils.COLOR_GRAY75;
       }
 
@@ -84,8 +83,10 @@ public class DottyStraigthLineLoop {
       // declared
 
       // Check inputs
-      for(int i=0; i<instruction.operands.length; i++) {
-         Operand operand = instruction.operands[i];
+//      for(int i=0; i<instruction.operands.length; i++) {
+//         Operand operand = instruction.operands[i];
+      for(int i=0; i<instruction.operands.size(); i++) {
+         Operand operand = instruction.operands.get(i);
 
 
          if(operand.flow != Operand.FLOW_INPUT) {
@@ -96,13 +97,15 @@ public class DottyStraigthLineLoop {
       }
 
       // Check carry-in
-      Carry carryIn = instruction.carries[LowLevelInstruction.CARRY_IN_INDEX];
-      addCarryIn(carryIn, operationId);
+//      Carry carryIn = instruction.carries[LowLevelInstruction.CARRY_IN_INDEX];
+//      addCarryIn(carryIn, operationId);
 
 
       // Check outputs
-      for (int i = 0; i < instruction.operands.length; i++) {
-         Operand operand = instruction.operands[i];
+//      for (int i = 0; i < instruction.operands.length; i++) {
+//         Operand operand = instruction.operands[i];
+      for (int i = 0; i < instruction.operands.size(); i++) {
+         Operand operand = instruction.operands.get(i);
 
          if (operand.flow != Operand.FLOW_OUTPUT) {
             continue;
@@ -110,23 +113,24 @@ public class DottyStraigthLineLoop {
 
          
                // Add carry-out
-         Carry carryOut = instruction.carries[LowLevelInstruction.CARRY_OUT_INDEX];
+//         Carry carryOut = instruction.carries[LowLevelInstruction.CARRY_OUT_INDEX];
          if (connectOperationsDirectly) {
 
             // EXPERIMENT
             if (operand.type == Operand.TYPE_REGISTER) {
                // Add output register to written set
-               registersIds.put(Integer.toString(operand.value), operationId);
+               //registersIds.put(Integer.toString(operand.value), operationId);
+               registersIds.put(operand.value, operationId);
             }
-
+/*
             if (carryOut.enabled == LowLevelInstruction.ENABLED) {
                // Put carry out output list
                registersIds.put(CARRY_NAME, operationId);
             }
-
+*/
          } else {
             addOutputOperand(operand, operationId);
-            addCarryOut(carryOut, operationId);
+//            addCarryOut(carryOut, operationId);
          }
       }
 
@@ -143,7 +147,8 @@ public class DottyStraigthLineLoop {
          String liveOutId = newOperandId();
          //OPERAND_PREFIX + operandCounter;
          //operandCounter++;
-         String liveOutName = "LiveOut (r"+liveOut+")";
+         //String liveOutName = "LiveOut (r"+liveOut+")";
+         String liveOutName = "LiveOut ("+liveOut+")";
 
          // Create box for live-out
          declarations.add(DottyUtils.declaration(liveOutId, liveOutName,
@@ -170,7 +175,8 @@ public class DottyStraigthLineLoop {
 
          //String newLiveOutId = OPERAND_PREFIX + operandCounter;
          //operandCounter++;
-         String liveOutName = "LiveOut (r"+liveIn+")";
+         //String liveOutName = "LiveOut (r"+liveIn+")";
+         String liveOutName = "LiveOut ("+liveIn+")";
 
 
 
@@ -192,11 +198,13 @@ public class DottyStraigthLineLoop {
 
          if(operand.type == Operand.TYPE_REGISTER) {
             // Check if we need to declare
-            operandId = registersIds.get(Integer.toString(operand.value));
+//            operandId = registersIds.get(Integer.toString(operand.value));
+            operandId = registersIds.get(operand.value);
 
             // Create
             if(operandId == null) {
-               String operandName = "In:r"+operand.value;
+               //String operandName = "In:r"+operand.value;
+               String operandName = "In:"+operand.value;
 
                operandId = newOperandId();
                //operandId = OPERAND_PREFIX + operandCounter;
@@ -206,16 +214,19 @@ public class DottyStraigthLineLoop {
                        DottyUtils.SHAPE_BOX, null));
 
                // Add to liveIns
-               List<String> ids = liveInsIds.get(Integer.toString(operand.value));
+               //List<String> ids = liveInsIds.get(Integer.toString(operand.value));
+               List<String> ids = liveInsIds.get(operand.value);
                if(ids == null) {
                   ids = new ArrayList<String>();
-                  liveInsIds.put(Integer.toString(operand.value), ids);
+//                  liveInsIds.put(Integer.toString(operand.value), ids);
+                  liveInsIds.put(operand.value, ids);
                }
                ids.add(operandId);
             }
       } else {
          // Immediates are always declared
-         String operandName = Integer.toString(operand.value);
+         //String operandName = Integer.toString(operand.value);
+         String operandName = operand.value;
          operandId = newOperandId();
 
          //operandId = OPERAND_PREFIX + operandCounter;
@@ -228,15 +239,15 @@ public class DottyStraigthLineLoop {
       // Connect operand
       connections.add(DottyUtils.connection(operandId, operationId, null));
    }
-
+/*
    private void addCarryIn(Carry carryIn, String operationId) {
-      if(carryIn.enabled == LowLevelInstruction.DISABLED) {
+      if(carryIn.enabled == LliUtils.DISABLED) {
          return;
       }
 
               //Get carry name
       String operandName = null;
-      if(carryIn.immutable == LowLevelInstruction.ENABLED) {
+      if(carryIn.immutable == LliUtils.ENABLED) {
          operandName = "(C) " + carryIn.value;
       } else {
          operandName = CARRY_NAME;
@@ -257,13 +268,13 @@ public class DottyStraigthLineLoop {
    }
 
    private void addCarryOut(Carry carryOut, String operationId) {
-      if (carryOut.enabled == LowLevelInstruction.DISABLED) {
+      if (carryOut.enabled == LliUtils.DISABLED) {
          return;
       }
 
       //Get carry name
       String operandName = null;
-      if (carryOut.immutable == LowLevelInstruction.ENABLED) {
+      if (carryOut.immutable == LliUtils.ENABLED) {
          operandName = "(C) " + carryOut.value;
       } else {
          operandName = CARRY_NAME;
@@ -281,18 +292,21 @@ public class DottyStraigthLineLoop {
       // Put carry out output list
       registersIds.put(operandName, operandId);
    }
-
+*/
    private void addOutputOperand(Operand operand, String operationId) {
       // Outputs are always declared
       String operandId = newOperandId();
 
       String operandName = null;
       if (operand.type == Operand.TYPE_REGISTER) {
-         operandName = "r" + operand.value;
+//         operandName = "r" + operand.value;
+         operandName = operand.value;
          // Add output register to written set
-         registersIds.put(Integer.toString(operand.value), operandId);
+         //registersIds.put(Integer.toString(operand.value), operandId);
+         registersIds.put(operand.value, operandId);
       } else {
-         operandName = Integer.toString(operand.value);
+         //operandName = Integer.toString(operand.value);
+         operandName = operand.value;
       }
 
       declarations.add(DottyUtils.declaration(operandId, operandName,
@@ -322,8 +336,8 @@ public class DottyStraigthLineLoop {
     */
    private int operantionCounter;
    private int operandCounter;
-   private Set<Integer> liveIns;
-   private Set<Integer> written;
+   //private Set<Integer> liveIns;
+   //private Set<Integer> written;
 
    private Enum[] values;
    
@@ -332,7 +346,7 @@ public class DottyStraigthLineLoop {
 
    private static final String OPERATION_PREFIX = "operation_";
    private static final String OPERAND_PREFIX = "operand_";
-   private static final String CARRY_NAME = "carry";
+   //private static final String CARRY_NAME = "carry";
    
    private Map<String,String> registersIds;
    private Map<String,List<String>> liveInsIds;

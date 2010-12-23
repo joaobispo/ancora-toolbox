@@ -17,6 +17,8 @@
 
 package org.specs.DymaLib.LowLevelInstruction.Elements;
 
+import java.util.List;
+import org.specs.DymaLib.LowLevelInstruction.LliUtils;
 import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
@@ -27,13 +29,15 @@ import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 public class LowLevelInstruction {
 
    //public LowLevelInstruction(int mappable, int address, int op, Operand[] operands, Carry[] carries) {
-   public LowLevelInstruction(InstructionFlags flags, int address, int op, Operand[] operands, Carry[] carries) {
+//   public LowLevelInstruction(InstructionFlags flags, int address, int op, Operand[] operands, Carry[] carries) {
+//   public LowLevelInstruction(InstructionFlags flags, int address, int op, Operand[] operands) {
+   public LowLevelInstruction(InstructionFlags flags, int address, int op, List<Operand> operands) {
       //this.mappable = mappable;
       this.flags = flags;
       this.address = address;
       this.op = op;
       this.operands = operands;
-      this.carries = carries;
+      //this.carries = carries;
    }
 
    /**
@@ -50,7 +54,8 @@ public class LowLevelInstruction {
    public String toString(Enum[] values) {
       StringBuilder builder = new StringBuilder();
 
-      if(mappable == ENABLED) {
+      //if(mappable == ENABLED) {
+      if(flags.mappable == LliUtils.ENABLED) {
          builder.append("M");
       } else {
          builder.append("m");
@@ -59,11 +64,14 @@ public class LowLevelInstruction {
       builder.append(address);
       builder.append("|");
       builder.append(values[op]);
-      for(int i=0; i<operands.length; i++) {
+      //for(int i=0; i<operands.length; i++) {
+      for(int i=0; i<operands.size(); i++) {
          builder.append("|");
-         builder.append(operands[i].toString());
+         //builder.append(operands[i].toString());
+         builder.append(operands.get(i).toString());
       }
 
+      /*
       for(int i=0; i<2; i++) {
          if(carries[i].enabled == ENABLED) {
             builder.append("|");
@@ -80,6 +88,8 @@ public class LowLevelInstruction {
             
          }
       }
+       * 
+       */
 
       return builder.toString();
    }
@@ -95,18 +105,19 @@ public class LowLevelInstruction {
    /**
     *
     */
-   public int mappable;
+   //public int mappable;
    public int address;
    public int op;
-   public Operand[] operands;
-   public Carry[] carries;
+//   public Operand[] operands;
+   public List<Operand> operands;
+   //public Carry[] carries;
    public InstructionFlags flags;
 
-   public final static int NUM_MAX_OPERANDS = 3;
+   //public final static int NUM_MAX_OPERANDS = 3;
 
-   public final static int CARRY_IN_INDEX = 0;
-   public final static int CARRY_OUT_INDEX = 1;
+   //public final static int CARRY_IN_INDEX = 0;
+   //public final static int CARRY_OUT_INDEX = 1;
 
-   public final static int ENABLED = 1;
-   public final static int DISABLED = 0;
+   //public final static int ENABLED = 1;
+   //public final static int DISABLED = 0;
 }

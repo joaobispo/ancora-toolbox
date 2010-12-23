@@ -31,8 +31,10 @@ import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
 public class SllAnalyser {
 
    public SllAnalyser() {
-      liveIns = new HashSet<Integer>();
-      written = new HashSet<Integer>();
+      //liveIns = new HashSet<Integer>();
+      //written = new HashSet<Integer>();
+      liveIns = new HashSet<String>();
+      written = new HashSet<String>();
    }
 
 
@@ -51,25 +53,32 @@ public class SllAnalyser {
 
 
       // Check inputs
-      for(int i=0; i<inst.operands.length; i++) {
-         if(inst.operands[i].flow != Operand.FLOW_INPUT) {
+//      for(int i=0; i<inst.operands.length; i++) {
+//         if(inst.operands[i].flow != Operand.FLOW_INPUT) {
+      for(int i=0; i<inst.operands.size(); i++) {
+         if(inst.operands.get(i).flow != Operand.FLOW_INPUT) {
             continue;
          }
 
-         if(inst.operands[i].type != Operand.TYPE_REGISTER) {
+//         if(inst.operands[i].type != Operand.TYPE_REGISTER) {
+         if(inst.operands.get(i).type != Operand.TYPE_REGISTER) {
             continue;
          }
 
          // Check if input register is already in written set
-         if(!written.contains(inst.operands[i].value)) {
+         //if(!written.contains(inst.operands[i].value)) {
+         if(!written.contains(inst.operands.get(i).value)) {
             // Is a live-in
-            liveIns.add(inst.operands[i].value);
+            //liveIns.add(inst.operands[i].value);
+            liveIns.add(inst.operands.get(i).value);
          }
       }
 
       // Check outputs
-      for(int i=0; i<inst.operands.length; i++) {
-         Operand operand = inst.operands[i];
+      //for(int i=0; i<inst.operands.length; i++) {
+      for(int i=0; i<inst.operands.size(); i++) {
+         //Operand operand = inst.operands[i];
+         Operand operand = inst.operands.get(i);
          if(operand.flow != Operand.FLOW_OUTPUT) {
             continue;
          }
@@ -84,19 +93,24 @@ public class SllAnalyser {
 
    }
 
-   public Set<Integer> getLiveIns() {
+   //public Set<Integer> getLiveIns() {
+   public Set<String> getLiveIns() {
       return liveIns;
    }
 
-   public Set<Integer> getLiveOuts() {
+//   public Set<Integer> getLiveOuts() {
+   public Set<String> getLiveOuts() {
       return written;
    }
 
-   public Set<Integer> getImmutableRegisters() {
-      Set<Integer> immRegs = new HashSet<Integer>();
+   //public Set<Integer> getImmutableRegisters() {
+   public Set<String> getImmutableRegisters() {
+      //Set<Integer> immRegs = new HashSet<Integer>();
+      Set<String> immRegs = new HashSet<String>();
 
       // Add any live-in which was not written
-      for(Integer reg : liveIns) {
+      //for(Integer reg : liveIns) {
+      for(String reg : liveIns) {
          if(!written.contains(reg)) {
             immRegs.add(reg);
          }
@@ -129,6 +143,8 @@ public class SllAnalyser {
    /**
     * INSTANCE VARIABLES
     */
-   private Set<Integer> liveIns;
-   private Set<Integer> written;
+   //private Set<Integer> liveIns;
+   private Set<String> liveIns;
+   //private Set<Integer> written;
+   private Set<String> written;
 }

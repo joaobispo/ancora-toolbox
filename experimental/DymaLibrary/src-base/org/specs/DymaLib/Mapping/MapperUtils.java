@@ -17,8 +17,12 @@
 
 package org.specs.DymaLib.Mapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.specs.DymaLib.Mapping.Representation.Configuration;
 import org.specs.DymaLib.Mapping.Representation.Cycle;
+import org.specs.DymaLib.Mapping.Representation.Pe;
+import org.specs.DymaLib.Mapping.Tables.MappedPe;
 import org.specs.DymaLib.Mapping.Tables.WorkingCycle;
 
 /**
@@ -29,8 +33,13 @@ import org.specs.DymaLib.Mapping.Tables.WorkingCycle;
 public class MapperUtils {
 
    public static void addMapping(Configuration configuration, WorkingCycle cycle) {
+      List<Pe> pes = new ArrayList<Pe>();
+      for(MappedPe mappedPe : cycle.mappedPes) {
+         pes.add(mappedPe.pe);
+      }
+
       // Create cycle
-      Cycle newCycle = new Cycle(cycle.cycleNumber, cycle.mappedPes, cycle.exits);
+      Cycle newCycle = new Cycle(cycle.cycleNumber, pes, cycle.exits);
       configuration.cycles.add(newCycle);
    }
 

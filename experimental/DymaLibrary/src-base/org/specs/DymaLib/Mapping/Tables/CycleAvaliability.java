@@ -18,7 +18,6 @@
 package org.specs.DymaLib.Mapping.Tables;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;

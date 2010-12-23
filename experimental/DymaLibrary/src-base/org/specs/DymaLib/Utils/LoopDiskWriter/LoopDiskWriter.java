@@ -75,19 +75,25 @@ public class LoopDiskWriter {
       }
 
       for(LoopUnit unit : loops) {
-         // Only write units of the type loop
+         addLoop(unit);
+      }
+
+   }
+
+      public void addLoop(LoopUnit unit) {
+               // Only write units of the type loop
          if(!unit.isLoop()) {
-            continue;
+            return;
          }
 
          // Check if loop has enough iterations
          if(unit.getIterations() < iterationsThreshold) {
-            continue;
+            return;
          }
 
          // Check if loop was already written
          if(writtenLoops.contains(unit.getId())) {
-            continue;
+            return;
          }
 
          // Write current loop
@@ -98,7 +104,7 @@ public class LoopDiskWriter {
          baseFilename.append(setupName);
          baseFilename.append(".");
          baseFilename.append(loopCount);
-         
+
          //String txtFilename = baseFilename.toString() + ".txt";
          String blockFilename = baseFilename.toString() + BLOCK_EXTENSION;
          //String dottyFilename = baseFilename.toString() + ".dotty";
@@ -107,13 +113,11 @@ public class LoopDiskWriter {
 
          writeBlock(blockFilename, unit);
          writeDotty(dottyFilename, unit);
-         
+
 
          // House cleaning
          writtenLoops.add(unit.getId());
          loopCount++;
-      }
-
    }
 
    private String buildBody(LoopUnit unit) {
@@ -201,8 +205,5 @@ public class LoopDiskWriter {
 
    public static final String DOT_EXTENSION = ".dotty";
    public static final String BLOCK_EXTENSION = ".block";
-
-
-
 
 }

@@ -15,32 +15,30 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Mapping.Tables;
+package org.specs.DymaLib.MicroBlaze;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.specs.DymaLib.Interfaces.InstructionDecoder;
+import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.ProcessorImplementation;
+import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**
+ * Implementations related to MicroBlaze processor.
  *
  * @author Joao Bispo
  */
-public class LivenessTable {
+public class MbImplementation implements ProcessorImplementation {
 
-   public LivenessTable() {
-      //liveIns = new HashSet<String>();
-      //liveOuts = new HashSet<String>();
-      liveIns = new ArrayList<String>();
-      liveOuts = new ArrayList<String>();
-      //liveOutsList = new ArrayList<String>();
+   public InstructionDecoder getInstructionDecoder() {
+      return new FW_3SP_Decoder();
    }
 
+   public LowLevelParser getLowLevelParser() {
+      return new MbLowLevelParser();
+   }
 
-
-   //public Set<String> liveIns;
-   //public Set<String> liveOuts;
-   public List<String> liveIns;
-   public List<String> liveOuts;
+   public Enum[] getInstructionNames() {
+      return InstructionName.values();
+   }
 
 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;
 import org.specs.DymaLib.Mapping.Representation.Exit;
-import org.specs.DymaLib.Mapping.Representation.Pe;
 
 /**
  *
@@ -31,7 +30,7 @@ public class WorkingCycle {
 
    public WorkingCycle(Architecture arch, int cycleNumber) {
       this.cycleAval = new CycleAvaliability(arch);
-      mappedPes = new ArrayList<Pe>();
+      mappedPes = new ArrayList<MappedPe>();
       this.cycleNumber = cycleNumber;
    }
 
@@ -44,7 +43,7 @@ public class WorkingCycle {
 
 
    public CycleAvaliability cycleAval;
-   public List<Pe> mappedPes;
+   public List<MappedPe> mappedPes;
    public List<Exit> exits;
    public final int cycleNumber;
 }

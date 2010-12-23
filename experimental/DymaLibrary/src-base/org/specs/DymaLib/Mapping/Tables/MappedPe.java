@@ -17,30 +17,23 @@
 
 package org.specs.DymaLib.Mapping.Tables;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.Mapping.Representation.Pe;
 
 /**
  *
  * @author Joao Bispo
  */
-public class LivenessTable {
+public class MappedPe {
 
-   public LivenessTable() {
-      //liveIns = new HashSet<String>();
-      //liveOuts = new HashSet<String>();
-      liveIns = new ArrayList<String>();
-      liveOuts = new ArrayList<String>();
-      //liveOutsList = new ArrayList<String>();
+   public MappedPe(Pe pe, List<Operand> outputRegisters) {
+      this.pe = pe;
+      this.outputRegisters = outputRegisters;
    }
 
 
 
-   //public Set<String> liveIns;
-   //public Set<String> liveOuts;
-   public List<String> liveIns;
-   public List<String> liveOuts;
-
+   public Pe pe;
+   public List<Operand> outputRegisters;
 }
