@@ -22,7 +22,7 @@ import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.LoopDetection.LoopDetectionInfo;
-import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
+import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessorJob;
 
 /**
  *
@@ -30,10 +30,13 @@ import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
  */
 public class LoopDetectionJobs {
 
-   public LoopDetectionJobs(DottyWriter dottyWriter, LoopWriter loopWriter) {
+   public LoopDetectionJobs(DottyWriter dottyWriter, LoopWriter loopWriter, TcDataCollector chartWriter) {
       this.dottyWriter = dottyWriter;
       this.loopWriter = loopWriter;
+      this.tcDataCollector = chartWriter;
    }
+
+
 
    public static LoopDetectionJobs newLoopProcessors(DiskWriterSetup diskWriterSetup,
            LoopDetectionInfo jobInfo) {
@@ -47,8 +50,9 @@ public class LoopDetectionJobs {
       }
 
       DottyWriter dottyWriter = new DottyWriter();
+      TcDataCollector chartWriter = new TcDataCollector();
 
-      return new LoopDetectionJobs(dottyWriter, loopWriter);
+      return new LoopDetectionJobs(dottyWriter, loopWriter, chartWriter);
    }
 
    public List<SegmentProcessorJob> asList() {
@@ -56,6 +60,7 @@ public class LoopDetectionJobs {
 
       list.add(loopWriter);
       list.add(dottyWriter);
+      list.add(tcDataCollector);
       
       return list;
    }
@@ -64,4 +69,5 @@ public class LoopDetectionJobs {
 
    public final DottyWriter dottyWriter;
    public final LoopWriter loopWriter;
+   public final TcDataCollector tcDataCollector;
 }

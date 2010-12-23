@@ -23,6 +23,7 @@ import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValueType;
+import org.specs.CoverageData.ChartOptions;
 import org.specs.DToolPlus.Config.SystemOptions;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptions;
@@ -40,6 +41,7 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
    WriteDotFilesForEachElfProgram(AppValueType.bool),
    LoopWriterSetup(AppValueType.multipleSetup),
    LoopDetector(AppValueType.multipleSetupList),
+   ChartSetup(AppValueType.multipleSetup),
    SystemSetup(AppValueType.multipleSetup);
 
    AppOptions(AppValueType type) {
@@ -62,6 +64,9 @@ public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
       }
       if(this == LoopWriterSetup) {
          return DiskWriterOptions.values();
+      }
+      if(this == ChartSetup) {
+         return ChartOptions.values();
       }
 
       return null;

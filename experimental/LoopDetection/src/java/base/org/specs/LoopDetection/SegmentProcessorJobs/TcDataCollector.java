@@ -17,7 +17,7 @@
 
 package org.specs.LoopDetection.SegmentProcessorJobs;
 
-import org.specs.DymaLib.Dotty.DottyLoopUnit;
+import org.specs.CoverageData.TcData;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessorJob;
 
@@ -25,23 +25,35 @@ import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessorJob;
  *
  * @author Joao Bispo
  */
-public class DottyWriter implements SegmentProcessorJob {
+public class TcDataCollector implements SegmentProcessorJob {
 
-   public DottyWriter() {
-      dotty = new DottyLoopUnit();
+   public TcDataCollector() {
+      tcData = new TcData();
+      maxRep = 0;
+      maxBlockSize = 0;
    }
 
 
 
-   public void processSegment(CodeSegment loopUnit) {
-      dotty.addUnit(loopUnit);
+   public void processSegment(CodeSegment segment) {
+      tcData.addBlock(segment);
+
+      maxRep = Math.max(maxRep, segment.getIterations());
+      maxBlockSize = Math.max(maxBlockSize, segment.getTotalInstructions());
    }
 
-   public DottyLoopUnit getDotty() {
-      return dotty;
+   public int getMaxRep() {
+      return maxRep;
    }
 
-   
+   public long getMaxBlockSize() {
+      return maxBlockSize;
+   }
 
-   private final DottyLoopUnit dotty;
+
+
+   public final TcData tcData;
+   private int maxRep;
+   private long maxBlockSize;
+
 }

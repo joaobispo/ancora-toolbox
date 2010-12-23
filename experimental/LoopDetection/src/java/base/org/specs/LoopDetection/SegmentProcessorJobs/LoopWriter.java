@@ -21,7 +21,7 @@ import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import org.specs.LoopDetection.LoopDetectionInfo;
-import org.specs.LoopDetection.SegmentProcessor.SegmentProcessorJob;
+import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessorJob;
 import org.specs.LoopDetection.Utils;
 
 /**
