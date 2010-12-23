@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 //import org.specs.DymaLib.LoopDetection.MegaBlockUnit;
 
 
@@ -56,7 +56,7 @@ public class DottyLoopUnit {
    }
 
    //public void addUnit(MegaBlockUnit unit) {
-   public void addUnit(LoopUnit unit) {
+   public void addUnit(CodeSegment unit) {
       // Add declaration
       int id = unit.getId();
       if(!declaredBlocks.contains(id)) {
@@ -82,7 +82,7 @@ public class DottyLoopUnit {
    }
 
 //   private void addDeclaration(MegaBlockUnit block) {
-   private void addDeclaration(LoopUnit block) {
+   private void addDeclaration(CodeSegment block) {
          blockDeclaration.append(block.getId());
          blockDeclaration.append("[label=\"");
 
@@ -118,7 +118,7 @@ public class DottyLoopUnit {
    }
 
 //   private String buildLabel(MegaBlockUnit block) {
-   private String buildLabel(LoopUnit block) {
+   private String buildLabel(CodeSegment block) {
       StringBuilder builder = new StringBuilder();
 
 
@@ -139,7 +139,7 @@ public class DottyLoopUnit {
       return builder.toString();
    }
 
-   private String getFormattedNumInstructions(LoopUnit block) {
+   private String getFormattedNumInstructions(CodeSegment block) {
       float floatAvg = (float) block.getTotalInstructions() / (float) block.getIterations();
       int intAvg = block.getNumInstructions();
 
@@ -151,7 +151,7 @@ public class DottyLoopUnit {
    }
 
    //private String buildAddressString(MegaBlockUnit block) {
-   private String buildAddressString(LoopUnit block) {
+   private String buildAddressString(CodeSegment block) {
       //if(block.getType() == MegaBlockUnit.Type.Sequence && !block.isSequenceInstructionsStored()) {
       if(!block.isLoop() && !block.areAllInstructionsStored()) {
          return incompleteSequenceAddressString(block);
@@ -185,7 +185,7 @@ public class DottyLoopUnit {
    }
 
    //private String incompleteSequenceAddressString(MegaBlockUnit block) {
-   private String incompleteSequenceAddressString(LoopUnit block) {
+   private String incompleteSequenceAddressString(CodeSegment block) {
       StringBuilder builder = new StringBuilder();
       List<Integer> addresses = block.getAddresses();
 

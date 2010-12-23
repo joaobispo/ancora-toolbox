@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
 import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.Stats.SllAnalyser;
@@ -69,18 +69,18 @@ public class LoopDiskWriter {
 
    }
 
-   public void addLoops(List<LoopUnit> loops) {
+   public void addLoops(List<CodeSegment> loops) {
       if(loops == null) {
          return;
       }
 
-      for(LoopUnit unit : loops) {
+      for(CodeSegment unit : loops) {
          addLoop(unit);
       }
 
    }
 
-      public void addLoop(LoopUnit unit) {
+      public void addLoop(CodeSegment unit) {
                // Only write units of the type loop
          if(!unit.isLoop()) {
             return;
@@ -120,7 +120,7 @@ public class LoopDiskWriter {
          loopCount++;
    }
 
-   private String buildBody(LoopUnit unit) {
+   private String buildBody(CodeSegment unit) {
       StringBuilder builder = new StringBuilder();
       
       //builder.append(unit.toString());
@@ -163,7 +163,7 @@ public class LoopDiskWriter {
       return builder.toString();
    }
 
-   private void writeBlock(String txtFilename, LoopUnit unit) {
+   private void writeBlock(String txtFilename, CodeSegment unit) {
       if(!writeTxtForLoops) {
          return;
       }
@@ -172,7 +172,7 @@ public class LoopDiskWriter {
       IoUtils.write(new File(outputFolder, txtFilename), txtBody);
    }
 
-   private void writeDotty(String dottyFilename, LoopUnit unit) {
+   private void writeDotty(String dottyFilename, CodeSegment unit) {
       if (!straightLineLoops) {
          return;
       }

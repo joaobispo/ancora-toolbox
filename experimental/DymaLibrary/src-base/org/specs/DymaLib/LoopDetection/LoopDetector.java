@@ -69,5 +69,5 @@ public interface LoopDetector {
     * @return a list of LoopUnits with the loops found up to this point, or
     * null if there are no completed loops.
     */
-   public List<LoopUnit> getAndClearUnits();
+   public List<CodeSegment> getAndClearUnits();
 }

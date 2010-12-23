@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
@@ -31,7 +31,7 @@ import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
  *
  * @author Joao Bispo
  */
-public class MegaBlockUnit implements LoopUnit {
+public class MegaBlockUnit implements CodeSegment {
 
    /**
     * Builds a new LoopUnit of the type Sequence.

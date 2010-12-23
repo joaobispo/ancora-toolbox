@@ -32,24 +32,24 @@ import org.ancora.SharedLibrary.LoggingUtils;
 public class LoopFilter {
 
    public LoopFilter(boolean onlyStoreLoops, int iterationsThreshold) {
-      loops = new ArrayList<LoopUnit>();
+      loops = new ArrayList<CodeSegment>();
       ids = new HashSet<Integer>();
 
       this.onlyStoreLoops = onlyStoreLoops;
       this.iterationsThreshold = iterationsThreshold;
    }
 
-   public List<LoopUnit> getLoops() {
+   public List<CodeSegment> getLoops() {
       return loops;
    }
 
-   public void addLoops(List<LoopUnit> loops) {
-      for(LoopUnit loop : loops) {
+   public void addLoops(List<CodeSegment> loops) {
+      for(CodeSegment loop : loops) {
          addLoop(loop);
       }
    }
 
-   public void addLoop(LoopUnit loop) {
+   public void addLoop(CodeSegment loop) {
       if (loop == null) {
          LoggingUtils.getLogger().
                  warning("LoopUnit is null;");
@@ -80,7 +80,7 @@ public class LoopFilter {
       loops.add(loop);
    }
 
-   private List<LoopUnit> loops;
+   private List<CodeSegment> loops;
    private Set<Integer> ids;
 
    private boolean onlyStoreLoops;

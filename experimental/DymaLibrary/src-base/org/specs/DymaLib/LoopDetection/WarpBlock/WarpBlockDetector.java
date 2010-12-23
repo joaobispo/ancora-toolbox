@@ -25,7 +25,7 @@ import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Interfaces.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
 import org.specs.DymaLib.TraceUnit.Builders.SuperBlockBuilder;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
@@ -67,7 +67,7 @@ public class WarpBlockDetector implements LoopDetector {
       currentInstruction = null;
       nextAddress = null;
 */
-      foundLoops = new ArrayList<LoopUnit>();
+      foundLoops = new ArrayList<CodeSegment>();
       this.storeSequenceInstructions = storeSequenceInstructions;
       this.backwardJumpMaxSize = backwardJumpMaxSize;
 
@@ -492,13 +492,13 @@ public class WarpBlockDetector implements LoopDetector {
       //throw new UnsupportedOperationException("Not supported yet.");
    }
 
-   public List<LoopUnit> getAndClearUnits() {
+   public List<CodeSegment> getAndClearUnits() {
       if (foundLoops.isEmpty()) {
          return null;
       }
 
-      List<LoopUnit> returnList = foundLoops;
-      foundLoops = new ArrayList<LoopUnit>();
+      List<CodeSegment> returnList = foundLoops;
+      foundLoops = new ArrayList<CodeSegment>();
       return returnList;
    }
 
@@ -601,7 +601,7 @@ public class WarpBlockDetector implements LoopDetector {
 */
 
 // OBJECT STATE DATA
-   private List<LoopUnit> foundLoops;
+   private List<CodeSegment> foundLoops;
    private ShortBackwardBranch sbb;
    private BranchData currentBranchData;
    private boolean storeSequenceInstructions;

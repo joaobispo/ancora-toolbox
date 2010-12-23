@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
 
@@ -29,7 +29,7 @@ import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
  *
  * @author Joao Bispo
  */
-public class WarpLoopUnit implements LoopUnit {
+public class WarpLoopUnit implements CodeSegment {
 
    public WarpLoopUnit(List<TraceUnit> loopUnits, Integer id, int iterations, int totalInstructions, boolean isLoop, boolean allInstructionsStored) {
       this.loopUnits = loopUnits;

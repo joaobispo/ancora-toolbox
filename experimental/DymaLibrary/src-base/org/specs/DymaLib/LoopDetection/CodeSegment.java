@@ -20,10 +20,11 @@ package org.specs.DymaLib.LoopDetection;
 import java.util.List;
 
 /**
+ * Represents a segment of code, which can loop overitself or not.
  *
  * @author Joao Bispo
  */
-public interface LoopUnit {
+public interface CodeSegment {
 
    List<String> getInstructions();
 
