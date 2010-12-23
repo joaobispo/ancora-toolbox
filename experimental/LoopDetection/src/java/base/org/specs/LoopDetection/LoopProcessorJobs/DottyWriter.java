@@ -18,7 +18,7 @@
 package org.specs.LoopDetection.LoopProcessorJobs;
 
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 
 /**
@@ -33,7 +33,7 @@ public class DottyWriter implements LoopProcessorJob {
 
 
 
-   public void processLoop(LoopUnit loopUnit) {
+   public void processLoop(CodeSegment loopUnit) {
       dotty.addUnit(loopUnit);
    }
 

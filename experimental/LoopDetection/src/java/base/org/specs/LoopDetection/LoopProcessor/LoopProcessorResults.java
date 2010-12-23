@@ -17,10 +17,6 @@
 
 package org.specs.LoopDetection.LoopProcessor;
 
-import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
-import org.specs.LoopDetection.LoopProcessorJobs.DottyWriter;
-import org.specs.LoopDetection.LoopProcessorJobs.LoopWriter;
-
 /**
  *
  * @author Joao Bispo

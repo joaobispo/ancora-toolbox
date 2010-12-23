@@ -38,12 +38,12 @@ import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.MicroBlaze.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-import org.specs.LoopDetection.LoopProcessorJobs.LoopJobs;
+import org.specs.LoopDetection.LoopProcessorJobs.LoopDetectionJobs;
 import org.specs.LoopDetection.LoopProcessor.LoopProcessor;
 import org.specs.LoopDetection.LoopProcessor.LoopProcessorResults;
 
@@ -86,7 +86,7 @@ public class LoopDetection implements App {
             File elfFile = inputFiles.get(fileIndex);
             String detectorName = loopDetectorNames.get(detectorIndex);
             File detectorSetup = loopDetectorSetups.get(detectorIndex);
-            LoopProcessorInfo jobInfo = new LoopProcessorInfo(elfFile, outputFolder, detectorName, detectorSetup, processor);
+            LoopDetectionInfo jobInfo = new LoopDetectionInfo(elfFile, outputFolder, detectorName, detectorSetup, processor);
 //            detectLoops(fileIndex, detectorIndex);
             //detectLoops(jobInfo);
             detectLoops2(jobInfo);
@@ -170,7 +170,7 @@ public class LoopDetection implements App {
 
 
    //private void detectLoops(int fileIndex, int detectorIndex) throws InterruptedException {
-   private void detectLoops(LoopProcessorInfo jobInfo) throws InterruptedException {
+   private void detectLoops(LoopDetectionInfo jobInfo) throws InterruptedException {
       //File elfFile = inputFiles.get(fileIndex);
       //String detectorName = loopDetectorNames.get(detectorIndex);
       //File detectorSetup = loopDetectorSetups.get(detectorIndex);
@@ -221,7 +221,7 @@ public class LoopDetection implements App {
          int address = traceReader.getAddress();
          loopDetector.step(address, instruction);
 
-         List<LoopUnit> loops = loopDetector.getAndClearUnits();
+         List<CodeSegment> loops = loopDetector.getAndClearUnits();
          processLoops(loops);
          loopWriter.addLoops(loops);
          
@@ -233,7 +233,7 @@ public class LoopDetection implements App {
       }
 
       loopDetector.close();
-      List<LoopUnit> loops = loopDetector.getAndClearUnits();
+      List<CodeSegment> loops = loopDetector.getAndClearUnits();
       processLoops(loops);
 
       
@@ -257,13 +257,13 @@ public class LoopDetection implements App {
    }
 
 
-   private void processLoops(List<LoopUnit> loops) {
+   private void processLoops(List<CodeSegment> loops) {
       if(loops == null) {
          return;
       }
 
 
-      for(LoopUnit unit : loops) {
+      for(CodeSegment unit : loops) {
          loopInstCount += unit.getTotalInstructions();
          dotty.addUnit(unit);
          if(unit.isLoop()) {
@@ -327,14 +327,31 @@ public class LoopDetection implements App {
       return loopWriter;
    }
 
-   private void detectLoops2(LoopProcessorInfo jobInfo) throws InterruptedException {
-      LoopProcessor worker = LoopProcessor.newLoopWorker(jobInfo, systemSetup);
-      LoopJobs loopProcessors = LoopJobs.newLoopProcessors(diskWriterSetup, jobInfo);
-
+   private void detectLoops2(LoopDetectionInfo jobInfo) throws InterruptedException {
+      LoopProcessor worker = new LoopProcessor();
+      //LoopProcessor worker = new LoopProcessor(jobInfo);
+      //LoopProcessor worker = LoopProcessor.newLoopWorker(jobInfo, systemSetup);
+      LoopDetectionJobs loopProcessors =
+              LoopDetectionJobs.newLoopProcessors(diskWriterSetup, jobInfo);
       worker.getLoopProcessors().addAll(loopProcessors.asList());
 
       //worker.getLoopProcessors().addAll(buildLoopProcessors(jobInfo));
-      LoopProcessorResults results = worker.run();
+      
+      // Build LoopDetector
+      LoopDetector loopDetector = LoopUtils.newLoopDetector(jobInfo.detectorName,
+              jobInfo.detectorSetup, jobInfo.processor.getInstructionDecoder());
+
+      if (loopDetector == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not create LoopDetector");
+         return;
+      }
+
+      // Build TraceReader
+      TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
+      
+
+      LoopProcessorResults results = worker.run(traceReader, loopDetector);
 
       // Process results
       processResults(jobInfo, loopProcessors);
@@ -343,7 +360,7 @@ public class LoopDetection implements App {
       System.out.println("Executed Instructions:"+baseFilename+"\t"+results.executedInstructions);
    }
 
-   private void processResults(LoopProcessorInfo jobInfo, LoopJobs loopProcessors) {
+   private void processResults(LoopDetectionInfo jobInfo, LoopDetectionJobs loopProcessors) {
       // Write Dotty
       if(writeDotFilesForEachElfProgram) {  
          buildDotty(jobInfo.elfFile, jobInfo.detectorSetup, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());

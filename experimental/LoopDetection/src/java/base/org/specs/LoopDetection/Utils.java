@@ -45,7 +45,7 @@ public class Utils {
     * @return
     */
    public static LoopDiskWriter newLoopDiskWriter(DiskWriterSetup diskWriterSetup,
-           LoopProcessorInfo jobInfo) {
+           LoopDetectionInfo jobInfo) {
 
       boolean isStraighLineLoop = jobInfo.detectorName.equals(LoopDetectors.MegaBlock.name());
       Enum[] instructionNames = jobInfo.processor.getInstructionNames();

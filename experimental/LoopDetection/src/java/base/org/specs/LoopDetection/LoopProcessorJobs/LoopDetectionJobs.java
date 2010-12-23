@@ -21,22 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-import org.specs.LoopDetection.LoopProcessorInfo;
+import org.specs.LoopDetection.LoopDetectionInfo;
 import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 
 /**
  *
  * @author Joao Bispo
  */
-public class LoopJobs {
+public class LoopDetectionJobs {
 
-   public LoopJobs(DottyWriter dottyWriter, LoopWriter loopWriter) {
+   public LoopDetectionJobs(DottyWriter dottyWriter, LoopWriter loopWriter) {
       this.dottyWriter = dottyWriter;
       this.loopWriter = loopWriter;
    }
 
-   public static LoopJobs newLoopProcessors(DiskWriterSetup diskWriterSetup,
-           LoopProcessorInfo jobInfo) {
+   public static LoopDetectionJobs newLoopProcessors(DiskWriterSetup diskWriterSetup,
+           LoopDetectionInfo jobInfo) {
 
       // Disk Writer
       LoopWriter loopWriter = LoopWriter.newLoopWriter(diskWriterSetup, jobInfo);
@@ -48,7 +48,7 @@ public class LoopJobs {
 
       DottyWriter dottyWriter = new DottyWriter();
 
-      return new LoopJobs(dottyWriter, loopWriter);
+      return new LoopDetectionJobs(dottyWriter, loopWriter);
    }
 
    public List<LoopProcessorJob> asList() {

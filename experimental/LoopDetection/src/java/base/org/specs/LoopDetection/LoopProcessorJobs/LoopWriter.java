@@ -17,12 +17,10 @@
 
 package org.specs.LoopDetection.LoopProcessorJobs;
 
-import org.ancora.SharedLibrary.ParseUtils;
-import org.specs.DymaLib.LoopDetection.LoopDetectors;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
-import org.specs.LoopDetection.LoopProcessorInfo;
+import org.specs.LoopDetection.LoopDetectionInfo;
 import org.specs.LoopDetection.LoopProcessor.LoopProcessorJob;
 import org.specs.LoopDetection.Utils;
 
@@ -37,7 +35,7 @@ public class LoopWriter implements LoopProcessorJob {
    }
 
    public static LoopWriter newLoopWriter(DiskWriterSetup diskWriterSetup,
-           LoopProcessorInfo jobInfo) {
+           LoopDetectionInfo jobInfo) {
 
       LoopDiskWriter loopDiskWriter = Utils.newLoopDiskWriter(diskWriterSetup, jobInfo);
 
@@ -47,7 +45,7 @@ public class LoopWriter implements LoopProcessorJob {
          // Create loopWriter
       //LoopDiskWriter loopWriter = Utils.newLoopDiskWriter(diskWriterSetup, jobInfo);
 
-   public void processLoop(LoopUnit loopUnit) {
+   public void processLoop(CodeSegment loopUnit) {
       loopWriter.addLoop(loopUnit);
    }
 

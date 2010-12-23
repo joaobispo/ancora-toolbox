@@ -17,7 +17,7 @@
 
 package org.specs.LoopDetection.LoopProcessor;
 
-import org.specs.DymaLib.LoopDetection.LoopUnit;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 
 /**
  * Performs some work using loop information.
@@ -26,6 +26,6 @@ import org.specs.DymaLib.LoopDetection.LoopUnit;
  */
 public interface LoopProcessorJob {
 
-   public void processLoop(LoopUnit loopUnit);
+   public void processLoop(CodeSegment loopUnit);
 
 }

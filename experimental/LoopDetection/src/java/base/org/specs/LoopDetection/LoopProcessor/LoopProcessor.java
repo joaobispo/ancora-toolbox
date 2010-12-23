@@ -20,13 +20,9 @@ package org.specs.LoopDetection.LoopProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DToolPlus.Config.SystemSetup;
-import org.specs.DToolPlus.DToolReader;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
-import org.specs.DymaLib.LoopDetection.LoopUtils;
-import org.specs.LoopDetection.LoopProcessorInfo;
+import org.specs.DymaLib.LoopDetection.CodeSegment;
 
 /**
  *
@@ -34,18 +30,22 @@ import org.specs.LoopDetection.LoopProcessorInfo;
  */
 public class LoopProcessor {
 
-   public LoopProcessor(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
-           SystemSetup systemSetup) {
-      this.jobInfo = jobInfo;
-      this.loopDetector = loopDetector;
-      this.systemSetup = systemSetup;
+   public LoopProcessor() {
+//   public LoopProcessor(LoopDetectionInfo jobInfo) {
+//   public LoopProcessor(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
+//           SystemSetup systemSetup) {
+      //this.jobInfo = jobInfo;
+      //this.loopDetector = loopDetector;
+      //this.systemSetup = systemSetup;
 
       this.loopProcessors = new ArrayList<LoopProcessorJob>();
    }
 
 
-   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo,
-           SystemSetup systemSetup) {
+   /*
+   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo) {
+//   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo,
+//           SystemSetup systemSetup) {
       LoopDetector loopDetector = LoopUtils.newLoopDetector(jobInfo.detectorName,
               jobInfo.detectorSetup, jobInfo.processor.getInstructionDecoder());
 
@@ -57,10 +57,13 @@ public class LoopProcessor {
 
       return new LoopProcessor(jobInfo, loopDetector, systemSetup);
    }
+    * 
+    */
 
-   public LoopProcessorResults run() throws InterruptedException {
+//   public LoopProcessorResults run() throws InterruptedException {
+   public LoopProcessorResults run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
 
-      TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
+      //TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
 
       // Stats
       int loopInstCount = 0;
@@ -72,7 +75,7 @@ public class LoopProcessor {
          int address = traceReader.getAddress();
          loopDetector.step(address, instruction);
 
-         List<LoopUnit> loops = loopDetector.getAndClearUnits();
+         List<CodeSegment> loops = loopDetector.getAndClearUnits();
          loopInstCount += processLoops(loops);
 
          // Check if work should be interrupted
@@ -82,7 +85,7 @@ public class LoopProcessor {
       }
 
       loopDetector.close();
-      List<LoopUnit> loops = loopDetector.getAndClearUnits();
+      List<CodeSegment> loops = loopDetector.getAndClearUnits();
       loopInstCount += processLoops(loops);
 
       // Test #instructions
@@ -100,13 +103,13 @@ public class LoopProcessor {
    }
 
 
-   private int processLoops(List<LoopUnit> loops) {
+   private int processLoops(List<CodeSegment> loops) {
       if(loops == null) {
          return 0;
       }
 
       int loopInstCount = 0;
-      for(LoopUnit unit : loops) {
+      for(CodeSegment unit : loops) {
          processLoop(unit);
          // Stats
          loopInstCount += unit.getTotalInstructions();
@@ -118,7 +121,7 @@ public class LoopProcessor {
     * Feed the loop to all registeres loop processors.
     * @param unit
     */
-   private void processLoop(LoopUnit unit) {
+   private void processLoop(CodeSegment unit) {
       for(LoopProcessorJob loopProcessor : loopProcessors) {
          loopProcessor.processLoop(unit);
       }
@@ -133,9 +136,9 @@ public class LoopProcessor {
    /**
     * INSTANCE VARIABLES
     */
-   private final LoopProcessorInfo jobInfo;
-   private final LoopDetector loopDetector;
-   private final SystemSetup systemSetup;
+   //private final LoopDetectionInfo jobInfo;
+   //private final LoopDetector loopDetector;
+   //private final SystemSetup systemSetup;
 
    private final List<LoopProcessorJob> loopProcessors;
 
