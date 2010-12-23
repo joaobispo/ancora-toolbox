@@ -36,7 +36,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
-import org.specs.DymaLib.DToolReader;
+import org.specs.DToolPlus.DToolReader;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import system.SysteM;
 import system.SysteMException;

@@ -17,17 +17,16 @@
 
 package org.specs.LoopDetection.Worker;
 
-import org.specs.LoopDetection.LoopProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DToolPlus.Config.SystemSetup;
-import org.specs.DymaLib.DToolReader;
+import org.specs.DToolPlus.DToolReader;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
-import org.specs.LoopDetection.LoopJobInfo;
+import org.specs.LoopDetection.LoopProcessorInfo;
 
 /**
  *
@@ -35,29 +34,17 @@ import org.specs.LoopDetection.LoopJobInfo;
  */
 public class LoopDetectorWorker {
 
-   public LoopDetectorWorker(LoopJobInfo jobInfo, LoopDetector loopDetector,
- //          SystemSetup systemSetup, DiskWriterSetup diskWriterSetup) {
+   public LoopDetectorWorker(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
            SystemSetup systemSetup) {
       this.jobInfo = jobInfo;
       this.loopDetector = loopDetector;
       this.systemSetup = systemSetup;
-//      this.diskWriterSetup = diskWriterSetup;
 
-      this.loopProcessors = new ArrayList<LoopProcessor>();
+      this.loopProcessors = new ArrayList<LoopProcessorJob>();
    }
 
-   /*
-   public LoopDetectorWorker(LoopJobInfo jobInfo, LoopDetector loopDetector,
-           ) {
-      this.jobInfo = jobInfo;
-      this.loopDetector = loopDetector;
-      this.systemConfigFile = systemConfigFile;
-   }
-    *
-    */
 
-   public static LoopDetectorWorker newLoopWorker(LoopJobInfo jobInfo, 
-//           SystemSetup systemSetup, DiskWriterSetup diskWriterSetup) {
+   public static LoopDetectorWorker newLoopWorker(LoopProcessorInfo jobInfo,
            SystemSetup systemSetup) {
       LoopDetector loopDetector = LoopUtils.newLoopDetector(jobInfo.detectorName,
               jobInfo.detectorSetup, jobInfo.processor.getInstructionDecoder());
@@ -68,36 +55,18 @@ public class LoopDetectorWorker {
          return null;
       }
 
-//      return new LoopDetectorWorker(jobInfo, loopDetector, systemSetup, diskWriterSetup);
       return new LoopDetectorWorker(jobInfo, loopDetector, systemSetup);
    }
 
    public LoopDetectorWorkerResults run() throws InterruptedException {
-      // Stats
-      //DottyLoopUnit dotty = new DottyLoopUnit();
-      int loopInstCount = 0;
-      //long removedInstCount = 0l;
-
-
-      // Instantiate System
-      /*
-      SystemSetup setup = SystemSetup.buildConfig(systemConfigFile);
-      if (setup == null) {
-         setup = SystemSetup.getDefaultConfig();
-      }
-       *
-       */
 
       TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
 
-      String instruction = null;
+      // Stats
+      int loopInstCount = 0;
       int traceCount = 0;
 
-      //String baseFilename = ParseUtils.removeSuffix(jobInfo.elfFile.getName(), ".");
-
-      // Create loopWriter
-      //LoopDiskWriter loopWriter = Utils.newLoopDiskWriter(diskWriterSetup, jobInfo);
-
+      String instruction = null;
       while ((instruction = traceReader.nextInstruction()) != null) {
          traceCount++;
          int address = traceReader.getAddress();
@@ -105,8 +74,6 @@ public class LoopDetectorWorker {
 
          List<LoopUnit> loops = loopDetector.getAndClearUnits();
          loopInstCount += processLoops(loops);
-         //loopWriter.addLoops(loops);
-
 
          // Check if work should be interrupted
          if (Thread.currentThread().isInterrupted()) {
@@ -118,20 +85,8 @@ public class LoopDetectorWorker {
       List<LoopUnit> loops = loopDetector.getAndClearUnits();
       loopInstCount += processLoops(loops);
 
-      // Close loopProcessors
-
-
-      //loopWriter.addLoops(loops);
-
       // Test #instructions
       testInstructionNumber(traceCount, loopInstCount);
-
-      // Build Dotty
-//      if(writeDotFilesForEachElfProgram) {
-//         buildDotty(elfFile, detectorSetup, outputFolder, dotty);
-//      }
-
-      //System.out.println("Executed Instructions:"+baseFilename+"\t"+traceCount);
 
       return new LoopDetectorWorkerResults(traceCount);
    }
@@ -164,12 +119,12 @@ public class LoopDetectorWorker {
     * @param unit
     */
    private void processLoop(LoopUnit unit) {
-      for(LoopProcessor loopProcessor : loopProcessors) {
+      for(LoopProcessorJob loopProcessor : loopProcessors) {
          loopProcessor.processLoop(unit);
       }
    }
 
-   public List<LoopProcessor> getLoopProcessors() {
+   public List<LoopProcessorJob> getLoopProcessors() {
       return loopProcessors;
    }
 
@@ -178,12 +133,11 @@ public class LoopDetectorWorker {
    /**
     * INSTANCE VARIABLES
     */
-   private final LoopJobInfo jobInfo;
+   private final LoopProcessorInfo jobInfo;
    private final LoopDetector loopDetector;
    private final SystemSetup systemSetup;
-   //private final DiskWriterSetup diskWriterSetup;
 
-   private final List<LoopProcessor> loopProcessors;
+   private final List<LoopProcessorJob> loopProcessors;
 
 
 

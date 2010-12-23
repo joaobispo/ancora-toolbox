@@ -24,9 +24,9 @@ import org.specs.DymaLib.ProcessorImplementation;
  *
  * @author Joao Bispo
  */
-public class LoopJobInfo {
+public class LoopProcessorInfo {
 
-   public LoopJobInfo(File elfFile, File outputFolder, String detectorName, File detectorSetup, ProcessorImplementation processor) {
+   public LoopProcessorInfo(File elfFile, File outputFolder, String detectorName, File detectorSetup, ProcessorImplementation processor) {
       this.elfFile = elfFile;
       this.outputFolder = outputFolder;
       this.detectorName = detectorName;

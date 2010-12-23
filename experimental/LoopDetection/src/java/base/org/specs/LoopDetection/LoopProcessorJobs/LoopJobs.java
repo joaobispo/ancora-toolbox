@@ -15,28 +15,28 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessors;
+package org.specs.LoopDetection.LoopProcessorJobs;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-import org.specs.LoopDetection.LoopJobInfo;
-import org.specs.LoopDetection.LoopProcessor;
+import org.specs.LoopDetection.LoopProcessorInfo;
+import org.specs.LoopDetection.Worker.LoopProcessorJob;
 
 /**
  *
  * @author Joao Bispo
  */
-public class LoopProcessors {
+public class LoopJobs {
 
-   public LoopProcessors(DottyWriter dottyWriter, LoopWriter loopWriter) {
+   public LoopJobs(DottyWriter dottyWriter, LoopWriter loopWriter) {
       this.dottyWriter = dottyWriter;
       this.loopWriter = loopWriter;
    }
 
-   public static LoopProcessors newLoopProcessors(DiskWriterSetup diskWriterSetup,
-           LoopJobInfo jobInfo) {
+   public static LoopJobs newLoopProcessors(DiskWriterSetup diskWriterSetup,
+           LoopProcessorInfo jobInfo) {
 
       // Disk Writer
       LoopWriter loopWriter = LoopWriter.newLoopWriter(diskWriterSetup, jobInfo);
@@ -48,11 +48,11 @@ public class LoopProcessors {
 
       DottyWriter dottyWriter = new DottyWriter();
 
-      return new LoopProcessors(dottyWriter, loopWriter);
+      return new LoopJobs(dottyWriter, loopWriter);
    }
 
-   public List<LoopProcessor> asList() {
-      List<LoopProcessor> list = new ArrayList<LoopProcessor>();
+   public List<LoopProcessorJob> asList() {
+      List<LoopProcessorJob> list = new ArrayList<LoopProcessorJob>();
 
       list.add(loopWriter);
       list.add(dottyWriter);

@@ -33,17 +33,17 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
-import org.specs.DymaLib.DToolReader;
+import org.specs.DToolPlus.DToolReader;
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.Interfaces.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
-import org.specs.DymaLib.MbImplementation;
+import org.specs.DymaLib.MicroBlaze.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
-import org.specs.LoopDetection.LoopProcessors.LoopProcessors;
+import org.specs.LoopDetection.LoopProcessorJobs.LoopJobs;
 import org.specs.LoopDetection.Worker.LoopDetectorWorker;
 import org.specs.LoopDetection.Worker.LoopDetectorWorkerResults;
 
@@ -86,7 +86,7 @@ public class LoopDetection implements App {
             File elfFile = inputFiles.get(fileIndex);
             String detectorName = loopDetectorNames.get(detectorIndex);
             File detectorSetup = loopDetectorSetups.get(detectorIndex);
-            LoopJobInfo jobInfo = new LoopJobInfo(elfFile, outputFolder, detectorName, detectorSetup, processor);
+            LoopProcessorInfo jobInfo = new LoopProcessorInfo(elfFile, outputFolder, detectorName, detectorSetup, processor);
 //            detectLoops(fileIndex, detectorIndex);
             //detectLoops(jobInfo);
             detectLoops2(jobInfo);
@@ -170,7 +170,7 @@ public class LoopDetection implements App {
 
 
    //private void detectLoops(int fileIndex, int detectorIndex) throws InterruptedException {
-   private void detectLoops(LoopJobInfo jobInfo) throws InterruptedException {
+   private void detectLoops(LoopProcessorInfo jobInfo) throws InterruptedException {
       //File elfFile = inputFiles.get(fileIndex);
       //String detectorName = loopDetectorNames.get(detectorIndex);
       //File detectorSetup = loopDetectorSetups.get(detectorIndex);
@@ -327,9 +327,9 @@ public class LoopDetection implements App {
       return loopWriter;
    }
 
-   private void detectLoops2(LoopJobInfo jobInfo) throws InterruptedException {
+   private void detectLoops2(LoopProcessorInfo jobInfo) throws InterruptedException {
       LoopDetectorWorker worker = LoopDetectorWorker.newLoopWorker(jobInfo, systemSetup);
-      LoopProcessors loopProcessors = LoopProcessors.newLoopProcessors(diskWriterSetup, jobInfo);
+      LoopJobs loopProcessors = LoopJobs.newLoopProcessors(diskWriterSetup, jobInfo);
 
       worker.getLoopProcessors().addAll(loopProcessors.asList());
 
@@ -343,7 +343,7 @@ public class LoopDetection implements App {
       System.out.println("Executed Instructions:"+baseFilename+"\t"+results.executedInstructions);
    }
 
-   private void processResults(LoopJobInfo jobInfo, LoopProcessors loopProcessors) {
+   private void processResults(LoopProcessorInfo jobInfo, LoopJobs loopProcessors) {
       // Write Dotty
       if(writeDotFilesForEachElfProgram) {  
          buildDotty(jobInfo.elfFile, jobInfo.detectorSetup, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());

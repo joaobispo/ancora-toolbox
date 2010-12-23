@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection;
+package org.specs.LoopDetection.Worker;
 
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 
@@ -24,7 +24,7 @@ import org.specs.DymaLib.LoopDetection.LoopUnit;
  *
  * @author Joao Bispo
  */
-public interface LoopProcessor {
+public interface LoopProcessorJob {
 
    public void processLoop(LoopUnit loopUnit);
 

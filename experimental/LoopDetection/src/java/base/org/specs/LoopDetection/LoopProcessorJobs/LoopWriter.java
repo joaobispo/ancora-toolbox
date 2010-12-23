@@ -15,29 +15,29 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessors;
+package org.specs.LoopDetection.LoopProcessorJobs;
 
 import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
-import org.specs.LoopDetection.LoopJobInfo;
-import org.specs.LoopDetection.LoopProcessor;
+import org.specs.LoopDetection.LoopProcessorInfo;
+import org.specs.LoopDetection.Worker.LoopProcessorJob;
 import org.specs.LoopDetection.Utils;
 
 /**
  *
  * @author Joao Bispo
  */
-public class LoopWriter implements LoopProcessor {
+public class LoopWriter implements LoopProcessorJob {
 
    public LoopWriter(LoopDiskWriter loopWriter) {
       this.loopWriter = loopWriter;
    }
 
    public static LoopWriter newLoopWriter(DiskWriterSetup diskWriterSetup,
-           LoopJobInfo jobInfo) {
+           LoopProcessorInfo jobInfo) {
 
       LoopDiskWriter loopDiskWriter = Utils.newLoopDiskWriter(diskWriterSetup, jobInfo);
 

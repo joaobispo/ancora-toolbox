@@ -15,17 +15,17 @@
  *  under the License.
  */
 
-package org.specs.LoopDetection.LoopProcessors;
+package org.specs.LoopDetection.LoopProcessorJobs;
 
 import org.specs.DymaLib.Dotty.DottyLoopUnit;
 import org.specs.DymaLib.LoopDetection.LoopUnit;
-import org.specs.LoopDetection.LoopProcessor;
+import org.specs.LoopDetection.Worker.LoopProcessorJob;
 
 /**
  *
  * @author Joao Bispo
  */
-public class DottyWriter implements LoopProcessor {
+public class DottyWriter implements LoopProcessorJob {
 
    public DottyWriter() {
       dotty = new DottyLoopUnit();

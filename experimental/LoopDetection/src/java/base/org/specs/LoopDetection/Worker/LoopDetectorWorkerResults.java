@@ -18,8 +18,8 @@
 package org.specs.LoopDetection.Worker;
 
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
-import org.specs.LoopDetection.LoopProcessors.DottyWriter;
-import org.specs.LoopDetection.LoopProcessors.LoopWriter;
+import org.specs.LoopDetection.LoopProcessorJobs.DottyWriter;
+import org.specs.LoopDetection.LoopProcessorJobs.LoopWriter;
 
 /**
  *
