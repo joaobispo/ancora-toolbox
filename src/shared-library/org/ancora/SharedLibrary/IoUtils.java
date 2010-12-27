@@ -19,6 +19,8 @@ package org.ancora.SharedLibrary;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,10 +29,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -690,6 +692,70 @@ public class IoUtils {
       return success;
    }
 
+      /**
+    * Converts an object to an array of bytes.
+    *
+    * @param obj
+    * @return
+    */
+   public static byte[] getBytes(Object obj) {
+      ObjectOutputStream oos = null;
+      try {
+         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         oos = new ObjectOutputStream(bos);
+         oos.writeObject(obj);
+         oos.flush();
+         oos.close();
+         bos.close();
+         byte[] data = bos.toByteArray();
+         return data;
+      } catch (IOException ex) {
+         LoggingUtils.getLogger().
+                 warning(ex.toString());
+         return null;
+      } finally {
+         try {
+            oos.close();
+         } catch (IOException ex) {
+         LoggingUtils.getLogger().
+                 warning(ex.toString());
+            return null;
+         }
+      }
+   }
+
+   /**
+    * Recovers a String List from an array of bytes.
+    * @param bytes
+    * @return
+    */
+     public static Object getObject(byte[] bytes) {
+      ObjectInputStream ois = null;
+      try {
+         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+         ois = new ObjectInputStream(bis);
+         Object readObject = ois.readObject();
+         ois.close();
+         bis.close();
+         return (List<String>) readObject;
+         //bis.
+         //byte[] data = bis.toByteArray();
+         //return data;
+      } catch (ClassNotFoundException ex) {
+         LoggingUtils.getLogger().warning(ex.toString());
+         return null;
+      } catch (IOException ex) {
+         LoggingUtils.getLogger().warning(ex.toString());
+         return null;
+      } finally {
+         try {
+            ois.close();
+         } catch (IOException ex) {
+            LoggingUtils.getLogger().warning(ex.toString());
+            return null;
+         }
+      }
+  }
 
    //
    //DEFINITIONS
@@ -724,5 +790,7 @@ public class IoUtils {
       private String extension;
       private String separator;
    }
+
+
 
 }
