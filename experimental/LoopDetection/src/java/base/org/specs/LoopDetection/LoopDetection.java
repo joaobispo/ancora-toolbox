@@ -194,6 +194,10 @@ public class LoopDetection implements App {
 
       for(String loopDetectorName : loopDetectors) {
          List<Object> returnValues = AppUtils.unpackSetup(loopDetectorName);
+         if(returnValues == null) {
+            System.out.println("No loop detectors defined.");
+         }
+
          String name = (String)returnValues.get(0);
          File setup = (File)returnValues.get(1);
 
