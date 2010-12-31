@@ -19,13 +19,9 @@ package org.specs.LoopDetection;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.AppBase.App;
-import org.ancora.SharedLibrary.AppBase.AppUtils;
-import org.ancora.SharedLibrary.AppBase.AppValue;
-import org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType;
-import org.ancora.SharedLibrary.AppBase.SimpleGui.SimpleGui;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -45,6 +41,13 @@ import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.LoopDetection.SegmentProcessorJobs.LoopDetectionJobs;
 import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessor;
+import org.suikasoft.Jani.App;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Base.EnumKey;
+import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
+import org.suikasoft.Jani.PreBuiltTypes.InputType;
+import org.suikasoft.Jani.Setup;
+import org.suikasoft.Jani.SimpleGui;
 //import org.specs.LoopDetection.SegmentProcessor.LoopProcessorResults;
 
 /**
@@ -69,11 +72,13 @@ public class LoopDetection implements App {
        LoopDetection loopDetection = new LoopDetection();
 
        SimpleGui simpleGui = new SimpleGui(loopDetection);
-       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.6");
+       simpleGui.setTitle("Loop Detection in MicroBlaze programs v0.7");
        simpleGui.execute();
     }
 
-   public int execute(Map<String, AppValue> options) throws InterruptedException {
+//   public int execute(Map<String, AppValue> options) throws InterruptedException {
+   public int execute(Setup options) throws InterruptedException {
+
       // Initialize
       processor = new MbImplementation();
       boolean success = init(options);
@@ -82,11 +87,15 @@ public class LoopDetection implements App {
       }
 
       for (int fileIndex = 0; fileIndex < inputFiles.size(); fileIndex++) {
-         for (int detectorIndex = 0; detectorIndex < loopDetectorNames.size(); detectorIndex++) {
+         for(String loopDetectorRunName : loopDetectorSetups.keySet()) {
+         //for (int detectorIndex = 0; detectorIndex < loopDetectorNames.size(); detectorIndex++) {
             // Build JobInfo
             File elfFile = inputFiles.get(fileIndex);
-            String detectorName = loopDetectorNames.get(detectorIndex);
-            File detectorSetup = loopDetectorSetups.get(detectorIndex);
+            //String detectorName = loopDetectorNames.get(detectorIndex);
+            String detectorName = BaseUtils.decodeMapOfSetupsKey(loopDetectorRunName);
+            //File detectorSetup = loopDetectorSetups.get(detectorIndex);
+            //Setup detectorSetup = loopDetectorSetups.get(detectorIndex);
+            Setup detectorSetup = loopDetectorSetups.get(loopDetectorRunName);
 
             // Build LoopDetector
             LoopDetector loopDetector = LoopUtils.newLoopDetector(detectorName,
@@ -95,7 +104,8 @@ public class LoopDetection implements App {
             String loopDetectorId = loopDetector.getId();
 
             LoopDetectionInfo jobInfo = new LoopDetectionInfo(elfFile, outputFolder, 
-                    detectorName, detectorSetup, processor, loopDetectorId);
+                    //detectorName, detectorSetup, processor, loopDetectorId);
+                    loopDetectorRunName, detectorSetup, processor, loopDetectorId);
 
             LoopDetectionJobs loopProcessors =
               LoopDetectionJobs.newLoopProcessors(diskWriterSetup, jobInfo);
@@ -115,18 +125,24 @@ public class LoopDetection implements App {
       //System.out.println(globalDataColector.getMainTable());
       XYSeriesCollection collection = globalDataColector.processData();
 
-      ChartWriter chartWriter = ChartWriter.create(chartConfigFile);
+      //ChartWriter chartWriter = ChartWriter.create(chartConfigFile);
+      ChartWriter chartWriter = ChartWriter.create(chartSetup);
       chartWriter.createChart(collection, outputFolder);
 
       return 0;
    }
-
+/*
    public Class getAppOptionEnum() {
       return AppOptions.class;
    }
+   */
+   public Collection<EnumKey> getEnumKeys() {
+      return BaseUtils.extractEnumValues(AppOptions.class);
+   }
 
-   private boolean init(Map<String, AppValue> options) {
-      String inputTypeName = AppUtils.getString(options, AppOptions.InputType);
+   //private boolean init(Map<String, AppValue> options) {
+   private boolean init(Setup options) {
+      String inputTypeName = BaseUtils.getString(options.get(AppOptions.InputType));
       InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
 
       inputFiles = InputType.getFiles(options, AppOptions.ProgramFileOrFolder, inputType);
@@ -135,7 +151,7 @@ public class LoopDetection implements App {
       }
       
 
-      outputFolder = AppUtils.getFolder(options, AppOptions.OutputFolder);
+      outputFolder = BaseUtils.getFolder(options.get(AppOptions.OutputFolder));
       if(outputFolder == null) {
          LoggingUtils.getLogger().
                  warning("Could not open folder.");
@@ -143,43 +159,63 @@ public class LoopDetection implements App {
       }
 
 
-      String systemConfigFilename = AppUtils.getString(options, AppOptions.SystemSetup);
+      //String systemConfigFilename = BaseUtils.getString(options.get(AppOptions.SystemSetup));
+      Setup systemConfigFilename = BaseUtils.getSetup(options.get(AppOptions.SystemSetup));
+      /*
       File systemConfigFile = new File(systemConfigFilename);
       if (!systemConfigFile.exists()) {
          LoggingUtils.getLogger().
                  info("MicroBlaze setup file '" + systemConfigFilename + "' not found.");
          return false;
       }
+       *
+       */
 
-      systemSetup = SystemSetup.buildConfig(systemConfigFile);
+      //systemSetup = SystemSetup.buildConfig(systemConfigFile);
+      systemSetup = new SystemSetup(systemConfigFilename);
       if (systemSetup == null) {
+         System.out.println("Using default System Setup configuration.");
          systemSetup = SystemSetup.getDefaultConfig();
       }
 
       // Extract loop detectors
-      List<String> detectors = AppUtils.getStringList(options, AppOptions.LoopDetector);
+      //List<String> detectors = BaseUtils.getStringList(options.get(AppOptions.LoopDetector));
+      Map<String, Setup> detectors = BaseUtils.getMapOfSetups(options.get(AppOptions.LoopDetector));
       if(detectors == null) {
          System.out.println("Could not get loop detector configuration.");
          return false;
       }
-      initLoopDetectors(detectors);
+      loopDetectorSetups = detectors;
+      //initLoopDetectors(detectors);
 
-      File diskWriterSetupfile = AppUtils.getExistingFile(options, AppOptions.LoopWriterSetup);
+
+//      diskWriterSetup = (Setup) options.get(AppOptions.LoopWriterSetup).getRawValue();
+      /*
+      //File diskWriterSetupfile = BaseUtils.getExistingFile(options.get(AppOptions.LoopWriterSetup));
       if( diskWriterSetupfile == null) {
          System.out.println("Could not open disk writer setup file.");
          return false;
       }
-      diskWriterSetup = DiskWriterSetup.newSetup(diskWriterSetupfile);
+*/
+      //Setup dwSetup = (Setup) options.get(AppOptions.LoopWriterSetup).getRawValue();
+      Setup dwSetup = BaseUtils.getSetup(options.get(AppOptions.LoopWriterSetup));
 
-      writeDotFilesForEachElfProgram = AppUtils.getBool(options, AppOptions.WriteDotFilesForEachElfProgram);
+      //diskWriterSetup = DiskWriterSetup.newSetup(diskWriterSetupfile);
+      diskWriterSetup = DiskWriterSetup.newSetup(dwSetup);
 
-      String chartConfigFilename = AppUtils.getString(options, AppOptions.ChartSetup);
+      writeDotFilesForEachElfProgram = BaseUtils.getBoolean(options.get(AppOptions.WriteDotFilesForEachElfProgram));
+
+      //String chartConfigFilename = BaseUtils.getString(options.get(AppOptions.ChartSetup));
+      chartSetup = BaseUtils.getSetup(options.get(AppOptions.ChartSetup));
+      /*
       chartConfigFile = new File(chartConfigFilename);
       if (!chartConfigFile.exists()) {
          LoggingUtils.getLogger().
                  info("Chart setup file '" + systemConfigFilename + "' not found.");
          return false;
       }
+       *
+       */
 
       // Add option, null if disabled?
       globalDataColector = new GlobalDataColector();
@@ -188,30 +224,50 @@ public class LoopDetection implements App {
    }
 
 
-   private void initLoopDetectors(List<String> loopDetectors) {
+   //private void initLoopDetectors(List<String> loopDetectors) {
+   /*
+   private void initLoopDetectors(Map<String, Setup> loopDetectors) {
       loopDetectorNames = new ArrayList<String>();
-      loopDetectorSetups = new ArrayList<File>();
+      //loopDetectorSetups = new ArrayList<File>();
+      loopDetectorSetups = new ArrayList<Setup>();
 
-      for(String loopDetectorName : loopDetectors) {
-         List<Object> returnValues = AppUtils.unpackSetup(loopDetectorName);
+      BaseUtils.parseMapOfSetups(loopDetectors, loopDetectorNames, loopDetectorSetups);
+    *
+    */
+      //for(String loopDetectorName : loopDetectors) {
+      /*
+      for(String key : loopDetectors.keySet()) {
+         Setup setup = loopDetectors.get(key);
+         /*
+         List<Object> returnValues = BaseUtils.unpackSetup(loopDetectorName);
          if(returnValues == null) {
             System.out.println("No loop detectors defined.");
          }
-
+          *
+          */
+/*
          String name = (String)returnValues.get(0);
          File setup = (File)returnValues.get(1);
-
-         loopDetectorNames.add(name);
+*/
+  //       loopDetectorNames.add(name);
+         /*
+         String decodedLoopDetectorName = BaseUtils.decodeMapOfSetupsKey(key);
+         //loopDetectorNames.add(loopDetectorName);
+         loopDetectorNames.add(decodedLoopDetectorName);
+         //loopDetectorSetups.add(loopDetectors.get(loopDetectorName));
          loopDetectorSetups.add(setup);
       }
+          *
+          */
 
-   }
+   //}
 
-      private void buildDotty(File elfFile, File detectorSetup, File outputFolder, DottyLoopUnit dotty) {
+      //private void buildDotty(File elfFile, File detectorSetup, File outputFolder, DottyLoopUnit dotty) {
+      private void buildDotty(File elfFile, String detectorSetupRunName, File outputFolder, DottyLoopUnit dotty) {
          // Build name
          String inputFilename = elfFile.getName();
          inputFilename = ParseUtils.removeSuffix(inputFilename, ".");
-         inputFilename = inputFilename + "." + detectorSetup.getName();
+         inputFilename = inputFilename + "." + detectorSetupRunName;
          inputFilename = inputFilename + ".dotty";
          
          IoUtils.write(new File(outputFolder, inputFilename), dotty.generateDot());
@@ -247,7 +303,8 @@ public class LoopDetection implements App {
    private void processResults(LoopDetectionInfo jobInfo, LoopDetectionJobs loopProcessors) {
       // Write Dotty
       if(writeDotFilesForEachElfProgram) {
-         buildDotty(jobInfo.elfFile, jobInfo.detectorSetup, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());
+         //buildDotty(jobInfo.elfFile, jobInfo.detectorSetup, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());
+         buildDotty(jobInfo.elfFile, jobInfo.detectorRunName, jobInfo.outputFolder, loopProcessors.dottyWriter.getDotty());
       }
 
       // Add set of data to trace coverage
@@ -261,10 +318,14 @@ public class LoopDetection implements App {
    private File outputFolder;
    private SystemSetup systemSetup;
    private boolean writeDotFilesForEachElfProgram;
-   private List<String> loopDetectorNames;
-   private List<File> loopDetectorSetups;
+   //private List<String> loopDetectorNames;
+   //private List<File> loopDetectorSetups;
+   //private List<Setup> loopDetectorSetups;
+   private Map<String, Setup> loopDetectorSetups;
    private DiskWriterSetup diskWriterSetup;
    private ProcessorImplementation processor;
    private GlobalDataColector globalDataColector;
-   private File chartConfigFile;
+   //private File chartConfigFile;
+   private Setup chartSetup;
+
 }

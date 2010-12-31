@@ -17,75 +17,98 @@
 
 package org.specs.LoopDetection;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+/*
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
-import org.ancora.SharedLibrary.AppBase.AppValueType;
-import org.specs.CoverageData.ChartOptions;
+import org.ancora.SharedLibrary.AppBase.OptionType;
+*/import org.ancora.SharedLibrary.EnumUtils;
+
+ import org.specs.CoverageData.ChartOptions;
+import org.specs.CoverageData.ChartOptionsV4;
 import org.specs.DToolPlus.Config.SystemOptions;
+import org.specs.DToolPlus.Config.SystemOptionsV4;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
+import org.specs.DymaLib.LoopDetection.LoopDetectorsV4;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptions;
+import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptionsV4;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Base.EnumKey;
+import org.suikasoft.Jani.Base.OptionType;
+import org.suikasoft.Jani.EnumKeyOptions.MultipleChoiceEnum;
+import org.suikasoft.Jani.EnumKeyOptions.MultipleSetupEnum;
+import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
-        AppOptionMultipleSetup, AppOptionMultipleChoice {
+//public enum AppOptions implements AppOptionEnum, AppOptionEnumSetup,
+//        AppOptionMultipleSetup, AppOptionMultipleChoice {
+public enum AppOptions implements EnumKey, SingleSetupEnum,
+        MultipleSetupEnum, MultipleChoiceEnum {
 
-   ProgramFileOrFolder(AppValueType.string),
-   InputType(AppValueType.multipleChoice),
-   OutputFolder(AppValueType.string),
-   WriteDotFilesForEachElfProgram(AppValueType.bool),
-   LoopWriterSetup(AppValueType.multipleSetup),
-   LoopDetector(AppValueType.multipleSetupList),
-   ChartSetup(AppValueType.multipleSetup),
-   SystemSetup(AppValueType.multipleSetup);
+   ProgramFileOrFolder(OptionType.string),
+   InputType(OptionType.multipleChoice),
+   OutputFolder(OptionType.string),
+   WriteDotFilesForEachElfProgram(OptionType.bool),
+   LoopWriterSetup(OptionType.setup),
+   LoopDetector(OptionType.setupList),
+   ChartSetup(OptionType.setup),
+   SystemSetup(OptionType.setup);
 
-   AppOptions(AppValueType type) {
+   AppOptions(OptionType type) {
       this.type = type;
    }
 
+   /*
    public String getName() {
       return AppUtils.buildEnumName(this);
    }
+    *
+    */
 
-   public AppValueType getType() {
+   public OptionType getType() {
       return type;
    }
 
-   private final AppValueType type;
+   private final OptionType type;
 
-   public AppOptionEnum[] getSetupOptions() {
-      if(this == SystemSetup) {
-         return SystemOptions.values();
+   public List<EnumKey> getSetupOptions() {
+      if (this == SystemSetup) {
+         return BaseUtils.extractEnumValues(SystemOptionsV4.class);
       }
-      if(this == LoopWriterSetup) {
-         return DiskWriterOptions.values();
+      if (this == LoopWriterSetup) {
+                    return BaseUtils.extractEnumValues(DiskWriterOptionsV4.class);
       }
-      if(this == ChartSetup) {
-         return ChartOptions.values();
+      if (this == ChartSetup) {
+                  return BaseUtils.extractEnumValues(ChartOptionsV4.class);
       }
 
       return null;
    }
 
-   public AppOptionEnumSetup[] getSetups() {
+
+   public List<SingleSetupEnum> getSetups() {
       if(this == LoopDetector) {
-         return LoopDetectors.values();
+         return Arrays.asList((SingleSetupEnum[])LoopDetectorsV4.values());
       }
 
       return null;
    }
 
-   public Enum[] getChoices() {
+   public Collection<String> getChoices() {
       if (this == InputType) {
-         return org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType.values();
+         return EnumUtils.buildListToString(org.ancora.SharedLibrary.AppBase.PreBuiltTypes.InputType.values());
       }
 
       return null;
    }
+
 
 }

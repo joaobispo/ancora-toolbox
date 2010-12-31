@@ -37,6 +37,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Setup;
 
 /**
  *
@@ -153,6 +155,23 @@ public class ChartWriter {
        int scaleFactor = AppUtils.getInteger(options, ChartOptions.ScaleFactor);
 
        String chartName = AppUtils.getString(options, ChartOptions.ChartName);
+
+       return new ChartWriter(saveChart, displayChart, drawWidth, drawHeight,
+               scaleFactor, chartName);
+   }
+
+   public static ChartWriter create(Setup options) {
+      //AppOptionFile appOption = AppOptionFile.parseFile(chartConfigFile, ChartOptions.class);
+       //Map<String,AppValue> options = appOption.getMap();
+
+       boolean saveChart = BaseUtils.getBoolean(options.get(ChartOptionsV4.SaveChart));
+       boolean displayChart = BaseUtils.getBoolean(options.get(ChartOptionsV4.DisplayChart));
+
+       int drawWidth = BaseUtils.getInteger(options.get(ChartOptionsV4.DrawingWidth));
+       int drawHeight = BaseUtils.getInteger(options.get(ChartOptionsV4.DrawingHeight));
+       int scaleFactor = BaseUtils.getInteger(options.get(ChartOptionsV4.ScaleFactor));
+
+       String chartName = BaseUtils.getString(options.get(ChartOptionsV4.ChartName));
 
        return new ChartWriter(saveChart, displayChart, drawWidth, drawHeight,
                scaleFactor, chartName);

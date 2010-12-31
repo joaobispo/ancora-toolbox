@@ -19,6 +19,8 @@ package org.specs.LoopDetection;
 
 import java.io.File;
 import org.specs.DymaLib.ProcessorImplementation;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Setup;
 
 /**
  *
@@ -26,22 +28,37 @@ import org.specs.DymaLib.ProcessorImplementation;
  */
 public class LoopDetectionInfo {
 
-   public LoopDetectionInfo(File elfFile, File outputFolder, String detectorName, 
+   public LoopDetectionInfo(File elfFile, File outputFolder, String detectorName,
            File detectorSetup, ProcessorImplementation processor, String loopDetectorId) {
       this.elfFile = elfFile;
       this.outputFolder = outputFolder;
-      this.detectorName = detectorName;
+      this.detectorRunName = detectorName;
       this.detectorSetup = detectorSetup;
+      this.detectorSetupV4 = null;
       this.processor = processor;
       this.loopDetectorId = loopDetectorId;
    }
 
-   
+   public LoopDetectionInfo(File elfFile, File outputFolder, String detectorRunName,
+           Setup detectorSetup, ProcessorImplementation processor, String loopDetectorId) {
+      this.elfFile = elfFile;
+      this.outputFolder = outputFolder;
+      this.detectorRunName = detectorRunName;
+      this.detectorSetup = null;
+      this.detectorSetupV4 = detectorSetup;
+      this.processor = processor;
+      this.loopDetectorId = loopDetectorId;
+   }
+
+   public String getDetectorName() {
+      return BaseUtils.decodeMapOfSetupsKey(detectorRunName);
+   }
 
    public final File elfFile;
    public final File outputFolder;
-   public final String detectorName;
+   public final String detectorRunName;
    public final File detectorSetup;
+   public final Setup detectorSetupV4;
    public final ProcessorImplementation processor;
    public final String loopDetectorId;
 }

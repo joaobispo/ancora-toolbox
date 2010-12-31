@@ -47,12 +47,14 @@ public class Utils {
    public static LoopDiskWriter newLoopDiskWriter(DiskWriterSetup diskWriterSetup,
            LoopDetectionInfo jobInfo) {
 
-      boolean isStraighLineLoop = jobInfo.detectorName.equals(LoopDetectors.MegaBlock.name());
+      //boolean isStraighLineLoop = jobInfo.detectorRunName.equals(LoopDetectors.MegaBlock.name());
+      boolean isStraighLineLoop = jobInfo.getDetectorName().equals(LoopDetectors.MegaBlock.name());
       Enum[] instructionNames = jobInfo.processor.getInstructionNames();
       String baseFilename = ParseUtils.removeSuffix(jobInfo.elfFile.getName(), ".");
 
       LoopDiskWriter loopWriter = new LoopDiskWriter(jobInfo.outputFolder, baseFilename,
-              jobInfo.detectorSetup.getName(), jobInfo.processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
+    //          jobInfo.detectorSetup.getName(), jobInfo.processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
+              jobInfo.detectorRunName, jobInfo.processor.getLowLevelParser(), diskWriterSetup, isStraighLineLoop,
               instructionNames);
 
       return loopWriter;
