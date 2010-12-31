@@ -23,6 +23,8 @@ import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppUtils;
 import org.ancora.SharedLibrary.AppBase.AppValue;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Setup;
 
 /**
  * Container class for setup variables of LoopDiskWriter.
@@ -69,6 +71,17 @@ public class DiskWriterSetup {
       }
       boolean writeDottyForStraighLineLoops = AppUtils.getBool(options, DiskWriterOptions.WriteDotForStraighLineLoops);
       boolean writeTxtFilesForLoops = AppUtils.getBool(options, DiskWriterOptions.WriteBlockFilesForLoops);
+
+      return new DiskWriterSetup(iterationsThreshold, writeDottyForStraighLineLoops, writeTxtFilesForLoops);
+   }
+
+   public static DiskWriterSetup newSetup(Setup options) {
+      Integer iterationsThreshold = BaseUtils.getInteger(options.get(DiskWriterOptionsV4.IterationsThreshold));
+      if (iterationsThreshold == null) {
+         iterationsThreshold = 0;
+      }
+      boolean writeDottyForStraighLineLoops = BaseUtils.getBoolean(options.get(DiskWriterOptionsV4.WriteDotForStraighLineLoops));
+      boolean writeTxtFilesForLoops = BaseUtils.getBoolean(options.get(DiskWriterOptionsV4.WriteBlockFilesForLoops));
 
       return new DiskWriterSetup(iterationsThreshold, writeDottyForStraighLineLoops, writeTxtFilesForLoops);
    }

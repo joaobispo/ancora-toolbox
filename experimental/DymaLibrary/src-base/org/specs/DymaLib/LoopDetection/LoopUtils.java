@@ -22,8 +22,11 @@ import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
+import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptionsV4;
 import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptions;
+import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptionsV4;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
+import org.suikasoft.Jani.Setup;
 
 /**
  *
@@ -113,6 +116,20 @@ public class LoopUtils {
 
       LoggingUtils.getLogger().
               warning("Case not defined:"+name);
+      return null;
+   }
+
+   public static LoopDetector newLoopDetector(String detectorName, Setup appFile, InstructionDecoder decoder) {
+      if(LoopDetectors.MegaBlock.name().equals(detectorName)) {
+         return MegaBlockOptionsV4.newMegaBlockDetector(appFile, decoder);
+      }
+
+      if(LoopDetectors.WarpBlock.name().equals(detectorName)) {
+         return WarpBlockOptionsV4.newWarpBlockDetector(appFile, decoder);
+      }
+
+      LoggingUtils.getLogger().
+              warning("Case not defined:"+detectorName);
       return null;
    }
 
