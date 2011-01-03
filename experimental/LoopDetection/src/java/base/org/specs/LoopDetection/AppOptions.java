@@ -19,23 +19,10 @@ package org.specs.LoopDetection;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-/*
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleChoice;
-import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionMultipleSetup;
-import org.ancora.SharedLibrary.AppBase.AppUtils;
-import org.ancora.SharedLibrary.AppBase.OptionType;
-*/import org.ancora.SharedLibrary.EnumUtils;
-
- import org.specs.CoverageData.ChartOptions;
+import org.ancora.SharedLibrary.EnumUtils;
 import org.specs.CoverageData.ChartOptionsV4;
-import org.specs.DToolPlus.Config.SystemOptions;
 import org.specs.DToolPlus.Config.SystemOptionsV4;
-import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.LoopDetection.LoopDetectorsV4;
-import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptions;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterOptionsV4;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
@@ -79,7 +66,8 @@ public enum AppOptions implements EnumKey, SingleSetupEnum,
 
    private final OptionType type;
 
-   public List<EnumKey> getSetupOptions() {
+//   public List<EnumKey> getSetupOptions() {
+   public Collection<EnumKey> getSetupOptions() {
       if (this == SystemSetup) {
          return BaseUtils.extractEnumValues(SystemOptionsV4.class);
       }
@@ -94,7 +82,8 @@ public enum AppOptions implements EnumKey, SingleSetupEnum,
    }
 
 
-   public List<SingleSetupEnum> getSetups() {
+   //public List<SingleSetupEnum> getSetups() {
+   public Collection<SingleSetupEnum> getSetups() {
       if(this == LoopDetector) {
          return Arrays.asList((SingleSetupEnum[])LoopDetectorsV4.values());
       }

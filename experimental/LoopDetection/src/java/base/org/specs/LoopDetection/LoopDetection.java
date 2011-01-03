@@ -18,7 +18,6 @@
 package org.specs.LoopDetection;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +43,9 @@ import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessor;
 import org.suikasoft.Jani.App;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
-import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
 import org.suikasoft.Jani.PreBuiltTypes.InputType;
 import org.suikasoft.Jani.Setup;
 import org.suikasoft.Jani.SimpleGui;
-//import org.specs.LoopDetection.SegmentProcessor.LoopProcessorResults;
 
 /**
  * Detects and extract loops.
@@ -77,7 +74,8 @@ public class LoopDetection implements App {
     }
 
 //   public int execute(Map<String, AppValue> options) throws InterruptedException {
-   public int execute(Setup options) throws InterruptedException {
+   public int execute(File setupFile) throws InterruptedException {
+      Setup options = (Setup)IoUtils.readObject(setupFile);
 
       // Initialize
       processor = new MbImplementation();
