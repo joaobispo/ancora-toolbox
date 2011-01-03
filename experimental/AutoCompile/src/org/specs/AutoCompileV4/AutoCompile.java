@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.AppBase.AppOptionFile.AppOptionFile;
 import org.ancora.SharedLibrary.AppBase.AppValue;
+import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.AutoCompile.Job.Job;
 import org.specs.AutoCompileV4.Job.JobUtils;
@@ -72,8 +73,9 @@ public class AutoCompile implements App {
     * @param options
     * @return
     */
-   public int execute(Setup jobOptions) {
-
+   //public int execute(Setup jobOptions) {
+   public int execute(File setupFile) {
+      Setup jobOptions = (Setup)IoUtils.readObject(setupFile);
       // Get Job options
       /*
       String jobFilepath = AppUtils.getString(options, Config.jobFile);
