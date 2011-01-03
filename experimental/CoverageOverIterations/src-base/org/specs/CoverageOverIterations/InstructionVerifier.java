@@ -17,7 +17,7 @@
 
 package org.specs.CoverageOverIterations;
 
-import org.specs.DymaLib.Interfaces.TraceReader;
+import org.specs.DymaLib.TraceReader;
 
 
 /**

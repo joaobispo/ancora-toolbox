@@ -30,7 +30,7 @@ import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolUtils;
 import org.specs.DToolPlus.Utilities.EasySystem;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
-import org.specs.DymaLib.DToolReader;
+import org.specs.DToolPlus.DToolReader;
 import system.SysteM;
 
 /**

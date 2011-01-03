@@ -28,7 +28,7 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.Utilities.ProgressCounter;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
-import org.specs.DymaLib.Interfaces.TraceReader;
+import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.TraceUnit.Builders.InstructionBuilder;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;
