@@ -39,6 +39,12 @@ import org.ancora.SharedLibrary.ProcessUtils;
  */
 public class AppOptionFile {
 
+   private static Map<String, AppOptionEnum> createNewAppOptionFileMap(Class appOptionEnum) {
+      // Create empty map
+      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
+      return enumMap;
+   }
+
    private AppOptionFile(EntryList entryList) {
       this.optionFile = null;
       this.entryList = entryList;
@@ -125,7 +131,9 @@ public class AppOptionFile {
        *
        */
 
-      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
+
+      Map<String, AppOptionEnum> enumMap = createNewAppOptionFileMap(appOptionEnum);
+//      Map<String, AppOptionEnum> enumMap = AppUtils.getEnumMap(appOptionEnum);
       
        // Get list of entries
        //List<Entry> entries = buildEntries(lineReader, enumMap);
@@ -215,5 +223,6 @@ public class AppOptionFile {
     */
    private File optionFile;
    private EntryList entryList;
-  
+
+   public static final String RESERVED_MASTER_FILE_BASE = "reserved_master_file_base";
 }

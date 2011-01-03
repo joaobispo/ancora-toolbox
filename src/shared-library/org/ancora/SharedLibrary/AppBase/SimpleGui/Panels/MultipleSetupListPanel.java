@@ -270,6 +270,13 @@ public class MultipleSetupListPanel extends AppOptionPanel
       //System.out.println("List size:"+stringValues.size());
       for (int i = 0; i < stringValues.size(); i++) {
          List<Object> unpackedValues = AppUtils.unpackSetup(stringValues.get(i));
+         //List<Object> unpackedValues = AppUtils.unpackSetup(masterFile.getOptionFile().getParentFile(), stringValues.get(i));
+         if(unpackedValues == null) {
+            LoggingUtils.getLogger().
+                    warning("One of the options is not defined.");
+            return;
+         }
+
          String enumName = (String) unpackedValues.get(0);
          File aFile = (File) unpackedValues.get(1);
          loadElement(enumName, aFile);

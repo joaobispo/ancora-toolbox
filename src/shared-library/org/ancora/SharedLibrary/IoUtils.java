@@ -555,13 +555,18 @@ public class IoUtils {
          return false;
       }
 
-      System.out.println("Deleting contents of folder '"+folder.getName()+"'");
+      //System.out.println("Deleting contents of folder '"+folder.getName()+"'");
+      System.out.println("Deleting contents of folder '"+folder+"'");
       for(File file : folder.listFiles()) {
          if(file.isDirectory()) {
             deleteFolderContents(file);
          }
-         file.delete();
-         System.out.println("Deleted '"+file.delete()+"'");
+         boolean deleted = file.delete();
+         if(deleted) {
+            System.out.println("Deleted '"+file+"'");
+         } else {
+            System.out.println("Could not delete '"+file+"'");
+         }
       }
 
       return true;
@@ -737,7 +742,8 @@ public class IoUtils {
          Object readObject = ois.readObject();
          ois.close();
          bis.close();
-         return (List<String>) readObject;
+         return readObject;
+//         return (List<String>) readObject;
          //bis.
          //byte[] data = bis.toByteArray();
          //return data;
@@ -756,6 +762,72 @@ public class IoUtils {
          }
       }
   }
+
+     /**
+      * Serializes an object to a file.
+      *
+      * @param file
+      * @param serializableObject
+      * @return
+      */
+   public static boolean writeObject(File file, Object serializableObject) {
+      // Transform object into byte array
+      byte[] bytes = getBytes(serializableObject);
+
+      if(bytes == null) {
+         LoggingUtils.getLogger().warning("Could not serialize object.");
+      }
+
+      try {
+         FileOutputStream streamWriter = new FileOutputStream(file);
+         streamWriter.write(bytes);
+      } catch (IOException ex) {
+         LoggingUtils.getLogger().warning(ex.toString());
+         return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Deserializes an object from a file.
+    *
+    * @param file
+    * @return
+    */
+   public static Object readObject(File file) {
+      List<Byte> bytelist = new ArrayList<Byte>();
+
+      try {
+         FileInputStream stream = new FileInputStream(file);
+
+         Byte newByte = null;
+         try {
+            while ((newByte = (byte) stream.read()) != -1) {
+               bytelist.add(newByte);
+            }
+         } catch (IOException ex) {
+            LoggingUtils.getLogger().warning(ex.toString());
+            return null;
+         }
+      } catch (FileNotFoundException ex) {
+         LoggingUtils.getLogger().warning(ex.toString());
+         return null;
+      }
+
+      byte[] byteArray = new byte[bytelist.size()];
+      for(int i=0; i<byteArray.length; i++) {
+         byteArray[i] = bytelist.get(i);
+      }
+
+      Object recovedObject = getObject(byteArray);
+      if(recovedObject == null) {
+         LoggingUtils.getLogger().warning("Could not recover object.");
+         return null;
+      }
+      return recovedObject;
+
+   }
 
    //
    //DEFINITIONS

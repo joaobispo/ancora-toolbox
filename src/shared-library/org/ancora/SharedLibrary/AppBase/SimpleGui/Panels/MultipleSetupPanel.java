@@ -502,6 +502,7 @@ public class MultipleSetupPanel extends AppOptionPanel
       }
 
       String newFilename = masterF.getPath()+"."+id.getName();
+      //String newFilename = "./"+masterF.getPath()+"."+id.getName();
 
       int i=0;
       //int choicesIndex = elementsBoxShadow.get(i);

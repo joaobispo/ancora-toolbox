@@ -256,27 +256,8 @@ public class AppUtils {
     * @return
     */
    public static Map<String, AppOptionEnum> getEnumMap(Class appOptionEnum) {
-      /*
-      // Check class
-      if (!appOptionEnum.isEnum()) {
-         LoggingUtils.getLogger().
-                 warning("Class '" + appOptionEnum.getName() + "' does not represent an enum.");
-         return null;
-      }
-
-      // Build set with interfaces of the given class
-      Set<Class> interfaces = new HashSet<Class>(Arrays.asList(appOptionEnum.getInterfaces()));
-      Class appOption = AppOptionEnum.class;
-      if(!interfaces.contains(appOption)){
-           LoggingUtils.getLogger().
-                 warning("Class '" + appOptionEnum.getName() + "' does not implement "
-                 + "interface '"+appOption+"'.");
-         return null;
-      }
-*/
 
       // Get map of enums
-       //Map<String, AppOptionEnum> enumMap = AppUtils.buildMap((AppOptionEnum[]) appOptionEnum.getEnumConstants());
        Map<String, AppOptionEnum> enumMap = AppUtils.buildMap(getEnumValues(appOptionEnum));
 
        return enumMap;
@@ -361,6 +342,10 @@ public class AppUtils {
       return defaultValue;
    }
 
+   public static List<Object> unpackSetup(String value) {
+      return unpackSetup(null, value);
+   }
+
    /**
     * Extracts a String and a File objects from a String and returns a list with
     * the elements in the previous order.
@@ -368,17 +353,23 @@ public class AppUtils {
     * @param value
     * @return the first element is the enum name for the setup
     */
-   public static List<Object> unpackSetup(String value) {
+   //public static List<Object> unpackSetup(String value) {
+   public static List<Object> unpackSetup(File masterFile, String value) {
       int separatorIndex = value.indexOf(SETUP_PACK_SEPARATOR);
       if(separatorIndex == -1) {
          LoggingUtils.getLogger().
-                 warning("Malformed setup pack string:"+value);
+                 warning("Malformed setup pack string:'"+value+"'");
          return null;
       }
 
       String enumName = value.substring(0, separatorIndex);
       String filename = value.substring(separatorIndex+1);
-      File file = new File(filename);
+      File file = null;
+      if(masterFile == null) {
+         file = new File(filename);
+      } else {
+         file = new File(masterFile, filename);
+      }
 
       List<Object> returnList = new ArrayList<Object>(2);
       returnList.add(enumName);
@@ -389,6 +380,9 @@ public class AppUtils {
 
 
    public static String packSetup(String choiceEnumName, File file) {
+      
+      //System.out.println("Path:"+file.getPath());
+      //return choiceEnumName+SETUP_PACK_SEPARATOR+"./"+file.getPath();
       return choiceEnumName+SETUP_PACK_SEPARATOR+file.getPath();
    }
 
