@@ -20,7 +20,6 @@ package org.specs.GraphicalTraceV4;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -68,7 +67,9 @@ public class Application implements App {
     }
 
 
-   public int execute(Setup options) throws InterruptedException {
+   public int execute(File setupFile) throws InterruptedException {
+            Setup options = (Setup)IoUtils.readObject(setupFile);
+
       boolean success = init(options);
       if (!success) {
          return -1;
