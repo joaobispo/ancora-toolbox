@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import org.ancora.SharedLibrary.OptionsTable.OptionName;
 import org.ancora.SharedLibrary.OptionsTable.OptionsTable;
 

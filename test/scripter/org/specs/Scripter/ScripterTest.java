@@ -20,7 +20,7 @@ package org.specs.Scripter;
 import org.ancora.SharedLibrary.LoggingUtils;
 import java.io.File;
 import java.util.Map;
-import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import org.ancora.SharedLibrary.OptionsTable.OptionsTable;
 import org.ancora.SharedLibrary.OptionsTable.OptionsTableFactory;
 import org.junit.After;

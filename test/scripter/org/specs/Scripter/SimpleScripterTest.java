@@ -18,7 +18,7 @@
 package org.specs.Scripter;
 
 import java.util.HashMap;
-import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import org.ancora.SharedLibrary.OptionsTable.OptionsTableFactory;
 import org.ancora.SharedLibrary.OptionsTable.OptionsTable;
 import java.io.File;

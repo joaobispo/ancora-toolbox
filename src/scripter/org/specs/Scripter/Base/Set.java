@@ -78,7 +78,7 @@ public class Set implements Program {
       if (optionName.equals(ScripterOption.loggerLevel.getOptionName())) {
          String levelString = state.get(ScripterOption.loggerLevel);
          Level level = LoggingUtils.parseLevel(levelString);
-         LoggingUtils.setLevel(level);
+         LoggingUtils.getRootLogger().setLevel(level);
       }
    }
 
