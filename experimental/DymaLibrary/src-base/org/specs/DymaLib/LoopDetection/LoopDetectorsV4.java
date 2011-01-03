@@ -17,12 +17,8 @@
 
 package org.specs.DymaLib.LoopDetection;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import org.ancora.SharedLibrary.EnumUtils;
-import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptions;
-import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptionsV4;
 import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptionsV4;
 import org.suikasoft.Jani.Base.BaseUtils;
@@ -44,7 +40,8 @@ public enum LoopDetectorsV4 implements SingleSetupEnum {
    }
 
 
-   public List<EnumKey> getSetupOptions() {
+   //public List<EnumKey> getSetupOptions() {
+   public Collection<EnumKey> getSetupOptions() {
       return options;
    }
 
