@@ -166,10 +166,11 @@ public class Application implements App {
     * @return
     */
    private List<File> getFiles(Setup options) {
-      String inputTypeName = BaseUtils.getString(options.get(Options.InputType));
-      InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
+      //String inputTypeName = BaseUtils.getString(options.get(Options.InputType));
+      //InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
 
-      return InputType.getFiles(options, Options.Input, inputType);
+      //return InputType.getFiles(options, Options.Input, inputType);
+      return InputType.getFiles(options, Options.Input, Options.InputType);
    }
 
    /**
