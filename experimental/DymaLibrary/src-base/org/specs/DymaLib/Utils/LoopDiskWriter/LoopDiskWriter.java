@@ -109,11 +109,11 @@ public class LoopDiskWriter {
          String blockFilename = baseFilename.toString() + BLOCK_EXTENSION;
          //String dottyFilename = baseFilename.toString() + ".dotty";
          String dottyFilename = baseFilename.toString() + DOT_EXTENSION;
+         String serializedBlockFilename = baseFilename.toString() + SERIALIZED_BLOCK_EXTENSION;
 
-
-         writeBlock(blockFilename, unit);
+         writeBlock(blockFilename, serializedBlockFilename, unit);
          writeDotty(dottyFilename, unit);
-
+         //IoUtils.writeObject(new File(serializedBlockFilename), unit);
 
          // House cleaning
          writtenLoops.add(unit.getId());
@@ -163,13 +163,15 @@ public class LoopDiskWriter {
       return builder.toString();
    }
 
-   private void writeBlock(String txtFilename, CodeSegment unit) {
+   private void writeBlock(String txtFilename, String serializedFilename, CodeSegment unit) {
       if(!writeTxtForLoops) {
          return;
       }
 
       String txtBody = buildBody(unit);
       IoUtils.write(new File(outputFolder, txtFilename), txtBody);
+
+      IoUtils.writeObject(new File(outputFolder, serializedFilename), unit);
    }
 
    private void writeDotty(String dottyFilename, CodeSegment unit) {
@@ -205,5 +207,6 @@ public class LoopDiskWriter {
 
    public static final String DOT_EXTENSION = ".dotty";
    public static final String BLOCK_EXTENSION = ".block";
+   public static final String SERIALIZED_BLOCK_EXTENSION = BLOCK_EXTENSION+".serialized";
 
 }

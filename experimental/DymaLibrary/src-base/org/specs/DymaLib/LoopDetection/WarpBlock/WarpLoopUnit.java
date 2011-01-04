@@ -17,10 +17,7 @@
 
 package org.specs.DymaLib.LoopDetection.WarpBlock;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.specs.DymaLib.LoopDetection.CodeSegment;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;

@@ -17,6 +17,7 @@
 
 package org.specs.DymaLib.TraceUnit;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author Joao Bispo
  */
-public class TraceUnit {
+public class TraceUnit implements Serializable {
 
    public TraceUnit(List<String> instructions, List<Integer> addresses, int identifier) {
       this.instructions = instructions;

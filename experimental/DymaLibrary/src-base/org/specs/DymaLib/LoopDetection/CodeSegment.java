@@ -17,6 +17,7 @@
 
 package org.specs.DymaLib.LoopDetection;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Joao Bispo
  */
-public interface CodeSegment {
+public interface CodeSegment extends Serializable {
 
    List<String> getInstructions();
 
