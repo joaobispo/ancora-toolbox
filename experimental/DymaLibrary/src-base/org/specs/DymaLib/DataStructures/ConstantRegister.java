@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2011 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,17 +15,23 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils.SegmentProcessor;
+package org.specs.DymaLib.DataStructures;
 
-import org.specs.DymaLib.DataStructures.CodeSegment;
+import java.io.Serializable;
 
 /**
- * Performs some work using loop information.
  *
  * @author Joao Bispo
  */
-public interface SegmentProcessorJob {
+public class ConstantRegister implements Serializable {
 
-   public void processSegment(CodeSegment segment);
+   public ConstantRegister(String id, int value) {
+      this.id = id;
+      this.value = value;
+   }
 
+   
+
+   public final String id;
+   public final int value;
 }

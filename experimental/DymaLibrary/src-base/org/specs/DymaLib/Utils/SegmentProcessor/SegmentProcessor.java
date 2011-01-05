@@ -19,10 +19,12 @@ package org.specs.DymaLib.Utils.SegmentProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.DataStructures.CodeSegment;
+import org.suikasoft.SharedLibrary.Processors.RegisterId;
 
 /**
  * Applies a LoopDetector to a TraceReader and processes the code according to
@@ -64,6 +66,7 @@ public class SegmentProcessor {
 
 //   public LoopProcessorResults run() throws InterruptedException {
 //   public LoopProcessorResults run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
+   //public int run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
    public int run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
 
       //TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
@@ -80,6 +83,8 @@ public class SegmentProcessor {
 
          List<CodeSegment> loops = loopDetector.getAndClearUnits();
          loopInstCount += processLoops(loops);
+
+         addRegisterValuesToLoop(loops, traceReader);
 
          // Check if work should be interrupted
          if (Thread.currentThread().isInterrupted()) {
@@ -145,6 +150,34 @@ public class SegmentProcessor {
    //private final SystemSetup systemSetup;
 
    private final List<SegmentProcessorJob> loopProcessors;
+
+   private void addRegisterValuesToLoop(List<CodeSegment> loops, TraceReader traceReader) {
+      if (loops == null) {
+         return;
+      }
+
+      if(loops.isEmpty()) {
+         LoggingUtils.getLogger().warning("Loop detector returned empty list?");
+         return;
+      }
+
+      if (loops.size() > 1) {
+         LoggingUtils.getLogger().
+                 warning("Loop Detector returned more than one loop. Cannot add "
+                 + "the values of the registers reliably in this case.");
+      }
+
+      // Get register values
+       Map<RegisterId,Integer> registerValues = traceReader.getRegisters();
+       if(registerValues == null) {
+          LoggingUtils.getLogger().
+                  warning("Implementation of TraceReader '"+traceReader.getClass()+
+                  "' does not support reading the values of register.");
+          return;
+       }
+
+       
+   }
 
 
 

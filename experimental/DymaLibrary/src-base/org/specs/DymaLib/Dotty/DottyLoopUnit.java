@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.DataStructures.CodeSegment;
 //import org.specs.DymaLib.LoopDetection.MegaBlockUnit;
 
 

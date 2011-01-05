@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2011 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,17 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils.SegmentProcessor;
-
-import org.specs.DymaLib.DataStructures.CodeSegment;
+package org.specs.DymaLib.LoopOptimization;
 
 /**
- * Performs some work using loop information.
+ * Methods related to extracting characteristics of CodeSegments.
  *
  * @author Joao Bispo
  */
-public interface SegmentProcessorJob {
-
-   public void processSegment(CodeSegment segment);
+public class LoopCharacteristics {
 
 }

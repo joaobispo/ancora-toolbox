@@ -19,12 +19,14 @@ package org.specs.DymaLib.LoopDetection.MegaBlock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.DataStructures.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
+import org.suikasoft.SharedLibrary.Processors.RegisterId;
 
 /**
  * Represents a Loop. Can also represent a sequence of instructions.
@@ -370,7 +372,13 @@ public class MegaBlockUnit implements CodeSegment {
       }
    }
 
+   public Map<RegisterId, Integer> getRegisterValues() {
+      return registerValues;
+   }
 
+   public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+      this.registerValues = registerValues;
+   }
 
    private boolean sequencialStoreInstructions;
    private int seqInstructions;
@@ -380,6 +388,9 @@ public class MegaBlockUnit implements CodeSegment {
    private List<TraceUnit> instructions;
    private List<TraceUnit> verification;
    private Integer id;
+   private Map<RegisterId, Integer> registerValues;
+
+
 
 
 

@@ -17,6 +17,7 @@
 
 package org.specs.DymaLib.LoopDetection;
 
+import org.specs.DymaLib.DataStructures.CodeSegment;
 import java.util.List;
 
 /**

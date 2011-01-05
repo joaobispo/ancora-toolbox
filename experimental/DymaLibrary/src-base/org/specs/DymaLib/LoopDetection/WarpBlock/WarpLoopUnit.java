@@ -18,9 +18,11 @@
 package org.specs.DymaLib.LoopDetection.WarpBlock;
 
 import java.util.List;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import java.util.Map;
+import org.specs.DymaLib.DataStructures.CodeSegment;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
+import org.suikasoft.SharedLibrary.Processors.RegisterId;
 
 /**
  *
@@ -241,6 +243,14 @@ public class WarpLoopUnit implements CodeSegment {
     *
     */
 
+   public Map<RegisterId, Integer> getRegisterValues() {
+      return registerValues;
+   }
+
+   public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+      this.registerValues = registerValues;
+   }
+
    // Data of the loop unit
    private List<TraceUnit> loopUnits;
    private Integer id;
@@ -248,7 +258,7 @@ public class WarpLoopUnit implements CodeSegment {
    private int totalInstructions;
    private boolean isLoop;
    private boolean allInstructionsStored;
-
+   private Map<RegisterId, Integer> registerValues;
 
    //private Set<Integer> currentIds;
 

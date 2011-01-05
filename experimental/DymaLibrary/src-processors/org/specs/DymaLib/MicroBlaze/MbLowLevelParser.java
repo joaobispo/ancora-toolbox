@@ -150,7 +150,7 @@ public class MbLowLevelParser implements LowLevelParser{
       if(operand.value.equals("0")) {
          if(operand.type == Operand.TYPE_REGISTER) {
             // Transform operand into literal 0
-            operand.isImmutable = LliUtils.ENABLED;
+            operand.isConstant = LliUtils.ENABLED;
             operand.type = Operand.TYPE_LITERAL;
          }
          return;

@@ -53,4 +53,7 @@ public class TraceUnit implements Serializable {
    private List<String> instructions;
    private List<Integer> addresses;
    private int identifier;
+
+   private static final long serialVersionUID = 2;
+
 }

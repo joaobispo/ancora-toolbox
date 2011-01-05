@@ -28,10 +28,12 @@ public class Operand {
 
    //public Operand(int value, int type, int flow, int isImmutable, Integer isLiveIn) {
    public Operand(String value, int type, int flow, int isImmutable, Integer isLiveIn) {
+   //public Operand(String id, Integer value, int type, int flow, int isImmutable, Integer isLiveIn) {
+//      this.id = id;
       this.value = value;
       this.type = type;
       this.flow = flow;
-      this.isImmutable = isImmutable;
+      this.isConstant = isImmutable;
       this.isLiveIn = isLiveIn;
    }
 
@@ -56,7 +58,7 @@ public class Operand {
       StringBuilder builder = new StringBuilder();
 
       if(type != TYPE_LITERAL) {
-         if(isImmutable == LliUtils.ENABLED) {
+         if(isConstant == LliUtils.ENABLED) {
             builder.append("(i)");
          }
          builder.append("r");
@@ -78,10 +80,12 @@ public class Operand {
     * INSTANCE VARIABLES
     */
    //public int value;
+   //public String id;
    public String value;
+   //public Integer value;
    public int type;
    public int flow;
-   public int isImmutable;
+   public int isConstant;
    public Integer isLiveIn;
 
    public final static int TYPE_REGISTER = 0;

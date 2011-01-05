@@ -154,7 +154,7 @@ public class Mapper {
          }
 
          // If immutable, means we have to store the value of this live-out.
-         if(operand.isImmutable == LliUtils.ENABLED) {
+         if(operand.isConstant == LliUtils.ENABLED) {
             String register = LliUtils.extractRegisterFromConstantRegister(operand.value);
             Integer value = LliUtils.extractImmediateFromConstantRegister(operand.value);
             constantLiveouts.put(register, value);

@@ -15,10 +15,12 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection;
+package org.specs.DymaLib.DataStructures;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import org.suikasoft.SharedLibrary.Processors.RegisterId;
 
 /**
  * Represents a segment of code, which can loop overitself or not.
@@ -42,4 +44,11 @@ public interface CodeSegment extends Serializable {
    boolean isLoop();
 
    boolean areAllInstructionsStored();
+
+   Map<RegisterId,Integer> getRegisterValues();
+
+   void setRegisterValues(Map<RegisterId,Integer> registerValues);
+
+   final long serialVersionUID = 1;
+
 }

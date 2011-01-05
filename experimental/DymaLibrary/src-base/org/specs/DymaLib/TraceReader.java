@@ -17,6 +17,9 @@
 
 package org.specs.DymaLib;
 
+import java.util.Map;
+import org.suikasoft.SharedLibrary.Processors.RegisterId;
+
 /**
  * Represents a trace.
  *
@@ -44,4 +47,11 @@ public interface TraceReader {
     * @return the total number of returned instructions up to this moment
     */
    long getNumInstructions();
+
+   /**
+    * Optional: returns the values of the registers at the current moment.
+    *
+    * @return null if not implemented.
+    */
+   Map<RegisterId, Integer> getRegisters();
 }
