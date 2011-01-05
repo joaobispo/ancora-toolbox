@@ -18,7 +18,7 @@
 package org.specs.DymaLib.LoopDetection;
 
 import java.io.File;
-import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptions;
+import org.specs.DymaLib.LoopDetection.BackwardBranchBlock.BackwardBranchOptions;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
@@ -30,7 +30,7 @@ import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;
  */
 public enum LoopDetectors implements AppOptionEnumSetup {
    MegaBlock(MegaBlockOptions.values()),
-   WarpBlock(WarpBlockOptions.values());
+   WarpBlock(BackwardBranchOptions.values());
 
    private LoopDetectors(AppOptionEnum[] options) {
       this.options = options;

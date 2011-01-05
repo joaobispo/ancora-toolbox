@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.WarpBlock;
+package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
 
 import java.io.File;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
@@ -29,14 +29,14 @@ import org.specs.DymaLib.LoopDetection.LoopDetector;
  *
  * @author Joao Bispo
  */
-public enum WarpBlockOptions implements AppOptionEnum {
+public enum BackwardBranchOptions implements AppOptionEnum {
 
    //LimitBackwardJump(AppValueType.bool),
    BackwardJumpMaxSize(AppValueType.integer),
    StoreNonLoopInstructions(AppValueType.bool);
 
 
-   private WarpBlockOptions(AppValueType type) {
+   private BackwardBranchOptions(AppValueType type) {
       this.type = type;
    }
 
@@ -58,18 +58,18 @@ public enum WarpBlockOptions implements AppOptionEnum {
     * @return
     */
    public static LoopDetector newWarpBlockDetector(File appFile, InstructionDecoder decoder) {
-      AppOptionFile optionFile = AppOptionFile.parseFile(appFile, WarpBlockOptions.class);
+      AppOptionFile optionFile = AppOptionFile.parseFile(appFile, BackwardBranchOptions.class);
 
-      Integer backwardJumpMaxSize = AppUtils.getInteger(optionFile.getMap(), WarpBlockOptions.BackwardJumpMaxSize);
+      Integer backwardJumpMaxSize = AppUtils.getInteger(optionFile.getMap(), BackwardBranchOptions.BackwardJumpMaxSize);
       if(backwardJumpMaxSize == null) {
          return null;
       }
 
       //boolean limitBackwardJump = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.LimitBackwardJump);
 
-      boolean storeSequenceInstructions = AppUtils.getBool(optionFile.getMap(), WarpBlockOptions.StoreNonLoopInstructions);
+      boolean storeSequenceInstructions = AppUtils.getBool(optionFile.getMap(), BackwardBranchOptions.StoreNonLoopInstructions);
 
       //return new WarpBlockDetector(limitBackwardJump, backwardJumpMaxSize, storeSequenceInstructions, decoder);
-      return new WarpBlockDetector(backwardJumpMaxSize, storeSequenceInstructions, decoder);
+      return new BackwardBranchDetector(backwardJumpMaxSize, storeSequenceInstructions, decoder);
    }
 }

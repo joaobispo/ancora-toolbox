@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.WarpBlock;
+package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,10 +34,10 @@ import org.specs.DymaLib.TraceUnit.TraceUnit;
  *
  * @author Joao Bispo
  */
-public class WarpBlockDetector implements LoopDetector {
+public class BackwardBranchDetector implements LoopDetector {
 
 //   public WarpBlockDetector(boolean limitBackwardJump, int backwardJumpMaxSize,
-   public WarpBlockDetector(int backwardJumpMaxSize,
+   public BackwardBranchDetector(int backwardJumpMaxSize,
            boolean storeSequenceInstructions, InstructionDecoder decoder) {
       /*
       this.limitBackwardJump = limitBackwardJump;
@@ -201,7 +201,7 @@ public class WarpBlockDetector implements LoopDetector {
       // Build sequence trace unit
       List<TraceUnit> traceUnit = buildSequenceTraceUnit();
 
-      foundLoops.add(new WarpLoopUnit(traceUnit, traceUnit.get(0).getIdentifier(), currentIterations,
+      foundLoops.add(new BackwardBranchLoopUnit(traceUnit, traceUnit.get(0).getIdentifier(), currentIterations,
               currentTotalInstructions, false, storeSequenceInstructions));
    }
 
@@ -249,7 +249,7 @@ public class WarpBlockDetector implements LoopDetector {
          }
 
          int totalInstructions = currentTotalInstructions - currentInstructions.size();
-         foundLoops.add(new WarpLoopUnit(currentTraceUnits, id, currentIterations,
+         foundLoops.add(new BackwardBranchLoopUnit(currentTraceUnits, id, currentIterations,
                  totalInstructions, true, true));
          //currentTotalInstructions, true, true);
       }

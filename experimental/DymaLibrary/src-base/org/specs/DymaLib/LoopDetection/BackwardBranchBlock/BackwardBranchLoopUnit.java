@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.WarpBlock;
+package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
 
 import java.util.List;
 import java.util.Map;
@@ -28,9 +28,9 @@ import org.suikasoft.SharedLibrary.Processors.RegisterId;
  *
  * @author Joao Bispo
  */
-public class WarpLoopUnit implements CodeSegment {
+public class BackwardBranchLoopUnit implements CodeSegment {
 
-   public WarpLoopUnit(List<TraceUnit> loopUnits, Integer id, int iterations, int totalInstructions, boolean isLoop, boolean allInstructionsStored) {
+   public BackwardBranchLoopUnit(List<TraceUnit> loopUnits, Integer id, int iterations, int totalInstructions, boolean isLoop, boolean allInstructionsStored) {
       this.loopUnits = loopUnits;
       this.id = id;
       this.iterations = iterations;
