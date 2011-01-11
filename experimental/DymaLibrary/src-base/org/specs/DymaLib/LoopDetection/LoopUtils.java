@@ -110,7 +110,7 @@ public class LoopUtils {
          return MegaBlockOptions.newMegaBlockDetector(appFile, decoder);
       }
 
-      if(LoopDetectors.WarpBlock.name().equals(name)) {
+      if(LoopDetectors.BackwardBranchBlock.name().equals(name)) {
          return BackwardBranchOptions.newWarpBlockDetector(appFile, decoder);
       }
 
@@ -124,7 +124,7 @@ public class LoopUtils {
          return MegaBlockOptionsV4.newMegaBlockDetector(appFile, decoder);
       }
 
-      if(LoopDetectors.WarpBlock.name().equals(detectorName)) {
+      if(LoopDetectors.BackwardBranchBlock.name().equals(detectorName)) {
          return BackwardBranchOptionsV4.newWarpBlockDetector(appFile, decoder);
       }
 

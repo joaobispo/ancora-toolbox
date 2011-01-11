@@ -501,7 +501,7 @@ public class BackwardBranchDetector implements LoopDetector {
    }
 
    public String getId() {
-      return LoopDetectors.WarpBlock.name() + backwardJumpMaxSize;
+      return LoopDetectors.BackwardBranchBlock.name() + backwardJumpMaxSize;
    }
 
    /*

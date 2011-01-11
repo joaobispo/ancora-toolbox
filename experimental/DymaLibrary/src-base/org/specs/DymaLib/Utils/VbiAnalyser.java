@@ -17,17 +17,17 @@
 
 package org.specs.DymaLib.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import org.specs.DymaLib.DataStructures.VbiAnalysis;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.StraighLineLoops.GraphBuilder;
+import org.specs.DymaLib.GraphBuilder;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
+import org.suikasoft.SharedLibrary.MiscUtils;
+import org.suikasoft.SharedLibrary.Processors.InstructionName;
 
 /**
  * Extracts information from a list of Very Big Instructions.
@@ -35,39 +35,6 @@ import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
  * @author Joao Bispo
  */
 public class VbiAnalyser {
-/*
-   public VbiAnalyser() {
-      vbiList = new ArrayList<VeryBigInstruction32>();
-   }
-
-   public List<VeryBigInstruction32> getVbiList() {
-      return vbiList;
-   }
-*/
-   
-
-   /**
-    * Adds an instruction to the list of instructions of the analyser.
-    * 
-    * @param vbi
-    */
-   /*
-   public void addVbi(VeryBigInstruction vbi) {
-      vbi
-   }
-    *
-    */
-
-   /**
-    *
-    * @return the total number of instructions added on the analyser.
-    */
-   /*
-   public int getTotalInstructions() {
-      return 0;
-   }
-    *
-    */
 
    /**
     *
@@ -86,26 +53,26 @@ public class VbiAnalyser {
       return counter;
    }
 
-   /*
-   public static int getNumberOfInstructions(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
-      int counter = 0;
-      for(VeryBigInstruction32 vbi : vbis) {
-         if(!instructionNames.contains(vbi.op)) {
-            continue;
-         }
-
-         counter++;
-      }
-      return counter;
-   }
+   /**
+    * Builds an histogram with the quantity of instructions present in the list
+    * of VBIs. The histogram is built taking into account only the instructions
+    * given in the list.
     *
+    * <p>If the list of instruction names is null, the histogram will include all
+    * instructions.
+    *
+    * @param vbis
+    * @param instructionNames
+    * @return
     */
-
    public static Map<String, Integer> getInstructionsHistogram(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
       Map<String, Integer> counterTable = new HashMap<String, Integer>();
       for(VeryBigInstruction32 vbi : vbis) {
-         if(!instructionNames.contains(vbi.op)) {
-            continue;
+         boolean nameListExists = instructionNames != null;
+         if (nameListExists) {
+            if (!instructionNames.contains(vbi.op)) {
+               continue;
+            }
          }
 
          Integer value = counterTable.get(vbi.op);
@@ -121,16 +88,25 @@ public class VbiAnalyser {
       return counterTable;
    }
 
-      public static int getCriticalPathLenght(List<VeryBigInstruction32> vbis, GraphBuilder graphBuilder) {
+   /**
+    * Builds a graph from the list of VBIs and calculates the
+    * Critical Path Lenght of the resulting GraphNode.
+    *
+    * @param vbis
+    * @param graphBuilder
+    * @return
+    */
+   public static int getCriticalPathLenght(List<VeryBigInstruction32> vbis, GraphBuilder graphBuilder) {
 
-         GraphNode rootNode = graphBuilder.buildGraph(vbis);
-         //findCycle(rootNode);
-         //visitLeafs(rootNode);
-         //GraphUtils.printNode(rootNode, "");
-      
-         return GraphUtils.getCriticalPathLenght(rootNode);
-      }
+      GraphNode rootNode = graphBuilder.buildGraph(vbis);
+      //findCycle(rootNode);
+      //visitLeafs(rootNode);
+      //GraphUtils.printNode(rootNode, "");
 
+      return GraphUtils.getCriticalPathLenght(rootNode);
+   }
+
+   /*
    private static void findCycle(GraphNode node) {
       // Check if number of node e less than any of its children
       for(GraphNode child : node.getChildren()) {
@@ -143,20 +119,10 @@ public class VbiAnalyser {
       for(GraphNode child : node.getChildren()) {
          findCycle(child);
       }
-      
-      /*
-      // Check if current node is already in the set
-      if(nodes.contains(node)) {
-         
-         System.exit(1);
-      }
-
-      // Add current node to the set
-      nodes.add(node);
-*/
 
    }
-
+*/
+   /*
    private static void visitLeafs(GraphNode node) {
       int numChildren = node.getChildren().size();
       if(numChildren == 0) {
@@ -170,7 +136,27 @@ public class VbiAnalyser {
          visitLeafs(child);
       }
    }
-
+*/
 
    //private List<VeryBigInstruction32> vbiList;
+
+   public static VbiAnalysis getData(List<VeryBigInstruction32> vbis, 
+           InstructionName instName, GraphBuilder graphBuilder) {
+
+
+      Map<String,Integer> storeHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getStoreInstructions());
+      int numStores = MiscUtils.sumValues(storeHistogram);
+
+      Map<String,Integer> loadHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getLoadInstructions());
+      int numLoads = MiscUtils.sumValues(loadHistogram);
+
+      int mappableInstructions = VbiAnalyser.getMappableInstructions(vbis);
+      int cpl = VbiAnalyser.getCriticalPathLenght(vbis, graphBuilder);
+
+      VbiAnalysis vbiAnalysis = new VbiAnalysis(mappableInstructions, cpl, numLoads, numStores);
+
+      return vbiAnalysis;
+   }
+
+
 }

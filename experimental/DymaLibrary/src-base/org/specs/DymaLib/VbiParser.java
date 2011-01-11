@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.StraighLineLoops;
+package org.specs.DymaLib;
 
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 

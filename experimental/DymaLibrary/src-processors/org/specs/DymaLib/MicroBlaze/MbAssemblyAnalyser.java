@@ -20,15 +20,13 @@ package org.specs.DymaLib.MicroBlaze;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.specs.DymaLib.DataStructures.CodeSegment;
 import org.specs.DymaLib.DataStructures.ConstantRegister;
 import org.specs.DymaLib.DataStructures.LiveOut;
-import org.specs.DymaLib.StraighLineLoops.AssemblyAnalyser;
+import org.specs.DymaLib.AssemblyAnalyser;
 import org.specs.DymaLib.Utils.LivenessAnalyser;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MicroBlazeParser;
 import org.suikasoft.SharedLibrary.MicroBlaze.RegisterName;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
@@ -140,6 +138,24 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
    public Collection<ConstantRegister> getConstantRegisters() {
       return  constantRegisters;
    }
+
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("Constant Registers:\n");
+
+      builder.append(getConstantRegisters());
+      builder.append("\n");
+
+      builder.append("Live Outs:\n");
+      builder.append(getLiveOuts());
+      builder.append("\n");
+
+      return builder.toString();
+   }
+
+
 
    private Collection<LiveOut> liveOuts;
    private Collection<ConstantRegister> constantRegisters;

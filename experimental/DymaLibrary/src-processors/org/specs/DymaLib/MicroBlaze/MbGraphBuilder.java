@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.StraighLineLoops.GraphBuilder;
+import org.specs.DymaLib.GraphBuilder;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 
 /**

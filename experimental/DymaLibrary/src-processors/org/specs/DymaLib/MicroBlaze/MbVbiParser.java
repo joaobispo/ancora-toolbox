@@ -28,11 +28,11 @@ import org.specs.DymaLib.DataStructures.ConstantRegister;
 import org.specs.DymaLib.DataStructures.LiveOut;
 import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.StraighLineLoops.VbiParser;
+import org.specs.DymaLib.VbiParser;
 import org.suikasoft.SharedLibrary.BitUtils;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
-import org.suikasoft.SharedLibrary.MicroBlaze.InstructionName;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
 import org.suikasoft.SharedLibrary.MicroBlaze.RegisterName;
@@ -70,12 +70,21 @@ public class MbVbiParser implements VbiParser {
     */
    public VeryBigInstruction32 parseInstruction(MbInstruction instruction) {
       VeryBigInstruction32 vbi32;
+
+      vbi32 = handleSpecialCases(instruction);
+      if(vbi32 == null) {
+         vbi32 = handleNormalCase(instruction);
+      }
+
+      /*
       if(handleSpecialCases(instruction)) {
          //return null;
          vbi32 = null;
       } else {
          vbi32 = handleNormalCase(instruction);
       }
+       * 
+       */
       
       // Increment instruction counter
       counter++;
@@ -143,6 +152,18 @@ public class MbVbiParser implements VbiParser {
       if(isInput != processInputs) {
          return null;
       }
+
+      // Check special case R0
+      if(mbOperand.isR0()) {
+         mbOperand = MbOperand.transformR0InImm0(mbOperand);
+      }
+      /*
+      VbiOperand r0Operand = checkR0(mbOperand, isInput);
+      if(r0Operand != null) {
+         return r0Operand;
+      }
+       * 
+       */
 
       // Check if register and output
       if(!processInputs) {
@@ -317,7 +338,8 @@ public class MbVbiParser implements VbiParser {
    private boolean isMappable(MbInstruction instruction) {
       // Check for OR 0, 0, 0 (at this point, R0 should have been converted to 
       // immediate 0.
-      boolean isMbNop = checkMbNop(instruction);
+      //boolean isMbNop = checkMbNop(instruction);
+      boolean isMbNop = instruction.isMbNop();
       // Is Nop? Not mappable
       if(isMbNop) {
          return false;
@@ -326,52 +348,37 @@ public class MbVbiParser implements VbiParser {
       return true;
    }
 
-   /**
-    * 
-    * @param instruction
-    * @return true if it is a MicroBlaze nop
-    */
-    private boolean checkMbNop(MbInstruction instruction) {
-      if(instruction.getInstructionName() != InstructionName.or) {
-         return false;
+
+   //private boolean handleSpecialCases(MbInstruction mbInst) {
+   private VeryBigInstruction32 handleSpecialCases(MbInstruction mbInst) {
+      if(mbInst.getInstructionName() == MbInstructionName.imm) {
+         return buildImmInstruction(mbInst);
       }
 
-         
-       for (int i = 0; i < instruction.getOperands().size(); i++) {
-          MbOperand operand = instruction.getOperands().get(i);
-
-          // If it is not constant, is not nop
-          if (!MbOperand.isConstant(operand.getType())) {
-             return false;
-          }
-
-          // If value is not 0, is not nop
-          if (operand.getValue() != 0) {
-             return false;
-          }
-       }
-      
-
-      // Every operand is constant and 0, and operation is OR
-      // It is a nop
-      return true;
+      //return false;
+      return null;
    }
 
-   private boolean handleSpecialCases(MbInstruction mbInst) {
-      if(mbInst.getInstructionName() == InstructionName.imm) {
-         // Check current Imm
-         if(immValue != null) {
-            LoggingUtils.getLogger().
-                    warning("Overwritting IMM value '"+immValue+"'");
-         }
-
-         // Store value
-         immValue = mbInst.getOperands().get(0).getValue();
-         immValueCounter = counter;
-         return true;
+   private VeryBigInstruction32 buildImmInstruction(MbInstruction mbInst) {
+      // Check current Imm
+      if (immValue != null) {
+         LoggingUtils.getLogger().
+                 warning("Overwritting IMM value '" + immValue + "'");
       }
 
-      return false;
+
+
+
+      // Store value
+      immValue = mbInst.getOperands().get(0).getValue();
+      immValueCounter = counter;
+      //return true;
+
+      int address = mbInst.getAddress();
+      String op = mbInst.getInstructionName().getName();
+
+      return new VeryBigInstruction32(address, op, new ArrayList<VbiOperand>(),
+              new ArrayList<VbiOperand>(), false);
    }
 
       //private Map<String, Integer> buildConstRegMap(Collection<ConstantRegister> constantRegisters) {
@@ -411,6 +418,29 @@ public class MbVbiParser implements VbiParser {
 
    private Integer immValue;
    private Integer immValueCounter;
+
+   /*
+   private VbiOperand checkR0(MbOperand mbOperand, boolean isInput) {
+      boolean isRegister = mbOperand.getType() == MbOperand.Type.register;
+      boolean isR0 = isRegister && mbOperand.getValue() == 0;
+      if(!isR0) {
+         return null;
+      }
+
+      // Transform R0 into immediate 0
+      String id = 
+      Integer value = 0;
+      boolean isRegister = false;
+      boolean isConstant = true;
+      boolean isLiveIn = false;
+      boolean isLiveOut = false;
+      boolean isAuxiliarOperand = false;
+
+      VbiOperand operand = new VbiOperand(id, value, isInput, isRegister, isConstant,
+              isLiveIn, isLiveOut, isAuxiliarOperand);
+   }
+*/
+
 
 
 
