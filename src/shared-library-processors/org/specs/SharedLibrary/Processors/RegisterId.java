@@ -18,7 +18,9 @@
 package org.specs.SharedLibrary.Processors;
 
 /**
- * Identifies registers in the DTool simulator.
+ * Identifies the registers of a specific processor.
+ *
+ * <p>To be implemented by enum classes.
  *
  * @author Joao Bispo
  */

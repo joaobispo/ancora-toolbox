@@ -781,6 +781,7 @@ public class IoUtils {
       try {
          FileOutputStream streamWriter = new FileOutputStream(file);
          streamWriter.write(bytes);
+         System.out.println("File written ("+file+").");
       } catch (IOException ex) {
          LoggingUtils.getLogger().warning(ex.toString());
          return false;
