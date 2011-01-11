@@ -17,6 +17,7 @@
 
 package org.specs.LoopOptimization;
 
+import org.suikasoft.Jani.SimpleGui;
 import org.suikasoft.SharedLibrary.ProcessUtils;
 
 /**
@@ -30,7 +31,11 @@ public class Launcher {
      */
     public static void main(String[] args) {
        ProcessUtils.programStandardInit();
-       System.out.println("Hello");
+
+       LoopOptimizationApplication app = new LoopOptimizationApplication();
+       SimpleGui simpleGui = new SimpleGui(app);
+       simpleGui.setTitle("Straigh-Line Loop Optimizations v0.1");
+       simpleGui.execute();
     }
 
 }
