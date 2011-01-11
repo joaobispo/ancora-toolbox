@@ -15,28 +15,18 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.StraighLineLoops;
-
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
+package org.specs.DymaLib.Utils;
 
 /**
- * Parses strings of assembly instructions into Very Big Instructions and forth.
- *
+ * Utility methods related to liveness analysis.
+ * 
  * @author Joao Bispo
  */
-public interface VbiParser {
+public class LivenessUtils {
 
-   /**
-    * Converts an assembly instruction into a very big instruction.
-    * 
-    * @param instruction
-    * @return
-    */
-   VeryBigInstruction32 parseInstruction(Object instruction);
-   /**
-    * Converts a very big instruction back into the format of the original instruction.
-    * @param instruction
-    * @return
-    */
-   //String parseVbi(VeryBigInstruction32 instruction);
+   /*
+   public static void getLivenessAnalysis(List<Integer> addresses, List<String> instructions) {
+
+   }
+   */
 }

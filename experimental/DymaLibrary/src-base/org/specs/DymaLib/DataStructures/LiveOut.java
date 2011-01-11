@@ -30,6 +30,11 @@ public class LiveOut implements Serializable {
       this.instructionNumber = instructionNumber;
    }
 
+   @Override
+   public String toString() {
+      return id+"("+instructionNumber+")";
+   }
+
    
 
    public final String id;

@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
  * Represents a segment of code, which can loop overitself or not.
@@ -45,10 +46,12 @@ public interface CodeSegment extends Serializable {
 
    boolean areAllInstructionsStored();
 
-   Map<RegisterId,Integer> getRegisterValues();
+   //Map<RegisterId,Integer> getRegisterValues();
+   RegisterTable getRegisterValues();
 
-   void setRegisterValues(Map<RegisterId,Integer> registerValues);
+   //void setRegisterValues(Map<RegisterId,Integer> registerValues);
+   void setRegisterValues(RegisterTable registerValues);
 
-   final long serialVersionUID = 1;
+   //final long serialVersionUID = 1;
 
 }

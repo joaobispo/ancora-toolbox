@@ -25,6 +25,7 @@ import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.DataStructures.CodeSegment;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
  * Applies a LoopDetector to a TraceReader and processes the code according to
@@ -81,10 +82,11 @@ public class SegmentProcessor {
          int address = traceReader.getAddress();
          loopDetector.step(address, instruction);
 
-         List<CodeSegment> loops = loopDetector.getAndClearUnits();
-         loopInstCount += processLoops(loops);
+         List<CodeSegment> loops = getLoops(loopDetector, traceReader);
+         //List<CodeSegment> loops = loopDetector.getAndClearUnits();
+         //addRegisterValuesToLoop(loops, traceReader);
 
-         addRegisterValuesToLoop(loops, traceReader);
+         loopInstCount += processLoops(loops);
 
          // Check if work should be interrupted
          if (Thread.currentThread().isInterrupted()) {
@@ -93,7 +95,10 @@ public class SegmentProcessor {
       }
 
       loopDetector.close();
-      List<CodeSegment> loops = loopDetector.getAndClearUnits();
+      List<CodeSegment> loops = getLoops(loopDetector, traceReader);
+      //loopDetector.getAndClearUnits();
+      //addRegisterValuesToLoop(loops, traceReader);
+
       loopInstCount += processLoops(loops);
 
       // Test #instructions
@@ -168,7 +173,8 @@ public class SegmentProcessor {
       }
 
       // Get register values
-       Map<RegisterId,Integer> registerValues = traceReader.getRegisters();
+       //Map<RegisterId,Integer> registerValues = traceReader.getRegisters();
+       RegisterTable registerValues = traceReader.getRegisters();
        if(registerValues == null) {
           LoggingUtils.getLogger().
                   warning("Implementation of TraceReader '"+traceReader.getClass()+
@@ -176,7 +182,21 @@ public class SegmentProcessor {
           return;
        }
 
-       
+       // There should be only one element in the list at this point,
+       // add the values of the registers.
+       //System.out.println("Register Values Prime:");
+       //System.out.println(registerValues);
+       //System.out.println("Loop Before:"+loops.get(0).getRegisterValues());
+       loops.get(0).setRegisterValues(registerValues);
+       //System.out.println("Loop After:"+loops.get(0).getRegisterValues());
+     
+   }
+
+   private List<CodeSegment> getLoops(LoopDetector loopDetector, TraceReader traceReader) {
+      List<CodeSegment> loops = loopDetector.getAndClearUnits();
+      addRegisterValuesToLoop(loops, traceReader);
+
+      return loops;
    }
 
 

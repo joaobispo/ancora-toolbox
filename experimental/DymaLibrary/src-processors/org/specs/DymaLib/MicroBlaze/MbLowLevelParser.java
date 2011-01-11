@@ -236,22 +236,15 @@ public class MbLowLevelParser implements LowLevelParser{
 //   private Carry[] buildCarries(MbInstruction mbInst) {
    private List<Operand> buildCarries(MbInstruction mbInst) {
       List<Operand> carries = new ArrayList<Operand>();
-      //Carry[] carries = new Carry[2];
 
       // Carry In
-      //carries[LowLevelInstruction.CARRY_IN_INDEX] = new Carry();
       if(CarryProperties.usesCarryIn(mbInst.getInstructionName())) {
          carries.add(newCarry(Operand.FLOW_INPUT));
-         //carries.add(LliUtils.newCarry(Operand.FLOW_INPUT));
-         //carries[LowLevelInstruction.CARRY_IN_INDEX].enabled = LowLevelInstruction.ENABLED;
       }
 
       // Carry Out
-      //carries[LowLevelInstruction.CARRY_OUT_INDEX] = new Carry();
       if(CarryProperties.usesCarryOut(mbInst.getInstructionName())) {
          carries.add(newCarry(Operand.FLOW_OUTPUT));
-         //carries.add(LliUtils.newCarry(Operand.FLOW_OUTPUT));
-         //carries[LowLevelInstruction.CARRY_OUT_INDEX].enabled = LowLevelInstruction.ENABLED;
       }
       
       return carries;

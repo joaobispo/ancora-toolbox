@@ -19,6 +19,7 @@ package org.specs.DymaLib;
 
 import java.util.Map;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
  * Represents a trace.
@@ -53,5 +54,6 @@ public interface TraceReader {
     *
     * @return null if not implemented.
     */
-   Map<RegisterId, Integer> getRegisters();
+   //Map<RegisterId, Integer> getRegisters();
+   RegisterTable getRegisters();
 }

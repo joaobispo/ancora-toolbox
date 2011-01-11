@@ -17,26 +17,15 @@
 
 package org.specs.DymaLib.StraighLineLoops;
 
+import java.util.List;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
+import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 
 /**
- * Parses strings of assembly instructions into Very Big Instructions and forth.
  *
  * @author Joao Bispo
  */
-public interface VbiParser {
+public interface GraphBuilder {
 
-   /**
-    * Converts an assembly instruction into a very big instruction.
-    * 
-    * @param instruction
-    * @return
-    */
-   VeryBigInstruction32 parseInstruction(Object instruction);
-   /**
-    * Converts a very big instruction back into the format of the original instruction.
-    * @param instruction
-    * @return
-    */
-   //String parseVbi(VeryBigInstruction32 instruction);
+   GraphNode buildGraph(List<VeryBigInstruction32> vbis);
 }

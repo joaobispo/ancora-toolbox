@@ -30,7 +30,23 @@ public class ConstantRegister implements Serializable {
       this.value = value;
    }
 
-   
+   @Override
+   public String toString() {
+      return id+"("+value+")";
+   }
+
+   /*
+   @Override
+   public boolean equals(Object aThat) {
+      return id.equals(aThat);
+   }
+
+   @Override
+   public int hashCode() {
+      return id.hashCode();
+   }
+    * 
+    */
 
    public final String id;
    public final int value;

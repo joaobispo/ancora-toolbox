@@ -23,6 +23,7 @@ import org.specs.DymaLib.DataStructures.CodeSegment;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
  *
@@ -37,6 +38,7 @@ public class BackwardBranchLoopUnit implements CodeSegment {
       this.totalInstructions = totalInstructions;
       this.isLoop = isLoop;
       this.allInstructionsStored = allInstructionsStored;
+      registerValues = null;
    }
 
    
@@ -243,11 +245,13 @@ public class BackwardBranchLoopUnit implements CodeSegment {
     *
     */
 
-   public Map<RegisterId, Integer> getRegisterValues() {
+   //public Map<RegisterId, Integer> getRegisterValues() {
+   public RegisterTable getRegisterValues() {
       return registerValues;
    }
 
-   public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+   //public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+   public void setRegisterValues(RegisterTable registerValues) {
       this.registerValues = registerValues;
    }
 
@@ -258,7 +262,10 @@ public class BackwardBranchLoopUnit implements CodeSegment {
    private int totalInstructions;
    private boolean isLoop;
    private boolean allInstructionsStored;
-   private Map<RegisterId, Integer> registerValues;
+//   private Map<RegisterId, Integer> registerValues;
+   private RegisterTable registerValues;
+
+   private static final long serialVersionUID = 1;
 
    //private Set<Integer> currentIds;
 

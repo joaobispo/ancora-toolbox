@@ -25,8 +25,10 @@ import java.util.List;
  */
 public class VeryBigInstruction32 {
 
-   public VeryBigInstruction32(int address, String op, List<Operand> originalOperands,
-           List<Operand> supportOperands, boolean isMappable) {
+   //public VeryBigInstruction32(int address, String op, List<Operand> originalOperands,
+   //        List<Operand> supportOperands, boolean isMappable) {
+   public VeryBigInstruction32(int address, String op, List<VbiOperand> originalOperands,
+           List<VbiOperand> supportOperands, boolean isMappable) {
       this.address = address;
       this.op = op;
       this.originalOperands = originalOperands;
@@ -34,33 +36,71 @@ public class VeryBigInstruction32 {
       this.isMappable = isMappable;
    }
 
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      if (isMappable) {
+         builder.append("M");
+      } else {
+         builder.append("!M");
+      }
+
+
+      builder.append("(");
+      builder.append(address);
+      builder.append(")");
+      builder.append(op);
+      builder.append("|");
+
+      for(VbiOperand vbiOp : originalOperands) {
+         builder.append(vbiOp);
+         builder.append("|");
+      }
+
+      for(VbiOperand vbiOp : supportOperands) {
+         builder.append(vbiOp);
+         builder.append("|");
+      }
+
+      return builder.toString();
+   }
+
 
 
    public Integer address;
    public String op;
-   public List<Operand> originalOperands;
-   public List<Operand> supportOperands;
+   //public List<Operand> originalOperands;
+   //public List<Operand> supportOperands;
+   public List<VbiOperand> originalOperands;
+   public List<VbiOperand> supportOperands;
    // FLAGS
    public boolean isMappable;
-
+/*
    public class Operand {
 
-      public Operand(String id, Integer value, boolean isInput, boolean isConstant,
-              boolean isLiveIn, boolean isOriginalOperand) {
+      public Operand(String id, Integer value, boolean isInput, boolean isRegister, boolean isConstant,
+              boolean isLiveIn, boolean isLiveOut, boolean isAuxiliarOperand) {
          this.id = id;
          this.value = value;
          this.isInput = isInput;
+         this.isRegister = isRegister;
          this.isConstant = isConstant;
          this.isLiveIn = isLiveIn;
-         this.isOriginalOperand = isOriginalOperand;
+         this.isLiveOut = isLiveOut;
+         this.isAuxiliarOperand = isAuxiliarOperand;
       }
 
 
       public String id;
       public Integer value;
       public boolean isInput;
+      public boolean isRegister;
       public boolean isConstant;
       public boolean isLiveIn;
-      public boolean isOriginalOperand;
+      public boolean isLiveOut;
+      public boolean isAuxiliarOperand;
    }
+ *
+ */
 }

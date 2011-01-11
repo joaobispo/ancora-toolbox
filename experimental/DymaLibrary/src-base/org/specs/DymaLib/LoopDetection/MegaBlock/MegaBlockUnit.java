@@ -27,6 +27,7 @@ import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
  * Represents a Loop. Can also represent a sequence of instructions.
@@ -50,6 +51,7 @@ public class MegaBlockUnit implements CodeSegment {
       instructions.add(new TraceUnit(new ArrayList<String>(), new ArrayList<Integer>(), 0));
       verification = null;
       id = null;
+      registerValues = null;
    }
 
    /**
@@ -372,11 +374,13 @@ public class MegaBlockUnit implements CodeSegment {
       }
    }
 
-   public Map<RegisterId, Integer> getRegisterValues() {
+//   public Map<RegisterId, Integer> getRegisterValues() {
+   public RegisterTable getRegisterValues() {
       return registerValues;
    }
 
-   public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+   //public void setRegisterValues(Map<RegisterId, Integer> registerValues) {
+   public void setRegisterValues(RegisterTable registerValues) {
       this.registerValues = registerValues;
    }
 
@@ -388,11 +392,10 @@ public class MegaBlockUnit implements CodeSegment {
    private List<TraceUnit> instructions;
    private List<TraceUnit> verification;
    private Integer id;
-   private Map<RegisterId, Integer> registerValues;
+   //private Map<RegisterId, Integer> registerValues;
+   private RegisterTable registerValues;
 
-
-
-
+   private static final long serialVersionUID = 1;
 
 
 
