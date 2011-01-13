@@ -31,7 +31,9 @@ import org.suikasoft.SharedLibrary.EnumUtils;
 public enum LoopOptimizationOptions implements EnumKey, MultipleChoiceEnum {
 
    InputPath(OptionType.string),
-   PathType(OptionType.multipleChoice);
+   PathType(OptionType.multipleChoice),
+   OutputFolder(OptionType.string),
+   PropertiesFileWithInstructionCycles(OptionType.string);
 
    private LoopOptimizationOptions(OptionType optionType) {
       this.optionType = optionType;

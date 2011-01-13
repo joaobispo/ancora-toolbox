@@ -17,7 +17,10 @@
 
 package org.specs.LoopOptimization;
 
+import java.io.File;
 import org.suikasoft.Jani.SimpleGui;
+import org.suikasoft.SharedLibrary.IoUtils;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 import org.suikasoft.SharedLibrary.ProcessUtils;
 
 /**
@@ -36,6 +39,20 @@ public class Launcher {
        SimpleGui simpleGui = new SimpleGui(app);
        simpleGui.setTitle("Straigh-Line Loop Optimizations v0.1");
        simpleGui.execute();
+  
+
+       //generateMbInstructionProperties();
     }
+
+   private static void generateMbInstructionProperties() {
+      StringBuilder builder = new StringBuilder();
+
+      for(MbInstructionName instName : MbInstructionName.values()) {
+         builder.append(instName.getName());
+         builder.append(" = 1\n");
+      }
+
+      IoUtils.write(new File("C:/microblaze-cycles.properties"), builder.toString());
+   }
 
 }
