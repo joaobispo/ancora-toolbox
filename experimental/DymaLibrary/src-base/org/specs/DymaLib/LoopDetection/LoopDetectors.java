@@ -17,7 +17,7 @@
 
 package org.specs.DymaLib.LoopDetection;
 
-import org.specs.DymaLib.LoopDetection.BackwardBranchBlock.BackwardBranchOptions;
+import org.specs.DymaLib.LoopDetection.WarpBlock.BackwardBranchOptions;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnumSetup;

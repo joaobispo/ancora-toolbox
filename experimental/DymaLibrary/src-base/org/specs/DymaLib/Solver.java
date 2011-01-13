@@ -15,13 +15,23 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopOptimization;
+package org.specs.DymaLib;
+
+import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 
 /**
- * Methods related to extracting characteristics of CodeSegments.
+ * Solves VBIs, when the inputs are literals.
  *
  * @author Joao Bispo
  */
-public class LoopCharacteristics {
+public interface Solver {
 
+   /**
+    * If the inputs of the VBI are literals, solves the instruction by replacing
+    * its outputs for constant equivalents.
+    *
+    * @param vbi
+    * @return true if the operation could be solved. False otherwise.
+    */
+   public boolean solve(VeryBigInstruction32 vbi);
 }

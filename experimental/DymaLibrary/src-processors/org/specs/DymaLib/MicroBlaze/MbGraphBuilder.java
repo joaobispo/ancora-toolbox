@@ -27,6 +27,9 @@ import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 import org.specs.DymaLib.GraphBuilder;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
+import org.suikasoft.SharedLibrary.LoggingUtils;
+import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 
 /**
  *
@@ -35,7 +38,12 @@ import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 public class MbGraphBuilder implements GraphBuilder {
 
    public MbGraphBuilder() {
+      this(null);
+   }
+
+   public MbGraphBuilder(Map<String, Integer> nodeWeights) {
       this.registerWrites = new HashMap<String, GraphNode>();
+      this.nodeWeights = nodeWeights;
       this.lastBranch = null;
       this.lastStore = null;
       this.rootNode = null;
@@ -56,14 +64,21 @@ public class MbGraphBuilder implements GraphBuilder {
          GraphNode newNode = new GraphNode(vbi.op, counter);
          List<GraphNode> parentNodes = new ArrayList<GraphNode>();
          List<Integer> parentWeights = new ArrayList<Integer>();
-         getParents(newNode, vbi, parentNodes, parentWeights);
+         List<String> parentProps = new ArrayList<String>();
+         getParents(newNode, vbi, parentNodes, parentWeights, parentProps);
 
          // The there are no parents for this node, connect to the Root Node
          if (parentNodes.isEmpty()) {
-            rootNode.addChild(newNode, ROOT_NODE_WEIGHT);
+            //rootNode.addChild(newNode, ROOT_NODE_WEIGHT);
+            rootNode.addUniqueChild(newNode, ROOT_NODE_WEIGHT);
          } else {
             for(int i=0; i<parentNodes.size(); i++) {
-               parentNodes.get(i).addChild(newNode, parentWeights.get(i));
+               String props = Integer.toString(parentWeights.get(i));
+               if(parentProps.get(i) != null) {
+                  props = props + "(" + parentProps.get(i) + ")";
+               }
+
+               parentNodes.get(i).addUniqueChild(newNode, parentWeights.get(i), props);
             }
          }
          
@@ -81,19 +96,24 @@ public class MbGraphBuilder implements GraphBuilder {
    }
 
 
-   private void getParents(GraphNode newNode, VeryBigInstruction32 vbi, List<GraphNode> parentNodes, List<Integer> parentWeights) {
+   private void getParents(GraphNode newNode, VeryBigInstruction32 vbi, 
+           List<GraphNode> parentNodes, List<Integer> parentWeights, List<String> parentProps) {
       // Get parents related to inputs
-      getInputParents(vbi, parentNodes, parentWeights);
+      //getInputParents(vbi, parentNodes, parentWeights);
+      getInputParents(vbi, parentNodes, parentWeights, parentProps);
 
       // Update outputs
       updateOutputs(newNode, vbi);
 
       // Get additional parents due to special cases
+      addSpecialCases(newNode, vbi, parentNodes, parentWeights, parentProps);
 
       //throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   private void getInputParents(VeryBigInstruction32 vbi, List<GraphNode> parentNodes, List<Integer> parentWeights) {
+   //private void getInputParents(VeryBigInstruction32 vbi, List<GraphNode> parentNodes, List<Integer> parentWeights) {
+   private void getInputParents(VeryBigInstruction32 vbi, List<GraphNode> parentNodes,
+           List<Integer> parentWeights, List<String> parentProps) {
       
       List<String> regIds = getRegIds(vbi, true);
 
@@ -105,8 +125,12 @@ public class MbGraphBuilder implements GraphBuilder {
             continue;
          }
 
+         int weight = getWeigth(parent.getId());
+
          parentNodes.add(parent);
-         parentWeights.add(DEFAULT_INSTRUCTION_WEIGHT);
+         //parentWeights.add(DEFAULT_INSTRUCTION_WEIGHT);
+         parentWeights.add(weight);
+         parentProps.add(null);
       }
 
    }
@@ -137,7 +161,12 @@ public class MbGraphBuilder implements GraphBuilder {
       }
 
       for (VbiOperand vbiOp : vbi.supportOperands) {
-         if (!vbiOp.isInput) {
+         //if (!vbiOp.isInput) {
+         if (vbiOp.isInput != getInputs) {
+            continue;
+         }
+
+         if(vbiOp.isConstant) {
             continue;
          }
 
@@ -156,7 +185,9 @@ public class MbGraphBuilder implements GraphBuilder {
       
       int numChild = node.getChildren().size();
       if(numChild == 0) {
-         node.addChild(endNode, DEFAULT_INSTRUCTION_WEIGHT);
+         int weigth = getWeigth(node.getId());
+         //node.addUniqueChild(endNode, DEFAULT_INSTRUCTION_WEIGHT, Integer.toString(DEFAULT_INSTRUCTION_WEIGHT));
+         node.addUniqueChild(endNode, weigth, Integer.toString(weigth));
          return;
       }
       
@@ -170,7 +201,130 @@ public class MbGraphBuilder implements GraphBuilder {
       //System.err.println("Not implemented yet");
    }
 
+   //private void addSpecialCases(GraphNode newNode, VeryBigInstruction32 vbi, List<GraphNode> parentNodes, List<Integer> parentWeights) {
+   private void addSpecialCases(GraphNode newNode, VeryBigInstruction32 vbi, 
+           List<GraphNode> parentNodes, List<Integer> parentWeights, List<String> parentProps) {
+      // Convert to MbInstructionName
+      MbInstructionName instructionName = MbInstructionName.valueOf(vbi.op);
+
+      // Case Store
+      if(specialCaseStore(instructionName, parentNodes, parentWeights, newNode,
+              parentProps)) {
+         return;
+      }
+
+      // Case Branch
+      if(specialCaseBranch(instructionName, parentNodes, parentWeights, newNode,
+              parentProps)) {
+         return;
+      }
+
+      // Case Load
+      if(specialCaseLoad(instructionName, parentNodes, parentWeights, parentProps)) {
+         return;
+      }
+ 
+ 
+   }
+
+   private boolean specialCaseStore(MbInstructionName mbInstructionName,
+           List<GraphNode> parentNodes, List<Integer> parentWeights, GraphNode newNode,
+           List<String> parentProps) {
+
+      if (!InstructionProperties.STORE_INSTRUCTIONS.contains(mbInstructionName)) {
+         return false;
+      }
+
+      // Check last store
+      if (lastStore != null) {
+         int weigth = getWeigth(lastStore.getId());
+
+         parentNodes.add(lastStore);
+         //parentWeights.add(DEFAULT_INSTRUCTION_WEIGHT);
+         parentWeights.add(weigth);
+         parentProps.add(PROP_STORE);
+      }
+
+      // Check last branch
+      if (lastBranch != null) {
+         int weigth = getWeigth(lastBranch.getId());
+
+         parentNodes.add(lastBranch);
+         //parentWeights.add(DEFAULT_INSTRUCTION_WEIGHT);
+         parentWeights.add(weigth);
+         parentProps.add(PROP_BRANCH);
+      }
+
+      // Update last store
+      lastStore = newNode;
+      return true;
+   }
+
+
+   private boolean specialCaseBranch(MbInstructionName mbInstructionName,
+           List<GraphNode> parentNodes, List<Integer> parentWeights, GraphNode newNode,
+           List<String> parentProps) {
+
+      if (!InstructionProperties.JUMP_INSTRUCTIONS.contains(mbInstructionName)) {
+         return false;
+      }
+
+      // Check last store
+      if (lastStore != null) {
+         parentNodes.add(lastStore);
+         parentWeights.add(ZERO_INSTRUCTION_WEIGHT);
+         parentProps.add(PROP_STORE);
+      }
+
+      // Check last branch
+      if (lastBranch != null) {
+         parentNodes.add(lastBranch);
+         parentWeights.add(ZERO_INSTRUCTION_WEIGHT);
+         parentProps.add(PROP_BRANCH);
+      }
+
+      // Update last branch
+      lastBranch = newNode;
+      return true;
+   }
+
+   private boolean specialCaseLoad(MbInstructionName mbInstructionName,
+           List<GraphNode> parentNodes, List<Integer> parentWeights, List<String> parentProps) {
+
+      if (!InstructionProperties.LOAD_INSTRUCTIONS.contains(mbInstructionName)) {
+         return false;
+      }
+
+      // Check last store
+      if (lastStore != null) {
+         int weigth = getWeigth(lastStore.getId());
+
+         parentNodes.add(lastStore);
+         //parentWeights.add(DEFAULT_INSTRUCTION_WEIGHT);
+         parentWeights.add(weigth);
+         parentProps.add(PROP_STORE);
+      }
+      
+      return true;
+   }
+
+   private int getWeigth(String id) {
+      if(nodeWeights == null) {
+         return DEFAULT_INSTRUCTION_WEIGHT;
+      }
+
+      Integer weight = nodeWeights.get(id);
+      if(weight == null) {
+         LoggingUtils.getLogger().
+                 warning("Could not find weigth for id '"+id+"'.");
+         return DEFAULT_INSTRUCTION_WEIGHT;
+      }
+
+      return weight;
+   }
+
    private Map<String, GraphNode> registerWrites;
+   private Map<String, Integer> nodeWeights;
    private GraphNode lastBranch;
    private GraphNode lastStore;
    private GraphNode rootNode;
@@ -179,6 +333,17 @@ public class MbGraphBuilder implements GraphBuilder {
    public static final String END_NODE_ID = "endNode";
    public static final Integer ROOT_NODE_WEIGHT = 0;
    public static final Integer DEFAULT_INSTRUCTION_WEIGHT = 1;
+   public static final Integer ZERO_INSTRUCTION_WEIGHT = 0;
+   
+   public static final String PROP_STORE = "store";
+   public static final String PROP_BRANCH = "branch";
+
+
+
+
+
+
+   }
 
 
 
@@ -188,4 +353,6 @@ public class MbGraphBuilder implements GraphBuilder {
 
 
 
-}
+
+
+

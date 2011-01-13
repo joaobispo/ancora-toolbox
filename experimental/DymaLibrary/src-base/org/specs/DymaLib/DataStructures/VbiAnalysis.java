@@ -30,6 +30,33 @@ public class VbiAnalysis {
       this.storeInstructions = storeInstructions;
    }
 
+   public String diff(VbiAnalysis previousAnalysis) {
+      StringBuilder builder = new StringBuilder();
+
+      int mappableDiff =  previousAnalysis.mappableInstructions - mappableInstructions;
+      if(mappableDiff != 0) {
+         double ratio = ((double)mappableInstructions /
+                 (double)previousAnalysis.mappableInstructions) * 100;
+         builder.append("Mappable Instructions Diff:"+mappableDiff+" ("+ratio+"%)\n");
+      }
+
+      int cplDiff =  previousAnalysis.criticalPathLenght - criticalPathLenght;
+      if(cplDiff != 0) {
+         double ratio = ((double)criticalPathLenght /
+                 (double)previousAnalysis.criticalPathLenght) * 100;
+         builder.append("Critical Path Lenght Diff :"+cplDiff+" ("+ratio+"%)\n");
+      }
+
+      return builder.toString();
+   }
+
+   /*
+   public static String mappableInstructions(int mappableInstructions) {
+      return "#Mappable Instructions  :"+mappableInstructions;
+   }
+    * 
+    */
+
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();

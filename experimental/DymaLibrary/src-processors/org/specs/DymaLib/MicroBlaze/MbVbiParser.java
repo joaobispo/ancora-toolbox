@@ -35,7 +35,7 @@ import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
-import org.suikasoft.SharedLibrary.MicroBlaze.RegisterName;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 
 /**
  *
@@ -101,8 +101,9 @@ public class MbVbiParser implements VbiParser {
 
       // FLAGS
       boolean isMappable = isMappable(instruction);
+      boolean hasSideEffects = instruction.hasSideEffects();
       VeryBigInstruction32 vbi32 = new VeryBigInstruction32(address, op,
-              originalOperands, supportOperands, isMappable);
+              originalOperands, supportOperands, isMappable, hasSideEffects);
 
       return vbi32;
    }
@@ -306,7 +307,7 @@ public class MbVbiParser implements VbiParser {
 
 
    private VbiOperand buildCarry(boolean carryIn) {
-      String id = RegisterName.getCarryFlagName();
+      String id = MbRegisterId.getCarryFlagName();
 
       Integer value = getOperandValue(id, MbOperand.Type.register, null);
       boolean isInput = carryIn;
@@ -369,16 +370,29 @@ public class MbVbiParser implements VbiParser {
 
 
 
-      // Store value
-      immValue = mbInst.getOperands().get(0).getValue();
-      immValueCounter = counter;
+
       //return true;
 
       int address = mbInst.getAddress();
       String op = mbInst.getInstructionName().getName();
+      List<VbiOperand> originalOperands = getOriginalOperands(mbInst);
 
-      return new VeryBigInstruction32(address, op, new ArrayList<VbiOperand>(),
-              new ArrayList<VbiOperand>(), false);
+      boolean isMappable = false;
+      boolean hasSideEffects = mbInst.hasSideEffects();
+
+      VeryBigInstruction32 vbi32 = new VeryBigInstruction32(address, op, originalOperands,
+              new ArrayList<VbiOperand>(), isMappable, hasSideEffects);
+
+      // After instruction is made, update status
+
+      // Store value
+      immValue = mbInst.getOperands().get(0).getValue();
+      immValueCounter = counter;
+      
+//      return new VeryBigInstruction32(address, op, new ArrayList<VbiOperand>(),
+//      return new VeryBigInstruction32(address, op, originalOperands,
+//              new ArrayList<VbiOperand>(), false);
+      return vbi32;
    }
 
       //private Map<String, Integer> buildConstRegMap(Collection<ConstantRegister> constantRegisters) {
@@ -418,6 +432,8 @@ public class MbVbiParser implements VbiParser {
 
    private Integer immValue;
    private Integer immValueCounter;
+
+
 
    /*
    private VbiOperand checkR0(MbOperand mbOperand, boolean isInput) {

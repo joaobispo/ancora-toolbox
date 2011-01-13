@@ -39,8 +39,10 @@ public interface LoopDetector {
     * 
     * @param address
     * @param instruction
+    * @return true if a pattern started
     */
    void step(int address, String instruction);
+//   boolean step(int address, String instruction);
 
    /**
     *

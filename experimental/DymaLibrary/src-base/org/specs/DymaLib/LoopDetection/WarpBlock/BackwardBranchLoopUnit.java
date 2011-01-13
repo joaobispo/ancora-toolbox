@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
+package org.specs.DymaLib.LoopDetection.WarpBlock;
 
 import java.util.List;
 import java.util.Map;

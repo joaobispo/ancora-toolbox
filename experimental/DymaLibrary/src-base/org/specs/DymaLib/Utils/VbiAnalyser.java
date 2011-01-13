@@ -17,15 +17,17 @@
 
 package org.specs.DymaLib.Utils;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.specs.DymaLib.DataStructures.VbiAnalysis;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.GraphBuilder;
+import org.specs.DymaLib.Dotty.DottyGraph;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
+import org.suikasoft.SharedLibrary.IoUtils;
 import org.suikasoft.SharedLibrary.MiscUtils;
 import org.suikasoft.SharedLibrary.Processors.InstructionName;
 
@@ -96,12 +98,14 @@ public class VbiAnalyser {
     * @param graphBuilder
     * @return
     */
-   public static int getCriticalPathLenght(List<VeryBigInstruction32> vbis, GraphBuilder graphBuilder) {
+   //public static int getCriticalPathLenght(List<VeryBigInstruction32> vbis, GraphBuilder graphBuilder) {
+   public static int getCriticalPathLenght(List<VeryBigInstruction32> vbis, GraphNode rootNode) {
 
-      GraphNode rootNode = graphBuilder.buildGraph(vbis);
+      //GraphNode rootNode = graphBuilder.buildGraph(vbis);
       //findCycle(rootNode);
       //visitLeafs(rootNode);
       //GraphUtils.printNode(rootNode, "");
+      //writeDotty(rootNode);
 
       return GraphUtils.getCriticalPathLenght(rootNode);
    }
@@ -122,26 +126,27 @@ public class VbiAnalyser {
 
    }
 */
-   /*
+   
    private static void visitLeafs(GraphNode node) {
       int numChildren = node.getChildren().size();
       if(numChildren == 0) {
-         System.out.println("Node '"+node+"' is leaf");
+         //System.out.println("Node '"+node+"' is leaf");
          return;
       }
 
-      System.out.println("Node '"+node+"' has "+node.getChildren().size()+" children.");
+      //System.out.println("Node '"+node+"' has "+node.getChildren().size()+" children.");
       // Call childs
       for(GraphNode child : node.getChildren()) {
          visitLeafs(child);
       }
    }
-*/
+
 
    //private List<VeryBigInstruction32> vbiList;
 
    public static VbiAnalysis getData(List<VeryBigInstruction32> vbis, 
-           InstructionName instName, GraphBuilder graphBuilder) {
+           //InstructionName instName, GraphBuilder graphBuilder) {
+           InstructionName instName, GraphNode rootNode) {
 
 
       Map<String,Integer> storeHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getStoreInstructions());
@@ -151,12 +156,19 @@ public class VbiAnalyser {
       int numLoads = MiscUtils.sumValues(loadHistogram);
 
       int mappableInstructions = VbiAnalyser.getMappableInstructions(vbis);
-      int cpl = VbiAnalyser.getCriticalPathLenght(vbis, graphBuilder);
+      int cpl = VbiAnalyser.getCriticalPathLenght(vbis, rootNode);
 
       VbiAnalysis vbiAnalysis = new VbiAnalysis(mappableInstructions, cpl, numLoads, numStores);
 
       return vbiAnalysis;
    }
+
+   /*
+   private static void writeDotty(GraphNode rootNode) {
+      IoUtils.write(new File("E:/test.dotty"), DottyGraph.generateDotty(rootNode));
+   }
+    * 
+    */
 
 
 }

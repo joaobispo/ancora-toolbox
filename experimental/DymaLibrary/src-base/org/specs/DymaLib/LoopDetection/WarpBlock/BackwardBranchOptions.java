@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
+package org.specs.DymaLib.LoopDetection.WarpBlock;
 
 import java.io.File;
 import org.ancora.SharedLibrary.AppBase.AppOption.AppOptionEnum;

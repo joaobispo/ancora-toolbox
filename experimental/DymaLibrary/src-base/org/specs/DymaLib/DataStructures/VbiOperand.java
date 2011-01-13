@@ -71,6 +71,10 @@ public class VbiOperand {
       public Integer value;
       public boolean isInput;
       public boolean isRegister;
+      /**
+       * Indicates if the operand has a constant value. If true, it implies that
+       * the variable value is defined.
+       */
       public boolean isConstant;
       public boolean isLiveIn;
       public boolean isLiveOut;

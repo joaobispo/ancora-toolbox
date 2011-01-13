@@ -23,8 +23,8 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptions;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptionsV4;
-import org.specs.DymaLib.LoopDetection.BackwardBranchBlock.BackwardBranchOptions;
-import org.specs.DymaLib.LoopDetection.BackwardBranchBlock.BackwardBranchOptionsV4;
+import org.specs.DymaLib.LoopDetection.WarpBlock.BackwardBranchOptions;
+import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptionsV4;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.suikasoft.Jani.Setup;
 
@@ -125,7 +125,7 @@ public class LoopUtils {
       }
 
       if(LoopDetectors.BackwardBranchBlock.name().equals(detectorName)) {
-         return BackwardBranchOptionsV4.newWarpBlockDetector(appFile, decoder);
+         return WarpBlockOptionsV4.newBackwardBranchBlockDetector(appFile, decoder);
       }
 
       LoggingUtils.getLogger().

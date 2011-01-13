@@ -25,16 +25,19 @@ import java.util.List;
  */
 public class VeryBigInstruction32 {
 
-   //public VeryBigInstruction32(int address, String op, List<Operand> originalOperands,
-   //        List<Operand> supportOperands, boolean isMappable) {
-   public VeryBigInstruction32(int address, String op, List<VbiOperand> originalOperands,
-           List<VbiOperand> supportOperands, boolean isMappable) {
+   public VeryBigInstruction32(Integer address, String op, List<VbiOperand> originalOperands,
+           List<VbiOperand> supportOperands, boolean isMappable, boolean hasSideEffects) {
       this.address = address;
       this.op = op;
       this.originalOperands = originalOperands;
       this.supportOperands = supportOperands;
       this.isMappable = isMappable;
+      this.hasSideEffects = hasSideEffects;
    }
+
+   //public VeryBigInstruction32(int address, String op, List<Operand> originalOperands,
+   //        List<Operand> supportOperands, boolean isMappable) {
+   
 
    @Override
    public String toString() {
@@ -76,6 +79,7 @@ public class VeryBigInstruction32 {
    public List<VbiOperand> supportOperands;
    // FLAGS
    public boolean isMappable;
+   public boolean hasSideEffects;
 /*
    public class Operand {
 

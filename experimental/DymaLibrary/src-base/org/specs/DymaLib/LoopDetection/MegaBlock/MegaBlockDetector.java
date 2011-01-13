@@ -49,7 +49,15 @@ public class MegaBlockDetector implements LoopDetector {
    public void step(int address, String instruction) {
       unitBuilder.nextInstruction(address, instruction);
       processUnitBuilder();
-      
+      // Get state of pattern to check if we found a loop
+  /*
+      if(patternDetector.getState() == PatternDetector.PatternState.PATTERN_STARTED) {
+         return true;
+      } else {
+         return false;
+      }
+   *
+   */
    }
 
 

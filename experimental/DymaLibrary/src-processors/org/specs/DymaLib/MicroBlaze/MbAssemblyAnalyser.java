@@ -27,7 +27,7 @@ import org.specs.DymaLib.Utils.LivenessAnalyser;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
-import org.suikasoft.SharedLibrary.MicroBlaze.RegisterName;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
@@ -79,14 +79,14 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
       // Extract info from carries
       // Carry In
       if(CarryProperties.usesCarryIn(mbInst.getInstructionName())) {
-         operandIds.add(RegisterName.getCarryFlagName());
+         operandIds.add(MbRegisterId.getCarryFlagName());
          isInput.add(Boolean.TRUE);
          isConstant.add(Boolean.FALSE);
       }
 
       // Carry Out
       if(CarryProperties.usesCarryOut(mbInst.getInstructionName())) {
-         operandIds.add(RegisterName.getCarryFlagName());
+         operandIds.add(MbRegisterId.getCarryFlagName());
          isInput.add(Boolean.FALSE);
          isConstant.add(Boolean.FALSE);
       }

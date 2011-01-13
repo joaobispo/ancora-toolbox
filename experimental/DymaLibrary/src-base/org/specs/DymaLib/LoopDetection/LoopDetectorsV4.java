@@ -20,7 +20,7 @@ package org.specs.DymaLib.LoopDetection;
 import java.util.Collection;
 import java.util.List;
 import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptionsV4;
-import org.specs.DymaLib.LoopDetection.BackwardBranchBlock.BackwardBranchOptionsV4;
+import org.specs.DymaLib.LoopDetection.WarpBlock.WarpBlockOptionsV4;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
 import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
@@ -33,7 +33,7 @@ import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
  */
 public enum LoopDetectorsV4 implements SingleSetupEnum {
    MegaBlock(BaseUtils.extractEnumValues(MegaBlockOptionsV4.class)),
-   BackwardBranchBlock(BaseUtils.extractEnumValues(BackwardBranchOptionsV4.class));
+   BackwardBranchBlock(BaseUtils.extractEnumValues(WarpBlockOptionsV4.class));
 
    private LoopDetectorsV4(List<EnumKey> options) {
       this.options = options;

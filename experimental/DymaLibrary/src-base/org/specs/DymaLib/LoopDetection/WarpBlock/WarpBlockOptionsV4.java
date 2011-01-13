@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopDetection.BackwardBranchBlock;
+package org.specs.DymaLib.LoopDetection.WarpBlock;
 
 import java.io.File;
 import org.ancora.SharedLibrary.IoUtils;
@@ -30,14 +30,14 @@ import org.suikasoft.Jani.Setup;
  *
  * @author Joao Bispo
  */
-public enum BackwardBranchOptionsV4 implements EnumKey {
+public enum WarpBlockOptionsV4 implements EnumKey {
 
    //LimitBackwardJump(OptionType.bool),
    BackwardJumpMaxSize(OptionType.integer),
    StoreNonLoopInstructions(OptionType.bool);
 
 
-   private BackwardBranchOptionsV4(OptionType type) {
+   private WarpBlockOptionsV4(OptionType type) {
       this.type = type;
    }
 
@@ -54,17 +54,17 @@ public enum BackwardBranchOptionsV4 implements EnumKey {
     * @param decoder
     * @return
     */
-   public static LoopDetector newWarpBlockDetector(Setup optionFile, InstructionDecoder decoder) {
+   public static LoopDetector newBackwardBranchBlockDetector(Setup optionFile, InstructionDecoder decoder) {
    //public static LoopDetector newWarpBlockDetector(File appFile, InstructionDecoder decoder) {
 //      Setup optionFile = (Setup)IoUtils.readObject(appFile);
-      Integer backwardJumpMaxSize = BaseUtils.getInteger(optionFile.get(BackwardBranchOptionsV4.BackwardJumpMaxSize));
+      Integer backwardJumpMaxSize = BaseUtils.getInteger(optionFile.get(WarpBlockOptionsV4.BackwardJumpMaxSize));
       if(backwardJumpMaxSize == null) {
          return null;
       }
 
       //boolean limitBackwardJump = BaseUtils.getBool(optionFile.getMap(), WarpBlockOptions.LimitBackwardJump);
 
-      boolean storeSequenceInstructions = BaseUtils.getBoolean(optionFile.get(BackwardBranchOptionsV4.StoreNonLoopInstructions));
+      boolean storeSequenceInstructions = BaseUtils.getBoolean(optionFile.get(WarpBlockOptionsV4.StoreNonLoopInstructions));
 
       //return new WarpBlockDetector(limitBackwardJump, backwardJumpMaxSize, storeSequenceInstructions, decoder);
       return new BackwardBranchDetector(backwardJumpMaxSize, storeSequenceInstructions, decoder);
