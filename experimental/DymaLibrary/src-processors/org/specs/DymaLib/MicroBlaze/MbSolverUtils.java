@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.VbiUtils.OperandIO;
+import org.specs.DymaLib.Vbi.OperandIO;
 import org.suikasoft.SharedLibrary.BitUtils;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;

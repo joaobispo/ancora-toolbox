@@ -19,8 +19,8 @@ package org.specs.DymaLib.LoopOptimization;
 
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.VbiUtils.VbiOptimizer;
-import org.specs.DymaLib.VbiUtils.OperandIO;
+import org.specs.DymaLib.Vbi.VbiOptimizer;
+import org.specs.DymaLib.Vbi.OperandIO;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 

@@ -15,15 +15,28 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.VbiUtils;
+package org.specs.DymaLib.Vbi;
 
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 
 /**
- * Optimizes VBI instructions.
+ * Parses strings of assembly instructions into Very Big Instructions and forth.
  *
  * @author Joao Bispo
  */
-public interface VbiOptimizer {
-   void optimize(VeryBigInstruction32 vbi);
+public interface VbiParser {
+
+   /**
+    * Converts an assembly instruction into a very big instruction.
+    * 
+    * @param instruction
+    * @return
+    */
+   VeryBigInstruction32 parseInstruction(Object instruction);
+   /**
+    * Converts a very big instruction back into the format of the original instruction.
+    * @param instruction
+    * @return
+    */
+   //String parseVbi(VeryBigInstruction32 instruction);
 }

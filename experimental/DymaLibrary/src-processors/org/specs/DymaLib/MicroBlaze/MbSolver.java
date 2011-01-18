@@ -21,7 +21,7 @@ import java.util.List;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 import org.specs.DymaLib.Solver;
 import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.VbiUtils.OperandIO;
+import org.specs.DymaLib.Vbi.OperandIO;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;

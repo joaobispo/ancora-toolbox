@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.VbiUtils;
+package org.specs.DymaLib.Vbi;
 
 import java.util.HashMap;
 import java.util.List;
