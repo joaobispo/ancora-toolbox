@@ -18,8 +18,9 @@
 package org.specs.DymaLib.Vbi;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.specs.DymaLib.Vbi.VbiOperand;
+import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 
 /**
  * Utility methods related to VBIs and its operands.
@@ -58,5 +59,49 @@ public class VbiUtils {
       }
 
       return true;
+   }
+
+   /**
+    *
+    * @return the number of VBI which are marked as mappable.
+    */
+   public static int getMappableInstructions(List<VeryBigInstruction32> vbis) {
+      int counter = 0;
+      for(VeryBigInstruction32 vbi : vbis) {
+         if(!vbi.isMappable) {
+            continue;
+         }
+
+         counter++;
+      }
+      return counter;
+   }
+
+      /**
+    * Builds an histogram with the quantity of instructions present in the list
+    * of VBIs. The histogram is built taking into account only the instructions
+    * given in the list.
+    *
+    * <p>If the list of instruction names is null, the histogram will include all
+    * instructions.
+    *
+    * @param vbis
+    * @param instructionNames
+    * @return
+    */
+   public static AccumulatorMap getInstructionsHistogram(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
+      AccumulatorMap<String> counterTable = new AccumulatorMap<String>();
+      for(VeryBigInstruction32 vbi : vbis) {
+         boolean nameListExists = instructionNames != null;
+         if (nameListExists) {
+            if (!instructionNames.contains(vbi.op)) {
+               continue;
+            }
+         }
+
+         counterTable.add(vbi.op);
+      }
+
+      return counterTable;
    }
 }

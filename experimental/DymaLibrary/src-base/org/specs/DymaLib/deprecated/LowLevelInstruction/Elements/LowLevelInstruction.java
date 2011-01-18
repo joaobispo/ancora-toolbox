@@ -15,10 +15,10 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction.Elements;
+package org.specs.DymaLib.deprecated.LowLevelInstruction.Elements;
 
 import java.util.List;
-import org.specs.DymaLib.LowLevelInstruction.LliUtils;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LliUtils;
 import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 
 /**

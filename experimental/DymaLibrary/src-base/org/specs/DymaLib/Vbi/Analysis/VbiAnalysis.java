@@ -17,6 +17,14 @@
 
 package org.specs.DymaLib.Vbi.Analysis;
 
+import java.util.List;
+import org.specs.DymaLib.Vbi.VbiUtils;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
+import org.suikasoft.SharedLibrary.Graphs.GraphNode;
+import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
+import org.suikasoft.SharedLibrary.Processors.InstructionName;
+
 /**
  * Contains the results of an analysis to a list of Vbis.
  *
@@ -31,12 +39,28 @@ public class VbiAnalysis {
       this.storeInstructions = storeInstructions;
    }
 
+   public static VbiAnalysis newAnalysis(List<VeryBigInstruction32> vbis,
+           InstructionName instName, GraphNode rootNode) {
+
+      AccumulatorMap<String> storeHistogram = VbiUtils.getInstructionsHistogram(vbis, instName.getStoreInstructions());
+      int numStores = storeHistogram.getSum();
+
+      AccumulatorMap<String> loadHistogram = VbiUtils.getInstructionsHistogram(vbis, instName.getLoadInstructions());
+      int numLoads = loadHistogram.getSum();
+
+      int mappableInstructions = VbiUtils.getMappableInstructions(vbis);
+      int cpl = GraphUtils.getCriticalPathLenght(rootNode);
+
+      VbiAnalysis vbiAnalysis = new VbiAnalysis(mappableInstructions, cpl, numLoads, numStores);
+
+      return vbiAnalysis;
+   }
+
    public String diff(VbiAnalysis previousAnalysis) {
       StringBuilder builder = new StringBuilder();
 
       int mappableDiff =  previousAnalysis.mappableInstructions - mappableInstructions;
       if(mappableDiff != 0) {
-         //double ratio = ((double)mappableInstructions /
          double ratio = ((double)mappableDiff /
                  (double)previousAnalysis.mappableInstructions) * 100;
          builder.append("Mappable Instructions Diff:").
@@ -46,7 +70,6 @@ public class VbiAnalysis {
 
       int cplDiff =  previousAnalysis.criticalPathLenght - criticalPathLenght;
       if(cplDiff != 0) {
-         //double ratio = ((double)criticalPathLenght /
          double ratio = ((double)cplDiff /
                  (double)previousAnalysis.criticalPathLenght) * 100;
          builder.append("Critical Path Lenght Diff :").
@@ -57,12 +80,6 @@ public class VbiAnalysis {
       return builder.toString();
    }
 
-   /*
-   public static String mappableInstructions(int mappableInstructions) {
-      return "#Mappable Instructions  :"+mappableInstructions;
-   }
-    * 
-    */
 
    @Override
    public String toString() {

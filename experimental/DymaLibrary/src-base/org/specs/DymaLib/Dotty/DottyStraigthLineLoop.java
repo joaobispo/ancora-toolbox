@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
-import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
-import org.specs.DymaLib.LowLevelInstruction.LliUtils;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LliUtils;
 
 /**
  * Graphic representation of a MegaBlock

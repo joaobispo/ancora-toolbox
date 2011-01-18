@@ -18,7 +18,7 @@
 package org.specs.DymaLib.Mapping.Tables;
 
 import java.util.List;
-import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.Operand;
 import org.specs.DymaLib.Mapping.Representation.Pe;
 
 /**

@@ -15,10 +15,10 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction;
+package org.specs.DymaLib.deprecated.LowLevelInstruction;
 
 import java.util.List;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
 
 /**
  * Decodes an assembly instruction in its correspondent LowLevelInstructions.

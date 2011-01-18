@@ -15,13 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Stats;
+package org.specs.DymaLib.deprecated.Stats;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
-import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.Operand;
 
 /**
  * Analyses Straight-Line Loops.

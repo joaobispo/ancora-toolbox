@@ -15,9 +15,9 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction.Elements;
+package org.specs.DymaLib.deprecated.LowLevelInstruction.Elements;
 
-import org.specs.DymaLib.LowLevelInstruction.LliUtils;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LliUtils;
 
 /**
  * Represents an Operand.

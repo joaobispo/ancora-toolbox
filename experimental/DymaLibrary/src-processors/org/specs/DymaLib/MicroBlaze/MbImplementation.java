@@ -18,7 +18,7 @@
 package org.specs.DymaLib.MicroBlaze;
 
 import org.specs.DymaLib.InstructionDecoder;
-import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.SharedLibrary.MicroBlaze.InstructionName;
 

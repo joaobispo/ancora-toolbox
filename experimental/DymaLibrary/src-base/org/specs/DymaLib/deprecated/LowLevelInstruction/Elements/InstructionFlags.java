@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction.Elements;
+package org.specs.DymaLib.deprecated.LowLevelInstruction.Elements;
 
 /**
  *

@@ -24,9 +24,9 @@ import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
 import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
 import org.specs.DymaLib.Assembly.CodeSegment;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
-import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
-import org.specs.DymaLib.Stats.SllAnalyser;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.deprecated.Stats.SllAnalyser;
 
 /**
  * Writes the LoopUnits to text-format, adds some analysis.

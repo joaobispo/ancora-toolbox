@@ -43,16 +43,9 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
  */
 public class MbVbiParser implements VbiParser {
 
-   //public MbVbiParser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters) {
-   //public MbVbiParser(AssemblyAnalyser asmAnalyser) {
    public MbVbiParser(AssemblyAnalysis asmData) {
-      //this.liveOuts = new ArrayList<LiveOut>(liveOuts);
-      //this.liveOuts = new ArrayList<LiveOut>(asmAnalyser.getLiveOuts());
       this.liveOuts = new ArrayList<LiveOut>(asmData.liveOuts);
-      //this.constantRegisters = new ArrayList<ConstantRegister>(constantRegisters);
-      //this.constantRegisters = new ArrayList<ConstantRegister>(asmAnalyser.getConstantRegisters());
-      this.constantRegisters = new ArrayList<ConstantRegister>(asmData.constantRegisters);
-      //this.hasStores = asmAnalyser.hasStores();
+       this.constantRegisters = new ArrayList<ConstantRegister>(asmData.constantRegisters);
       this.hasStores = asmData.hasStores;
 
       liveoutsIndexes = VbiParserUtils.buildLiveoutsMap(this.liveOuts);
@@ -60,8 +53,6 @@ public class MbVbiParser implements VbiParser {
 
       counter = 0;
       resetImm();
-      //immValue = null;
-      //immValueCounter = null;
       writtenRegisters = new HashSet<String>();
    }
 
@@ -83,8 +74,7 @@ public class MbVbiParser implements VbiParser {
       if(vbi32 == null) {
          vbi32 = handleNormalCase(instruction);
       }
-
-      
+     
       // Increment instruction counter
       counter++;
 
@@ -196,7 +186,6 @@ public class MbVbiParser implements VbiParser {
       boolean isRegister = type == MbOperand.Type.register;
 
       if (isRegister) {
-
          // Check if register is constant
          Integer index = constantRegistersIndexes.get(id);
          if (index != null) {
@@ -210,31 +199,16 @@ public class MbVbiParser implements VbiParser {
       // Assume it is an immediate
       // Check if there is an upper 16-bit immediate value
       Integer imm = getImm();
-      //if (immValue == null) {
       if (imm == null) {
          return rawValue;
       }
 
-      //int completeValue = BitUtils.fuseImm(immValue, rawValue);
       int completeValue = BitUtils.fuseImm(imm, rawValue);
-      // Check immValue counter
-      /*
-      if (immValueCounter + 1 != counter) {
-         LoggingUtils.getLogger().
-                 warning("Imm line (" + immValueCounter + ") more than one instruction "
-                 + "ahead of current instruction (" + counter + ")");
-      }
-       *
-       */
 
-      // Update immValue
-      //immValue = null;
-      //immValueCounter = null;
 
       return completeValue;
    }
 
-   //private boolean isConstant(String id, MbOperand.Type typeMbOperand mbOperand) {
    private boolean isConstant(String id, MbOperand.Type type) {
       // Check if immediate
       if(type == MbOperand.Type.immediate) {
@@ -351,14 +325,6 @@ public class MbVbiParser implements VbiParser {
    }
 
    private VeryBigInstruction32 buildImmInstruction(MbInstruction mbInst) {
-      // Check current Imm
-      /*
-      if (immValue != null) {
-         LoggingUtils.getLogger().
-                 warning("Overwritting IMM value '" + immValue + "'");
-      }
-       *
-       */
 
       int address = mbInst.getAddress();
       String op = mbInst.getInstructionName().getName();
@@ -370,12 +336,9 @@ public class MbVbiParser implements VbiParser {
       VeryBigInstruction32 vbi32 = new VeryBigInstruction32(address, op, originalOperands,
               new ArrayList<VbiOperand>(), isMappable, hasSideEffects, hasStores);
 
-      // After instruction is made, update status
-
       // Store value
       updateImm(mbInst.getOperands().get(0).getValue());
-      //immValue = mbInst.getOperands().get(0).getValue();
-      //immValueCounter = counter;
+
       
       return vbi32;
    }
@@ -437,6 +400,5 @@ public class MbVbiParser implements VbiParser {
 
    private Integer immValue;
    private Integer immValueCounter;
-
 
 }

@@ -17,7 +17,7 @@
 
 package org.specs.DymaLib;
 
-import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LowLevelParser;
 
 /**
  * Interface which can store implementations needed for a specific processor.

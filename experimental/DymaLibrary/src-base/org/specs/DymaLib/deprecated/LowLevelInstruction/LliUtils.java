@@ -15,14 +15,14 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LowLevelInstruction;
+package org.specs.DymaLib.deprecated.LowLevelInstruction;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
-import org.specs.DymaLib.LowLevelInstruction.Elements.Operand;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.Operand;
 import org.specs.DymaLib.Mapping.Representation.PeInput;
 
 /**
