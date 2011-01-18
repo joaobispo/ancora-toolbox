@@ -112,7 +112,7 @@ public class VbiAnalyser {
    }
 
 
-   
+   /*
    private static void visitLeafs(GraphNode node) {
       int numChildren = node.getChildren().size();
       if(numChildren == 0) {
@@ -126,8 +126,10 @@ public class VbiAnalyser {
          visitLeafs(child);
       }
    }
+    * 
+    */
 
-   public static VbiAnalysis getData(List<VeryBigInstruction32> vbis, 
+   public static VbiAnalysis buildData(List<VeryBigInstruction32> vbis,
            InstructionName instName, GraphNode rootNode) {
 
 

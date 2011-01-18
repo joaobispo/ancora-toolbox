@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.DataStructures.ConstantRegister;
-import org.specs.DymaLib.DataStructures.LiveOut;
+import org.specs.DymaLib.Assembly.ConstantRegister;
+import org.specs.DymaLib.Assembly.LiveOut;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 

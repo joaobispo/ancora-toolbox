@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
 import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
-import org.specs.DymaLib.DataStructures.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.Stats.SllAnalyser;

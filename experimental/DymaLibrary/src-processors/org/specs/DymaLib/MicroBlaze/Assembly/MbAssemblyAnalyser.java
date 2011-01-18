@@ -15,38 +15,39 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.MicroBlaze;
+package org.specs.DymaLib.MicroBlaze.Assembly;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.specs.DymaLib.DataStructures.ConstantRegister;
-import org.specs.DymaLib.DataStructures.LiveOut;
-import org.specs.DymaLib.AssemblyAnalyser;
+import org.specs.DymaLib.Assembly.ConstantRegister;
+import org.specs.DymaLib.Assembly.LiveOut;
+import org.specs.DymaLib.Assembly.AssemblyAnalysis;
 import org.specs.DymaLib.Utils.LivenessAnalyser;
-import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
-import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- *
+ * Builds AssemblyAnalysis objects from MicroBlaze assembly instructions.
+ * 
  * @author Joao Bispo
  */
-public class MbAssemblyAnalyser implements AssemblyAnalyser {
+//public class MbAssemblyAnalyser implements AssemblyAnalyser {
+public class MbAssemblyAnalyser {
 
-  
+  /*
    private MbAssemblyAnalyser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters,
            boolean hasStores) {
       this.liveOuts = liveOuts;
       this.constantRegisters = constantRegisters;
       this.hasStores = hasStores;
    }
+   *
+   */
 
-
+/*
    public static MbAssemblyAnalyser create(RegisterTable registerTable, List<MbInstruction> mbInstructions) {
+//      AssemblyAnalyser livenessAnalyser = createAnalyser(mbInstructions);
       LivenessAnalyser livenessAnalyser = createAnalyser(mbInstructions);
 
       // Extract data for building MbAnalyser
@@ -58,7 +59,7 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
 
       return mbAssAnal;
    }
-
+*/
    private static boolean hasStores(List<MbInstruction> mbInstructions) {
       boolean hasStores = false;
 
@@ -71,58 +72,10 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
       return hasStores;
    }
 
-   public static void extractInfo(MbInstruction mbInst, List<String> operandIds, List<Boolean> isInput, List<Boolean> isConstant) {
-      // Extract info from MbInst operands
-      for(MbOperand mbOperand : mbInst.getOperands()) {
-         extractInfo(mbOperand, operandIds, isInput, isConstant);
-      }
-      
-      // Extract info from carries
-      // Carry In
-      if(CarryProperties.usesCarryIn(mbInst.getInstructionName())) {
-         operandIds.add(MbRegisterId.getCarryFlagName());
-         isInput.add(Boolean.TRUE);
-         isConstant.add(Boolean.FALSE);
-      }
+  
 
-      // Carry Out
-      if(CarryProperties.usesCarryOut(mbInst.getInstructionName())) {
-         operandIds.add(MbRegisterId.getCarryFlagName());
-         isInput.add(Boolean.FALSE);
-         isConstant.add(Boolean.FALSE);
-      }
-
-   }
-
-
-   public static void extractInfo(MbOperand mbOperand, List<String> operandIds, List<Boolean> input, List<Boolean> constant) {
-      String operandId = mbOperand.getId();
-      Boolean isInput = MbOperand.isInput(mbOperand.getFlow());
-      Boolean isConstant = MbOperand.isConstant(mbOperand.getType());
-
-      operandIds.add(operandId);
-      input.add(isInput);
-      constant.add(isConstant);
-   }
-
-
-   public static LivenessAnalyser createAnalyser(List<MbInstruction> mbInstructions) {
-      // Use LivenessAnalyser
-      LivenessAnalyser livenessAnalyser = new LivenessAnalyser();
-      // Extract information from each mbInstruction and feed the information
-      // to the analyser
-      for(MbInstruction mbInst : mbInstructions) {
-         List<String> operandIds = new ArrayList<String>();
-         List<Boolean> isInput = new ArrayList<Boolean>();
-         List<Boolean> isConstant = new ArrayList<Boolean>();
-         extractInfo(mbInst, operandIds, isInput, isConstant);
-         livenessAnalyser.next(operandIds, isInput, isConstant);
-      }
-
-      return livenessAnalyser;
-   }
-
-   public static Collection<ConstantRegister> getConstantRegisters(RegisterTable registerIdTable, LivenessAnalyser livenessAnalyser) {
+   //public static Collection<ConstantRegister> getConstantRegisters(RegisterTable registerIdTable, AssemblyAnalyser livenessAnalyser) {
+   private static Collection<ConstantRegister> getConstantRegisters(RegisterTable registerIdTable, LivenessAnalyser livenessAnalyser) {
       // Check if CodeSegment has the values of the registers
       if (registerIdTable == null) {
          return null;
@@ -132,6 +85,7 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
 
    }
 
+   /*
    public Collection<LiveOut> getLiveOuts() {
       return liveOuts;
    }
@@ -143,7 +97,10 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
    public boolean hasStores() {
       return hasStores;
    }
+    *
+    */
 
+   /*
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -159,11 +116,25 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
 
       return builder.toString();
    }
+*/
+   public static AssemblyAnalysis buildData(RegisterTable registerTable,
+           List<MbInstruction> mbInstructions) {
 
+        //LivenessAnalyser livenessAnalyser = createLivenessAnalyser(mbInstructions);
+        LivenessAnalyser livenessAnalyser = MbLivenessUtils.createLivenessAnalyser(mbInstructions);
 
+      // Extract data for building MbAnalyser
+       Collection<LiveOut> liveouts = livenessAnalyser.getLiveOuts();
+       Collection<ConstantRegister> constantRegisters = getConstantRegisters(registerTable, livenessAnalyser);
+       boolean hasStores = hasStores(mbInstructions);
 
+       AssemblyAnalysis asmData = new AssemblyAnalysis(liveouts, constantRegisters, hasStores);
+       return asmData;
+   }
+
+   /*
    private Collection<LiveOut> liveOuts;
    private Collection<ConstantRegister> constantRegisters;
    private boolean hasStores;
-
+   */
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.specs.DymaLib.DataStructures.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopUtils;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;

@@ -15,32 +15,33 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.DataStructures;
+package org.specs.DymaLib.Assembly;
 
 import java.io.Serializable;
 
 /**
- * Represents a live-out.
+ * Represents a register which does not change its value during the considered
+ * segment.
  *
- * <p>Includes an id to identify the live-out and the number
- * of the instruction where it is written for the last time.
+ * <p>Includes an id to identify the register and the value
+ * of the register during the considered segment.
  *
  * @author Joao Bispo
  */
-public class LiveOut implements Serializable {
+public class ConstantRegister implements Serializable {
 
-   public LiveOut(String id, int instructionNumber) {
+   public ConstantRegister(String id, int value) {
       this.id = id;
-      this.instructionNumber = instructionNumber;
+      this.value = value;
    }
 
    @Override
    public String toString() {
-      return id+"("+instructionNumber+")";
+      return id+"("+value+")";
    }
 
    public final String id;
-   public final int instructionNumber;
+   public final int value;
 
    private static final long serialVersionUID = 1;
 }

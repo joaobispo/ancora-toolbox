@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2011 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,37 +15,32 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.DataStructures;
+package org.specs.DymaLib.Assembly;
 
 import java.io.Serializable;
-import java.util.List;
-import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- * Represents a segment of code, which can represent a loop.
+ * Represents a live-out.
+ *
+ * <p>Includes an id to identify the live-out and the number
+ * of the instruction where it is written for the last time.
  *
  * @author Joao Bispo
  */
-public interface CodeSegment extends Serializable {
+public class LiveOut implements Serializable {
 
-   List<String> getInstructions();
+   public LiveOut(String id, int instructionNumber) {
+      this.id = id;
+      this.instructionNumber = instructionNumber;
+   }
 
-   List<Integer> getAddresses();
+   @Override
+   public String toString() {
+      return id+"("+instructionNumber+")";
+   }
 
-   int getId();
+   public final String id;
+   public final int instructionNumber;
 
-   int getNumInstructions();
-
-   int getIterations();
-
-   int getTotalInstructions();
-
-   boolean isLoop();
-
-   boolean areAllInstructionsStored();
-
-   RegisterTable getRegisterValues();
-
-   void setRegisterValues(RegisterTable registerValues);
-
+   private static final long serialVersionUID = 1;
 }

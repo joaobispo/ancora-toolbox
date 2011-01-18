@@ -23,7 +23,7 @@ import java.util.Map;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.DataStructures.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 

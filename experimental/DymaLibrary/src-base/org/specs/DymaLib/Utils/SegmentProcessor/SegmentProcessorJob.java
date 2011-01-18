@@ -17,7 +17,7 @@
 
 package org.specs.DymaLib.Utils.SegmentProcessor;
 
-import org.specs.DymaLib.DataStructures.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 
 /**
  * Performs some work using loop information.

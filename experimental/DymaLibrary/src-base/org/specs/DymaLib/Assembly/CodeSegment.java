@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 SPeCS Research Group.
+ *  Copyright 2010 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,33 +15,37 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.DataStructures;
+package org.specs.DymaLib.Assembly;
 
 import java.io.Serializable;
+import java.util.List;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- * Represents a register which does not change its value during the considered
- * segment.
- *
- * <p>Includes an id to identify the register and the value
- * of the register during the considered segment.
+ * Represents a segment of code, which can represent a loop.
  *
  * @author Joao Bispo
  */
-public class ConstantRegister implements Serializable {
+public interface CodeSegment extends Serializable {
 
-   public ConstantRegister(String id, int value) {
-      this.id = id;
-      this.value = value;
-   }
+   List<String> getInstructions();
 
-   @Override
-   public String toString() {
-      return id+"("+value+")";
-   }
+   List<Integer> getAddresses();
 
-   public final String id;
-   public final int value;
+   int getId();
 
-   private static final long serialVersionUID = 1;
+   int getNumInstructions();
+
+   int getIterations();
+
+   int getTotalInstructions();
+
+   boolean isLoop();
+
+   boolean areAllInstructionsStored();
+
+   RegisterTable getRegisterValues();
+
+   void setRegisterValues(RegisterTable registerValues);
+
 }

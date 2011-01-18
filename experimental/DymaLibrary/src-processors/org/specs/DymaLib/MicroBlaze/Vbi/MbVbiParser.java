@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.AssemblyAnalyser;
-import org.specs.DymaLib.DataStructures.ConstantRegister;
-import org.specs.DymaLib.DataStructures.LiveOut;
+import org.specs.DymaLib.Assembly.AssemblyAnalysis;
+import org.specs.DymaLib.Assembly.ConstantRegister;
+import org.specs.DymaLib.Assembly.LiveOut;
 import org.specs.DymaLib.Vbi.VbiOperand;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.specs.DymaLib.Vbi.Parser.VbiParser;
@@ -44,12 +44,16 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 public class MbVbiParser implements VbiParser {
 
    //public MbVbiParser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters) {
-   public MbVbiParser(AssemblyAnalyser asmAnalyser) {
+   //public MbVbiParser(AssemblyAnalyser asmAnalyser) {
+   public MbVbiParser(AssemblyAnalysis asmData) {
       //this.liveOuts = new ArrayList<LiveOut>(liveOuts);
-      this.liveOuts = new ArrayList<LiveOut>(asmAnalyser.getLiveOuts());
+      //this.liveOuts = new ArrayList<LiveOut>(asmAnalyser.getLiveOuts());
+      this.liveOuts = new ArrayList<LiveOut>(asmData.liveOuts);
       //this.constantRegisters = new ArrayList<ConstantRegister>(constantRegisters);
-      this.constantRegisters = new ArrayList<ConstantRegister>(asmAnalyser.getConstantRegisters());
-      this.hasStores = asmAnalyser.hasStores();
+      //this.constantRegisters = new ArrayList<ConstantRegister>(asmAnalyser.getConstantRegisters());
+      this.constantRegisters = new ArrayList<ConstantRegister>(asmData.constantRegisters);
+      //this.hasStores = asmAnalyser.hasStores();
+      this.hasStores = asmData.hasStores;
 
       liveoutsIndexes = VbiParserUtils.buildLiveoutsMap(this.liveOuts);
       constantRegistersIndexes = VbiParserUtils.buildConstRegMap(this.constantRegisters);
