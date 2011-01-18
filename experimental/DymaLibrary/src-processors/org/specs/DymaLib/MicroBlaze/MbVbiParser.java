@@ -18,17 +18,17 @@
 package org.specs.DymaLib.MicroBlaze;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.specs.DymaLib.AssemblyAnalyser;
 import org.specs.DymaLib.DataStructures.ConstantRegister;
 import org.specs.DymaLib.DataStructures.LiveOut;
 import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.VbiParser;
+import org.specs.DymaLib.VbiUtils.VbiParser;
+import org.specs.DymaLib.VbiUtils.VbiParserUtils;
 import org.suikasoft.SharedLibrary.BitUtils;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
@@ -43,21 +43,25 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
  */
 public class MbVbiParser implements VbiParser {
 
-   public MbVbiParser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters) {
-      this.liveOuts = new ArrayList<LiveOut>(liveOuts);
-      this.constantRegisters = new ArrayList<ConstantRegister>(constantRegisters);
-      liveoutsIndexes = buildLiveoutsMap(this.liveOuts);
-      constantRegistersIndexes = buildConstRegMap(this.constantRegisters);
+   //public MbVbiParser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters) {
+   public MbVbiParser(AssemblyAnalyser asmAnalyser) {
+      //this.liveOuts = new ArrayList<LiveOut>(liveOuts);
+      this.liveOuts = new ArrayList<LiveOut>(asmAnalyser.getLiveOuts());
+      //this.constantRegisters = new ArrayList<ConstantRegister>(constantRegisters);
+      this.constantRegisters = new ArrayList<ConstantRegister>(asmAnalyser.getConstantRegisters());
+      this.hasStores = asmAnalyser.hasStores();
+
+      liveoutsIndexes = VbiParserUtils.buildLiveoutsMap(this.liveOuts);
+      constantRegistersIndexes = VbiParserUtils.buildConstRegMap(this.constantRegisters);
 
       counter = 0;
-      immValue = null;
-      immValueCounter = null;
+      resetImm();
+      //immValue = null;
+      //immValueCounter = null;
       writtenRegisters = new HashSet<String>();
    }
 
 
-
-   //public VeryBigInstruction32 parseInstruction(int address, String instruction) {
    public VeryBigInstruction32 parseInstruction(Object instruction) {
       return parseInstruction((MbInstruction) instruction);
    }
@@ -76,15 +80,6 @@ public class MbVbiParser implements VbiParser {
          vbi32 = handleNormalCase(instruction);
       }
 
-      /*
-      if(handleSpecialCases(instruction)) {
-         //return null;
-         vbi32 = null;
-      } else {
-         vbi32 = handleNormalCase(instruction);
-      }
-       * 
-       */
       
       // Increment instruction counter
       counter++;
@@ -103,7 +98,8 @@ public class MbVbiParser implements VbiParser {
       boolean isMappable = isMappable(instruction);
       boolean hasSideEffects = instruction.hasSideEffects();
       VeryBigInstruction32 vbi32 = new VeryBigInstruction32(address, op,
-              originalOperands, supportOperands, isMappable, hasSideEffects);
+              originalOperands, supportOperands, isMappable, hasSideEffects,
+              hasStores);
 
       return vbi32;
    }
@@ -158,13 +154,7 @@ public class MbVbiParser implements VbiParser {
       if(mbOperand.isR0()) {
          mbOperand = MbOperand.transformR0InImm0(mbOperand);
       }
-      /*
-      VbiOperand r0Operand = checkR0(mbOperand, isInput);
-      if(r0Operand != null) {
-         return r0Operand;
-      }
-       * 
-       */
+
 
       // Check if register and output
       if(!processInputs) {
@@ -178,7 +168,6 @@ public class MbVbiParser implements VbiParser {
          // Only has value if it is an immediate, or if
          // is a constant register
          Integer value = getOperandValue(id, mbOperand.getType(), mbOperand.getValue());
-         //Integer value = getOperandValue(mbOperand);
       
       boolean isRegister = mbOperand.getType() == MbOperand.Type.register;
       boolean isConstant = isConstant(id, mbOperand.getType());
@@ -200,13 +189,11 @@ public class MbVbiParser implements VbiParser {
    //private Integer getOperandValue(MbOperand mbOperand) {
    private Integer getOperandValue(String id, MbOperand.Type type, Integer rawValue) {
       // Check if register
-      //boolean isRegister = mbOperand.getType() == MbOperand.Type.register;
       boolean isRegister = type == MbOperand.Type.register;
 
       if (isRegister) {
 
          // Check if register is constant
-         //Integer index = constantRegistersIndexes.get(mbOperand.getId());
          Integer index = constantRegistersIndexes.get(id);
          if (index != null) {
             return constantRegisters.get(index).value;
@@ -218,23 +205,27 @@ public class MbVbiParser implements VbiParser {
 
       // Assume it is an immediate
       // Check if there is an upper 16-bit immediate value
-      if (immValue == null) {
-         //return mbOperand.getValue();
+      Integer imm = getImm();
+      //if (immValue == null) {
+      if (imm == null) {
          return rawValue;
       }
 
-      //int completeValue = BitUtils.fuseImm(immValue, mbOperand.getValue());
-      int completeValue = BitUtils.fuseImm(immValue, rawValue);
+      //int completeValue = BitUtils.fuseImm(immValue, rawValue);
+      int completeValue = BitUtils.fuseImm(imm, rawValue);
       // Check immValue counter
+      /*
       if (immValueCounter + 1 != counter) {
          LoggingUtils.getLogger().
                  warning("Imm line (" + immValueCounter + ") more than one instruction "
                  + "ahead of current instruction (" + counter + ")");
       }
+       *
+       */
 
       // Update immValue
-      immValue = null;
-      immValueCounter = null;
+      //immValue = null;
+      //immValueCounter = null;
 
       return completeValue;
    }
@@ -268,9 +259,7 @@ public class MbVbiParser implements VbiParser {
       return true;
    }
 
-   //private boolean isLiveOut(MbOperand mbOperand) {
    private boolean isLiveOut(String id) {
-//      Integer index = liveoutsIndexes.get(mbOperand.getId());
       Integer index = liveoutsIndexes.get(id);
       if(index == null) {
          return false;
@@ -349,29 +338,23 @@ public class MbVbiParser implements VbiParser {
       return true;
    }
 
-
-   //private boolean handleSpecialCases(MbInstruction mbInst) {
    private VeryBigInstruction32 handleSpecialCases(MbInstruction mbInst) {
       if(mbInst.getInstructionName() == MbInstructionName.imm) {
          return buildImmInstruction(mbInst);
       }
 
-      //return false;
       return null;
    }
 
    private VeryBigInstruction32 buildImmInstruction(MbInstruction mbInst) {
       // Check current Imm
+      /*
       if (immValue != null) {
          LoggingUtils.getLogger().
                  warning("Overwritting IMM value '" + immValue + "'");
       }
-
-
-
-
-
-      //return true;
+       *
+       */
 
       int address = mbInst.getAddress();
       String op = mbInst.getInstructionName().getName();
@@ -381,48 +364,66 @@ public class MbVbiParser implements VbiParser {
       boolean hasSideEffects = mbInst.hasSideEffects();
 
       VeryBigInstruction32 vbi32 = new VeryBigInstruction32(address, op, originalOperands,
-              new ArrayList<VbiOperand>(), isMappable, hasSideEffects);
+              new ArrayList<VbiOperand>(), isMappable, hasSideEffects, hasStores);
 
       // After instruction is made, update status
 
       // Store value
-      immValue = mbInst.getOperands().get(0).getValue();
-      immValueCounter = counter;
+      updateImm(mbInst.getOperands().get(0).getValue());
+      //immValue = mbInst.getOperands().get(0).getValue();
+      //immValueCounter = counter;
       
-//      return new VeryBigInstruction32(address, op, new ArrayList<VbiOperand>(),
-//      return new VeryBigInstruction32(address, op, originalOperands,
-//              new ArrayList<VbiOperand>(), false);
       return vbi32;
    }
 
-      //private Map<String, Integer> buildConstRegMap(Collection<ConstantRegister> constantRegisters) {
-   private Map<String, Integer> buildConstRegMap(List<ConstantRegister> constantRegisters) {
-      Map<String, Integer> newMap = new HashMap<String, Integer>();
-      int indexCounter = 0;
-      //Iterator<ConstantRegister> iter = constantRegisters.iterator();
-//      while(iter.hasNext()) {
-//         newMap.put(iter.next().id, indexCounter);
-      for (ConstantRegister reg : constantRegisters) {
-         newMap.put(reg.id, indexCounter);
-         indexCounter++;
+   private Integer getImm() {
+      if(immValue == null) {
+         return null;
       }
 
-      return newMap;
+      // Check immValue counter
+      if (immValueCounter + 1 != counter) {
+         LoggingUtils.getLogger().
+                 warning("Imm line (" + immValueCounter + ") more than one instruction "
+                 + "ahead of current instruction (" + counter + ")");
+      }
+
+      Integer imm = immValue;
+      resetImm();
+
+      return imm;
    }
 
-   private Map<String, Integer> buildLiveoutsMap(List<LiveOut> liveOuts) {
-      Map<String, Integer> newMap = new HashMap<String, Integer>();
-      int indexCounter = 0;
-      for (LiveOut liveout : liveOuts) {
-         newMap.put(liveout.id, indexCounter);
-         indexCounter++;
+   /**
+    * If value is null, counter is put to null also.
+    * 
+    * @param value
+    */
+   private void updateImm(Integer value) {
+      if(value == null) {
+         System.err.println("Do not use null values here.");
+         return;
       }
 
-      return newMap;
+      // Check current Imm
+      if (immValue != null) {
+         LoggingUtils.getLogger().
+                 warning("Overwritting IMM value '" + immValue + "'");
+      }
+      
+      immValue = value;
+      immValueCounter = counter;
+   }
+
+   private void resetImm() {
+      immValue = null;
+      immValueCounter = null;
    }
 
    private List<LiveOut> liveOuts;
    private List<ConstantRegister> constantRegisters;
+   private boolean hasStores;
+
    // Maps the names of the registers to positions in the collection
    private Map<String, Integer> constantRegistersIndexes;
    private Map<String, Integer> liveoutsIndexes;
@@ -432,37 +433,6 @@ public class MbVbiParser implements VbiParser {
 
    private Integer immValue;
    private Integer immValueCounter;
-
-
-
-   /*
-   private VbiOperand checkR0(MbOperand mbOperand, boolean isInput) {
-      boolean isRegister = mbOperand.getType() == MbOperand.Type.register;
-      boolean isR0 = isRegister && mbOperand.getValue() == 0;
-      if(!isR0) {
-         return null;
-      }
-
-      // Transform R0 into immediate 0
-      String id = 
-      Integer value = 0;
-      boolean isRegister = false;
-      boolean isConstant = true;
-      boolean isLiveIn = false;
-      boolean isLiveOut = false;
-      boolean isAuxiliarOperand = false;
-
-      VbiOperand operand = new VbiOperand(id, value, isInput, isRegister, isConstant,
-              isLiveIn, isLiveOut, isAuxiliarOperand);
-   }
-*/
-
-
-
-
-
-
-
 
 
 }

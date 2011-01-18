@@ -17,18 +17,14 @@
 
 package org.specs.DymaLib.MicroBlaze;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 import org.specs.DymaLib.Solver;
 import org.specs.DymaLib.Utils.VbiUtils;
 import org.specs.DymaLib.VbiUtils.OperandIO;
+import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;
-import org.suikasoft.SharedLibrary.MicroBlaze.ArgumentsProperties;
-import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 import org.suikasoft.SharedLibrary.MicroBlaze.OperationProperties;
 import org.suikasoft.SharedLibrary.OperationUtils;
@@ -39,26 +35,19 @@ import org.suikasoft.SharedLibrary.OperationUtils;
  */
 public class MbSolver implements Solver {
 
+
+
    public boolean solve(VeryBigInstruction32 vbi) {
       // Get Input/Output view
       OperandIO io = new OperandIO(vbi.originalOperands, vbi.supportOperands);
 
-      // Get intputs
-      //List<VbiOperand> baseInputs = VbiUtils.getInputs(vbi.originalOperands);
-      //List<VbiOperand> additionalInputs = VbiUtils.getInputs(vbi.supportOperands);
 
       // Check if all inputs are constant
       boolean constantInputs = VbiUtils.areConstant(io.baseInputs) && VbiUtils.areConstant(io.additionalInputs);
       if(!constantInputs) {
          return false;
       }
-      /*
-      boolean areConstant1 = checkConstantInputs(vbi.originalOperands);
-      boolean areConstant2 = checkConstantInputs(vbi.supportOperands);
-      if(!areConstant1 || !areConstant2) {
-         return false;
-      }
-*/
+
       // Get MbInstructionName
       MbInstructionName instName = (MbInstructionName) MbInstructionName.add.getEnum(vbi.op);
       if(instName == null) {
@@ -67,138 +56,144 @@ public class MbSolver implements Solver {
          return false;
       }
 
-      // Get Outputs
-      //List<VbiOperand> baseOutputs = VbiUtils.getOutputs(vbi.originalOperands);
-      //List<VbiOperand> additionalOutputs = VbiUtils.getOutputs(vbi.supportOperands);
-
       // Has constant inputs and we got the instruction name: solve it!
-      // Get outputs
-      //return solve(vbi, instName);
-      boolean success = solve(io, instName);
-      if(!success) {
-         System.err.println("Problems in vbi:");
-         System.err.println(vbi);
-      }
+      boolean success = solve(io, instName, vbi);
+
       return success;
    }
 
-/*
-   private static boolean checkConstantInputs(List<VbiOperand> operands) {
-      for(VbiOperand op : operands) {
-         // Ignore outputs
-         if(!op.isInput) {
-            continue;
-         }
-
-         if(!op.isConstant) {
-            return false;
-         }
-      }
-
-      return true;
-   }
-*/
-
-private boolean solve(OperandIO io, MbInstructionName mbInstructionName) {
-   //private boolean solve(List<VbiOperand> baseInputs, List<VbiOperand> additionalInputs,
-   //        List<VbiOperand> baseOutputs, List<VbiOperand> additionalInputs0, MbInstructionName mbInstructionName) {
-   //private boolean solve(VeryBigInstruction32 vbi, MbInstructionName mbInstructionName) {
+   private boolean solve(OperandIO io, MbInstructionName mbInstructionName,
+           VeryBigInstruction32 vbi) {
       // This might be done another way: use argument properties to extract the inputs
       // from the operation. Then give this inputs to an agnostic solver.
 
-   if(OperationProperties.isAdd(mbInstructionName)) {
- //     if(InstructionProperties.ADD_INSTRUCTIONS.contains(mbInstructionName)) {
-         //solveAdd(vbi, mbInstructionName);
+      if (OperationProperties.isAdd(mbInstructionName)) {
          return solveAdd(io, mbInstructionName);
-         //return true;
       }
 
+      if (OperationProperties.isRsub(mbInstructionName)) {
+         return solveRsub(io, mbInstructionName);
+      }
 
-   operationsNotSupported.add(mbInstructionName.getName());
-      return true;
+      if (OperationProperties.isBinaryLogical(mbInstructionName)) {
+         return solveBinaryLogical(io, mbInstructionName);
+      }
+
+      if (OperationProperties.isUnaryLogical(mbInstructionName)) {
+         return solveUnaryLogical(io, mbInstructionName);
+      }
+
+      if(OperationProperties.isJump(mbInstructionName)) {
+         return solveJump(io, vbi);
+      }
+
+      
+      if(OperationProperties.isLoad(mbInstructionName)) {
+         return solveLoad(io, vbi);
+      }
+        
+       
+
+      operationsNotSupported.add(mbInstructionName.getName());
+      return false;
    }
 
-   //private void solveAdd(VeryBigInstruction32 vbi, MbInstructionName mbInstructionName) {
    private boolean solveAdd(OperandIO io, MbInstructionName mbInstructionName) {
       List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
-
       Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
+      if(carryInValue == null) {
+         carryInValue = OperationUtils.CARRY_NEUTRAL_ADD;
+      }
 
       ArithmeticResult32 result = OperationUtils.add32(inputs.get(0), inputs.get(1),
               carryInValue);
-
       MbSolverUtils.updateVbi(io, mbInstructionName, result);
       
-
       return true;
-
-       // Get Inputs
-       /*
-      int[] inputs = new int[2];
-      int counter = 0;
-      for(VbiOperand op : vbi.originalOperands) {
-         if(!op.isInput) {
-            continue;
-         }
-         inputs[counter] = op.value;
-         counter++;
-      }
-      
-      if(counter != 2) {
-         System.err.println("Found "+counter+" inputs instead of 2.");
-      }
-*/
-     /*
-      int carryValue = 0;
-      if (usesCarryIn) {
-         for (VbiOperand op : vbi.supportOperands) {
-            if (!op.isInput) {
-               continue;
-            }
-            carryValue = op.value;
-            break;
-         }
-      }
-
-      int result;
-      if(usesCarryIn) {
-         result = OperationUtils.add32(inputs[0], inputs[1], carryValue);
-      } else {
-         result = OperationUtils.add32(inputs[0], inputs[1]);
-      }
-
-     */
-      /*
-      int carryOutResult = 0;
-      if(usesCarryOut) {
-         carryOutResult = OperationUtils.getCarryOutAdd(inputs[0], inputs[1], carryValue);
-      }
-
-      // Replace output
-      for (VbiOperand op : vbi.originalOperands) {
-         if(op.isInput) {
-            continue;
-         }
-
-         op.value = result;
-         op.isConstant = true;
-      }
-
-      if (usesCarryOut) {
-         for (VbiOperand op : vbi.supportOperands) {
-            if (op.isInput) {
-               continue;
-            }
-
-            op.value = carryOutResult;
-            op.isConstant = true;
-         }
-      }
-*/
    }
 
+   private boolean solveRsub(OperandIO io, MbInstructionName mbInstructionName) {
+      List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
+      Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
+      if(carryInValue == null) {
+         carryInValue = OperationUtils.CARRY_NEUTRAL_SUB;
+      }
 
-   public static final Set<String> operationsNotSupported = new HashSet<String>();
+      ArithmeticResult32 result = OperationUtils.rsub32(inputs.get(0), inputs.get(1),
+              carryInValue);
+      MbSolverUtils.updateVbi(io, mbInstructionName, result);
+      
+      return true;
+   }
+
+   private boolean solveBinaryLogical(OperandIO io, MbInstructionName mbInstructionName) {
+      List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
+
+      int result = MbSolverUtils.solveBinaryLogic(inputs, mbInstructionName);
+      MbSolverUtils.updateVbi(io, result);
+
+      return true;
+   }
+
+   private boolean solveUnaryLogical(OperandIO io, MbInstructionName mbInstructionName) {
+      List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 1);
+      Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
+      
+      ArithmeticResult32 result = MbSolverUtils.solveUnaryLogic(inputs, mbInstructionName, carryInValue);
+      MbSolverUtils.updateVbi(io, mbInstructionName, result);
+
+      return true;
+   }
+
+   /**
+    * If jump has literal inputs, it can be automatically removed. Just check
+    * if it has outputs which need to be updated.
+    * 
+    * @param io
+    * @param mbInstructionName
+    * @param mbInstructionName
+    * @return
+    */
+   private boolean solveJump(OperandIO io, VeryBigInstruction32 vbi) {
+      if(!io.baseOutputs.isEmpty()) {
+         io.baseOutputs.get(0).value = vbi.address;
+         io.baseOutputs.get(0).isConstant = true;         
+      }
+
+      // Check for cases I'm not taking into accound
+      if(io.baseOutputs.size() > 1 || !io.additionalOutputs.isEmpty()) {
+         System.err.println("Jump has outputs which where not considered:"+vbi+". Check if this is done right.");
+         return false;
+      }
+
+      return true;
+   }
+
+   private boolean solveLoad(OperandIO io, VeryBigInstruction32 vbi) {
+      // This optimization can only be applyed if there are no stores in the loop
+      if(vbi.loopHasStores) {
+         return false;
+      }
+
+      // Load has constant inputs; solver should read the memory position
+      // of this instruction and substitute. For now, just mark instruction
+      // as constant and put a value
+      int dummyValue = 450;
+
+      io.baseOutputs.get(0).value = dummyValue;
+      io.baseOutputs.get(0).isConstant = true;
+      //throw new UnsupportedOperationException("Not yet implemented");
+      return true;
+   }
+
+   public static void reset() {
+      operationsNotSupported = new AccumulatorMap<String>();
+   }
+
+   //public static final Map<String, Integer> operationsNotSupported = new HashSet<String>();
+   public static AccumulatorMap<String> operationsNotSupported = new AccumulatorMap<String>();
+
+
 
 
 

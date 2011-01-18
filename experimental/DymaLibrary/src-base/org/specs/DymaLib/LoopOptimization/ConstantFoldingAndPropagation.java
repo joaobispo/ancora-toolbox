@@ -23,7 +23,7 @@ import java.util.Map;
 import org.specs.DymaLib.DataStructures.VbiOperand;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
 import org.specs.DymaLib.Solver;
-import org.specs.DymaLib.VbiOptimizer;
+import org.specs.DymaLib.VbiUtils.VbiOptimizer;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 
 /**

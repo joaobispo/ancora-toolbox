@@ -59,6 +59,11 @@ public class MbGraphBuilder implements GraphBuilder {
       counter++;
 
       for(VeryBigInstruction32 vbi : vbis) {
+         // Only build nodes for mappable nodes
+         if(!vbi.isMappable) {
+            continue;
+         }
+
          // Create new node
          //GraphNode newNode = new GraphNode(counter+":"+vbi.op);
          GraphNode newNode = new GraphNode(vbi.op, counter);

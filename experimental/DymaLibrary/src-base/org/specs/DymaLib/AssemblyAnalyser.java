@@ -46,4 +46,10 @@ public interface AssemblyAnalyser {
     * and which value they have
     */
    Collection<ConstantRegister> getConstantRegisters();
+
+   /**
+    *
+    * @return true if the loop has store instructions
+    */
+   boolean hasStores();
 }

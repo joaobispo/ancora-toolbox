@@ -25,6 +25,7 @@ import org.specs.DymaLib.DataStructures.LiveOut;
 import org.specs.DymaLib.AssemblyAnalyser;
 import org.specs.DymaLib.Utils.LivenessAnalyser;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
+import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
@@ -37,38 +38,38 @@ import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 public class MbAssemblyAnalyser implements AssemblyAnalyser {
 
   
-
-   private MbAssemblyAnalyser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters) {
+   private MbAssemblyAnalyser(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters,
+           boolean hasStores) {
       this.liveOuts = liveOuts;
       this.constantRegisters = constantRegisters;
+      this.hasStores = hasStores;
    }
 
 
-
-   //public MbAssemblyAnalyser(List<Integer> addresses, List<String> instructions) {
-      //this.instructions = MicroBlazeParser.getMbInstructions(addresses, instructions);
-   //}
-
    public static MbAssemblyAnalyser create(RegisterTable registerTable, List<MbInstruction> mbInstructions) {
-      // Transform into MbInstructions
-      //List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
-      //        sllLoop.getAddresses(), sllLoop.getInstructions());
-
       LivenessAnalyser livenessAnalyser = createAnalyser(mbInstructions);
-
-      
 
       // Extract data for building MbAnalyser
        Collection<LiveOut> liveouts = livenessAnalyser.getLiveOuts();
-       //Collection<ConstantRegister> constantRegisters = getConstantRegisters(sllLoop, livenessAnalyser);
        Collection<ConstantRegister> constantRegisters = getConstantRegisters(registerTable, livenessAnalyser);
+       boolean hasStores = hasStores(mbInstructions);
 
- 
-      MbAssemblyAnalyser mbAssAnal = new MbAssemblyAnalyser(liveouts, constantRegisters);
+      MbAssemblyAnalyser mbAssAnal = new MbAssemblyAnalyser(liveouts, constantRegisters, hasStores);
 
       return mbAssAnal;
    }
 
+   private static boolean hasStores(List<MbInstruction> mbInstructions) {
+      boolean hasStores = false;
+
+      for (MbInstruction inst : mbInstructions) {
+         if (InstructionProperties.STORE_INSTRUCTIONS.contains(inst.getInstructionName())) {
+            hasStores = true;
+         }
+      }
+
+      return hasStores;
+   }
 
    public static void extractInfo(MbInstruction mbInst, List<String> operandIds, List<Boolean> isInput, List<Boolean> isConstant) {
       // Extract info from MbInst operands
@@ -139,6 +140,10 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
       return  constantRegisters;
    }
 
+   public boolean hasStores() {
+      return hasStores;
+   }
+
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -159,6 +164,6 @@ public class MbAssemblyAnalyser implements AssemblyAnalyser {
 
    private Collection<LiveOut> liveOuts;
    private Collection<ConstantRegister> constantRegisters;
+   private boolean hasStores;
 
-   //private List<MbInstruction> instructions;
 }

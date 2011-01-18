@@ -26,18 +26,16 @@ import java.util.List;
 public class VeryBigInstruction32 {
 
    public VeryBigInstruction32(Integer address, String op, List<VbiOperand> originalOperands,
-           List<VbiOperand> supportOperands, boolean isMappable, boolean hasSideEffects) {
+           List<VbiOperand> supportOperands, boolean isMappable, boolean hasSideEffects,
+           boolean loopHasStores) {
       this.address = address;
       this.op = op;
       this.originalOperands = originalOperands;
       this.supportOperands = supportOperands;
       this.isMappable = isMappable;
       this.hasSideEffects = hasSideEffects;
+      this.loopHasStores = loopHasStores;
    }
-
-   //public VeryBigInstruction32(int address, String op, List<Operand> originalOperands,
-   //        List<Operand> supportOperands, boolean isMappable) {
-   
 
    @Override
    public String toString() {
@@ -73,38 +71,12 @@ public class VeryBigInstruction32 {
 
    public Integer address;
    public String op;
-   //public List<Operand> originalOperands;
-   //public List<Operand> supportOperands;
    public List<VbiOperand> originalOperands;
    public List<VbiOperand> supportOperands;
    // FLAGS
    public boolean isMappable;
    public boolean hasSideEffects;
-/*
-   public class Operand {
+   // Global flags
+   public boolean loopHasStores;
 
-      public Operand(String id, Integer value, boolean isInput, boolean isRegister, boolean isConstant,
-              boolean isLiveIn, boolean isLiveOut, boolean isAuxiliarOperand) {
-         this.id = id;
-         this.value = value;
-         this.isInput = isInput;
-         this.isRegister = isRegister;
-         this.isConstant = isConstant;
-         this.isLiveIn = isLiveIn;
-         this.isLiveOut = isLiveOut;
-         this.isAuxiliarOperand = isAuxiliarOperand;
-      }
-
-
-      public String id;
-      public Integer value;
-      public boolean isInput;
-      public boolean isRegister;
-      public boolean isConstant;
-      public boolean isLiveIn;
-      public boolean isLiveOut;
-      public boolean isAuxiliarOperand;
-   }
- *
- */
 }

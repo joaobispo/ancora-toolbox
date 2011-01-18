@@ -17,18 +17,13 @@
 
 package org.specs.DymaLib.Utils;
 
-import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.specs.DymaLib.DataStructures.VbiAnalysis;
 import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.Dotty.DottyGraph;
+import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
-import org.suikasoft.SharedLibrary.IoUtils;
-import org.suikasoft.SharedLibrary.MiscUtils;
 import org.suikasoft.SharedLibrary.Processors.InstructionName;
 
 /**
@@ -67,8 +62,10 @@ public class VbiAnalyser {
     * @param instructionNames
     * @return
     */
-   public static Map<String, Integer> getInstructionsHistogram(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
-      Map<String, Integer> counterTable = new HashMap<String, Integer>();
+   //public static Map<String, Integer> getInstructionsHistogram(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
+   public static AccumulatorMap getInstructionsHistogram(List<VeryBigInstruction32> vbis, Collection<String> instructionNames) {
+      //Map<String, Integer> counterTable = new HashMap<String, Integer>();
+      AccumulatorMap<String> counterTable = new AccumulatorMap<String>();
       for(VeryBigInstruction32 vbi : vbis) {
          boolean nameListExists = instructionNames != null;
          if (nameListExists) {
@@ -77,6 +74,8 @@ public class VbiAnalyser {
             }
          }
 
+         counterTable.add(vbi.op);
+         /*
          Integer value = counterTable.get(vbi.op);
          if(value == null) {
             value = 0;
@@ -85,6 +84,8 @@ public class VbiAnalyser {
          value = value + 1;
 
          counterTable.put(vbi.op, value);
+          *
+          */
       }
       
       return counterTable;
@@ -110,22 +111,7 @@ public class VbiAnalyser {
       return GraphUtils.getCriticalPathLenght(rootNode);
    }
 
-   /*
-   private static void findCycle(GraphNode node) {
-      // Check if number of node e less than any of its children
-      for(GraphNode child : node.getChildren()) {
-         if(child.getNumber() <= node.getNumber()) {
-            System.err.println("Parent node '"+node+"' less or equal than child '"+child+"'");
-         }
-      }
-  
-      // Call childs
-      for(GraphNode child : node.getChildren()) {
-         findCycle(child);
-      }
 
-   }
-*/
    
    private static void visitLeafs(GraphNode node) {
       int numChildren = node.getChildren().size();
@@ -141,19 +127,19 @@ public class VbiAnalyser {
       }
    }
 
-
-   //private List<VeryBigInstruction32> vbiList;
-
    public static VbiAnalysis getData(List<VeryBigInstruction32> vbis, 
-           //InstructionName instName, GraphBuilder graphBuilder) {
            InstructionName instName, GraphNode rootNode) {
 
 
-      Map<String,Integer> storeHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getStoreInstructions());
-      int numStores = MiscUtils.sumValues(storeHistogram);
+      //Map<String,Integer> storeHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getStoreInstructions());
+      AccumulatorMap<String> storeHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getStoreInstructions());
+      //int numStores = MiscUtils.sumValues(storeHistogram);
+      int numStores = storeHistogram.getSum();
 
-      Map<String,Integer> loadHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getLoadInstructions());
-      int numLoads = MiscUtils.sumValues(loadHistogram);
+      //Map<String,Integer> loadHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getLoadInstructions());
+      AccumulatorMap<String> loadHistogram = VbiAnalyser.getInstructionsHistogram(vbis, instName.getLoadInstructions());
+      //int numLoads = MiscUtils.sumValues(loadHistogram);
+      int numLoads = loadHistogram.getSum();
 
       int mappableInstructions = VbiAnalyser.getMappableInstructions(vbis);
       int cpl = VbiAnalyser.getCriticalPathLenght(vbis, rootNode);
@@ -162,13 +148,6 @@ public class VbiAnalyser {
 
       return vbiAnalysis;
    }
-
-   /*
-   private static void writeDotty(GraphNode rootNode) {
-      IoUtils.write(new File("E:/test.dotty"), DottyGraph.generateDotty(rootNode));
-   }
-    * 
-    */
 
 
 }

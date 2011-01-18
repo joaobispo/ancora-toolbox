@@ -35,16 +35,22 @@ public class VbiAnalysis {
 
       int mappableDiff =  previousAnalysis.mappableInstructions - mappableInstructions;
       if(mappableDiff != 0) {
-         double ratio = ((double)mappableInstructions /
+         //double ratio = ((double)mappableInstructions /
+         double ratio = ((double)mappableDiff /
                  (double)previousAnalysis.mappableInstructions) * 100;
-         builder.append("Mappable Instructions Diff:"+mappableDiff+" ("+ratio+"%)\n");
+         builder.append("Mappable Instructions Diff:").
+                 append(mappableDiff).append(" (").
+                 append(ratio).append("%)\n");
       }
 
       int cplDiff =  previousAnalysis.criticalPathLenght - criticalPathLenght;
       if(cplDiff != 0) {
-         double ratio = ((double)criticalPathLenght /
+         //double ratio = ((double)criticalPathLenght /
+         double ratio = ((double)cplDiff /
                  (double)previousAnalysis.criticalPathLenght) * 100;
-         builder.append("Critical Path Lenght Diff :"+cplDiff+" ("+ratio+"%)\n");
+         builder.append("Critical Path Lenght Diff :").
+                 append(cplDiff).append(" (").
+                 append(ratio).append("%)\n");
       }
 
       return builder.toString();

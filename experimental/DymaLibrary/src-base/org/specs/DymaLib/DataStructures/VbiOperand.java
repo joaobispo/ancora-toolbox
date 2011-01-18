@@ -67,7 +67,7 @@ public class VbiOperand {
 
 
 
-         public String id;
+      public String id;
       public Integer value;
       public boolean isInput;
       public boolean isRegister;
