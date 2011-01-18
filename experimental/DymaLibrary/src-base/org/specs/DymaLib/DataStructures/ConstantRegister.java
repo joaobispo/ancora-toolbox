@@ -20,6 +20,11 @@ package org.specs.DymaLib.DataStructures;
 import java.io.Serializable;
 
 /**
+ * Represents a register which does not change its value during the considered
+ * segment.
+ *
+ * <p>Includes an id to identify the register and the value
+ * of the register during the considered segment.
  *
  * @author Joao Bispo
  */
@@ -35,19 +40,8 @@ public class ConstantRegister implements Serializable {
       return id+"("+value+")";
    }
 
-   /*
-   @Override
-   public boolean equals(Object aThat) {
-      return id.equals(aThat);
-   }
-
-   @Override
-   public int hashCode() {
-      return id.hashCode();
-   }
-    * 
-    */
-
    public final String id;
    public final int value;
+
+   private static final long serialVersionUID = 1;
 }

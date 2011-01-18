@@ -20,6 +20,10 @@ package org.specs.DymaLib.DataStructures;
 import java.io.Serializable;
 
 /**
+ * Represents a live-out.
+ *
+ * <p>Includes an id to identify the live-out and the number
+ * of the instruction where it is written for the last time.
  *
  * @author Joao Bispo
  */
@@ -35,8 +39,8 @@ public class LiveOut implements Serializable {
       return id+"("+instructionNumber+")";
    }
 
-   
-
    public final String id;
    public final int instructionNumber;
+
+   private static final long serialVersionUID = 1;
 }
