@@ -15,19 +15,19 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils;
+package org.specs.DymaLib.Vbi.Analysis;
 
 import java.util.Collection;
 import java.util.List;
-import org.specs.DymaLib.DataStructures.VbiAnalysis;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.Graphs.GraphUtils;
 import org.suikasoft.SharedLibrary.Processors.InstructionName;
 
 /**
- * Extracts information from a list of Very Big Instructions.
+ * Extracts information from a list of Very Big Instructions (VBIs) into a
+ * VbiAnalysis object.
  *
  * @author Joao Bispo
  */

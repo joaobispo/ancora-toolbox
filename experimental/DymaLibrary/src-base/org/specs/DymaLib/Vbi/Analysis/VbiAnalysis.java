@@ -15,9 +15,10 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.DataStructures;
+package org.specs.DymaLib.Vbi.Analysis;
 
 /**
+ * Contains the results of an analysis to a list of Vbis.
  *
  * @author Joao Bispo
  */

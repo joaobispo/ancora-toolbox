@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.DataStructures;
+package org.specs.DymaLib.Vbi;
 
 /**
  *

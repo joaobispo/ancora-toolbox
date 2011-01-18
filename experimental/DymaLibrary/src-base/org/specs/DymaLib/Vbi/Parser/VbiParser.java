@@ -15,23 +15,28 @@
  *  under the License.
  */
 
-package org.specs.DymaLib;
+package org.specs.DymaLib.Vbi.Parser;
 
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 
 /**
- * Solves VBIs, when the inputs are literals.
+ * Parses strings of assembly instructions into Very Big Instructions
  *
  * @author Joao Bispo
  */
-public interface Solver {
+public interface VbiParser {
 
    /**
-    * If the inputs of the VBI are literals, solves the instruction by replacing
-    * its outputs for constant equivalents.
-    *
-    * @param vbi
-    * @return true if the operation could be solved. False otherwise.
+    * Converts an assembly instruction into a very big instruction.
+    * 
+    * @param instruction
+    * @return
     */
-   public boolean solve(VeryBigInstruction32 vbi);
+   VeryBigInstruction32 parseInstruction(Object instruction);
+   /**
+    * Converts a very big instruction back into the format of the original instruction.
+    * @param instruction
+    * @return
+    */
+   //String parseVbi(VeryBigInstruction32 instruction);
 }

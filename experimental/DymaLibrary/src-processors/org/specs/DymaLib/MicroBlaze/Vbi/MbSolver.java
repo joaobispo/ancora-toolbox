@@ -15,13 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.MicroBlaze;
+package org.specs.DymaLib.MicroBlaze.Vbi;
 
 import java.util.List;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.Solver;
-import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.Vbi.OperandIO;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.specs.DymaLib.Vbi.Utils.Solver;
+import org.specs.DymaLib.Vbi.VbiUtils;
+import org.specs.DymaLib.Vbi.VbiOperandIOView;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;
@@ -39,7 +39,7 @@ public class MbSolver implements Solver {
 
    public boolean solve(VeryBigInstruction32 vbi) {
       // Get Input/Output view
-      OperandIO io = new OperandIO(vbi.originalOperands, vbi.supportOperands);
+      VbiOperandIOView io = new VbiOperandIOView(vbi.originalOperands, vbi.supportOperands);
 
 
       // Check if all inputs are constant
@@ -62,7 +62,7 @@ public class MbSolver implements Solver {
       return success;
    }
 
-   private boolean solve(OperandIO io, MbInstructionName mbInstructionName,
+   private boolean solve(VbiOperandIOView io, MbInstructionName mbInstructionName,
            VeryBigInstruction32 vbi) {
       // This might be done another way: use argument properties to extract the inputs
       // from the operation. Then give this inputs to an agnostic solver.
@@ -98,7 +98,7 @@ public class MbSolver implements Solver {
       return false;
    }
 
-   private boolean solveAdd(OperandIO io, MbInstructionName mbInstructionName) {
+   private boolean solveAdd(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
       Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
       if(carryInValue == null) {
@@ -112,7 +112,7 @@ public class MbSolver implements Solver {
       return true;
    }
 
-   private boolean solveRsub(OperandIO io, MbInstructionName mbInstructionName) {
+   private boolean solveRsub(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
       Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
       if(carryInValue == null) {
@@ -126,7 +126,7 @@ public class MbSolver implements Solver {
       return true;
    }
 
-   private boolean solveBinaryLogical(OperandIO io, MbInstructionName mbInstructionName) {
+   private boolean solveBinaryLogical(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 2);
 
       int result = MbSolverUtils.solveBinaryLogic(inputs, mbInstructionName);
@@ -135,7 +135,7 @@ public class MbSolver implements Solver {
       return true;
    }
 
-   private boolean solveUnaryLogical(OperandIO io, MbInstructionName mbInstructionName) {
+   private boolean solveUnaryLogical(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       List<Integer> inputs = MbSolverUtils.getInputs(io, mbInstructionName, 1);
       Integer carryInValue = MbSolverUtils.getCarryIn(io, mbInstructionName);
       
@@ -154,7 +154,7 @@ public class MbSolver implements Solver {
     * @param mbInstructionName
     * @return
     */
-   private boolean solveJump(OperandIO io, VeryBigInstruction32 vbi) {
+   private boolean solveJump(VbiOperandIOView io, VeryBigInstruction32 vbi) {
       if(!io.baseOutputs.isEmpty()) {
          io.baseOutputs.get(0).value = vbi.address;
          io.baseOutputs.get(0).isConstant = true;         
@@ -169,7 +169,7 @@ public class MbSolver implements Solver {
       return true;
    }
 
-   private boolean solveLoad(OperandIO io, VeryBigInstruction32 vbi) {
+   private boolean solveLoad(VbiOperandIOView io, VeryBigInstruction32 vbi) {
       // This optimization can only be applyed if there are no stores in the loop
       if(vbi.loopHasStores) {
          return false;

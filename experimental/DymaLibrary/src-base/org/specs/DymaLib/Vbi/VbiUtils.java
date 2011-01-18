@@ -15,11 +15,11 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils;
+package org.specs.DymaLib.Vbi;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.specs.DymaLib.DataStructures.VbiOperand;
+import org.specs.DymaLib.Vbi.VbiOperand;
 
 /**
  * Utility methods related to VBIs and its operands.

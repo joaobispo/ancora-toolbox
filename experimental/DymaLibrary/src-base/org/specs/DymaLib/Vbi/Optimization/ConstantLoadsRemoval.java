@@ -15,12 +15,11 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopOptimization;
+package org.specs.DymaLib.Vbi.Optimization;
 
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.Vbi.VbiOptimizer;
-import org.specs.DymaLib.Vbi.OperandIO;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.specs.DymaLib.Vbi.VbiUtils;
+import org.specs.DymaLib.Vbi.VbiOperandIOView;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 
@@ -41,7 +40,7 @@ public class ConstantLoadsRemoval implements VbiOptimizer {
       MbInstructionName instName = (MbInstructionName) MbInstructionName.add.getEnum(vbi.op);
       // Check for literal loads
       if(InstructionProperties.LOAD_INSTRUCTIONS.contains(instName)) {
-         OperandIO io = new OperandIO(vbi.originalOperands, vbi.supportOperands);
+         VbiOperandIOView io = new VbiOperandIOView(vbi.originalOperands, vbi.supportOperands);
          if(VbiUtils.areConstant(io.baseInputs) && VbiUtils.areConstant(io.additionalInputs)) {
             hasLiteralLoads = true;
          }

@@ -15,15 +15,14 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.LoopOptimization;
+package org.specs.DymaLib.Vbi.Optimization;
 
+import org.specs.DymaLib.Vbi.Utils.Solver;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.DataStructures.VbiOperand;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.Solver;
-import org.specs.DymaLib.Vbi.VbiOptimizer;
+import org.specs.DymaLib.Vbi.VbiOperand;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 
 /**

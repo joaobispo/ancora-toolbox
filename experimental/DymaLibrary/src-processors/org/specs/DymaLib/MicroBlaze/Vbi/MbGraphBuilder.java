@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.MicroBlaze;
+package org.specs.DymaLib.MicroBlaze.Vbi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.DataStructures.VbiOperand;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.GraphBuilder;
+import org.specs.DymaLib.Vbi.VbiOperand;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.specs.DymaLib.Vbi.Utils.GraphBuilder;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;

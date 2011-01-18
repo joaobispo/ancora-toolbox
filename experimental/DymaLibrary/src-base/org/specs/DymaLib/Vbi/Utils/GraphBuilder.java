@@ -15,29 +15,18 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Vbi;
+package org.specs.DymaLib.Vbi.Utils;
 
 import java.util.List;
-import org.specs.DymaLib.DataStructures.VbiOperand;
-import org.specs.DymaLib.Utils.VbiUtils;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 
 /**
+ * Creates a graph from a list of VBIs.
  *
  * @author Joao Bispo
  */
-public class OperandIO {
+public interface GraphBuilder {
 
-   public OperandIO(List<VbiOperand> originalOperands, List<VbiOperand> supportOperands) {
-      baseInputs = VbiUtils.getInputs(originalOperands);
-      additionalInputs = VbiUtils.getInputs(supportOperands);
-      baseOutputs = VbiUtils.getOutputs(originalOperands);
-      additionalOutputs = VbiUtils.getOutputs(supportOperands);
-   }
-
-   
-   
-   public final List<VbiOperand> baseInputs;
-   public final List<VbiOperand> additionalInputs;
-   public final List<VbiOperand> baseOutputs;
-   public final List<VbiOperand> additionalOutputs;
+   GraphNode buildGraph(List<VeryBigInstruction32> vbis);
 }

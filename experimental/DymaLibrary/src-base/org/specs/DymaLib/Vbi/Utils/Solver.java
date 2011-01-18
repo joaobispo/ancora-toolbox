@@ -15,17 +15,23 @@
  *  under the License.
  */
 
-package org.specs.DymaLib;
+package org.specs.DymaLib.Vbi.Utils;
 
-import java.util.List;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.suikasoft.SharedLibrary.Graphs.GraphNode;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 
 /**
+ * Solves VBIs, when the inputs are literals.
  *
  * @author Joao Bispo
  */
-public interface GraphBuilder {
+public interface Solver {
 
-   GraphNode buildGraph(List<VeryBigInstruction32> vbis);
+   /**
+    * If the inputs of the VBI are literals, solves the instruction by replacing
+    * its outputs for constant equivalents.
+    *
+    * @param vbi
+    * @return true if the operation could be solved. False otherwise.
+    */
+   public boolean solve(VeryBigInstruction32 vbi);
 }

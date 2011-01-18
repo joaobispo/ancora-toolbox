@@ -17,13 +17,26 @@
 
 package org.specs.DymaLib.Vbi;
 
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
+import java.util.List;
 
 /**
- * Optimizes VBI instructions.
+ * Represents an Input/Output view of the VbiOperands in a Vbi.
  *
  * @author Joao Bispo
  */
-public interface VbiOptimizer {
-   void optimize(VeryBigInstruction32 vbi);
+public class VbiOperandIOView {
+
+   public VbiOperandIOView(List<VbiOperand> originalOperands, List<VbiOperand> supportOperands) {
+      baseInputs = VbiUtils.getInputs(originalOperands);
+      additionalInputs = VbiUtils.getInputs(supportOperands);
+      baseOutputs = VbiUtils.getOutputs(originalOperands);
+      additionalOutputs = VbiUtils.getOutputs(supportOperands);
+   }
+
+   
+   
+   public final List<VbiOperand> baseInputs;
+   public final List<VbiOperand> additionalInputs;
+   public final List<VbiOperand> baseOutputs;
+   public final List<VbiOperand> additionalOutputs;
 }

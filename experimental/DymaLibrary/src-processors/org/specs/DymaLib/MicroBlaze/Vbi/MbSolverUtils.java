@@ -15,13 +15,13 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.MicroBlaze;
+package org.specs.DymaLib.MicroBlaze.Vbi;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.specs.DymaLib.DataStructures.VbiOperand;
-import org.specs.DymaLib.Utils.VbiUtils;
-import org.specs.DymaLib.Vbi.OperandIO;
+import org.specs.DymaLib.Vbi.VbiOperand;
+import org.specs.DymaLib.Vbi.VbiUtils;
+import org.specs.DymaLib.Vbi.VbiOperandIOView;
 import org.suikasoft.SharedLibrary.BitUtils;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;
@@ -37,7 +37,7 @@ import org.suikasoft.SharedLibrary.OperationUtils;
  */
 public class MbSolverUtils {
 
-   public static boolean checkBaseIOs(OperandIO io, MbInstructionName mbInstructionName) {
+   public static boolean checkBaseIOs(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       // Check inputs
       int foundReads= io.baseInputs.size();
       int expectedReads = ArgumentsProperties.getNumReads(mbInstructionName);
@@ -61,7 +61,7 @@ public class MbSolverUtils {
       return true;
    }
 
-   public  static List<Integer> getInputs(OperandIO io, MbInstructionName mbInstructionName, int numInputs) {
+   public  static List<Integer> getInputs(VbiOperandIOView io, MbInstructionName mbInstructionName, int numInputs) {
       boolean success = checkBaseIOs(io, mbInstructionName);
       if (!success) {
          return null;
@@ -77,7 +77,7 @@ public class MbSolverUtils {
       return inputs;
    }
 
-   public static Integer getCarryIn(OperandIO io, MbInstructionName mbInstructionName) {
+   public static Integer getCarryIn(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       boolean usesCarryIn = CarryProperties.usesCarryIn(mbInstructionName);
 
       // Get carry in value
@@ -89,7 +89,7 @@ public class MbSolverUtils {
       }
    }
 
-   public static void updateVbi(OperandIO io, MbInstructionName mbInstructionName, ArithmeticResult32 result) {
+   public static void updateVbi(VbiOperandIOView io, MbInstructionName mbInstructionName, ArithmeticResult32 result) {
       // Update VBI
       io.baseOutputs.get(0).value = result.result;
       io.baseOutputs.get(0).isConstant = true;
@@ -208,7 +208,7 @@ public class MbSolverUtils {
     * @param io
     * @param mbInstructionName
     */
-   public static void updateVbi(OperandIO io, int result) {
+   public static void updateVbi(VbiOperandIOView io, int result) {
       // Update VBI
       io.baseOutputs.get(0).value = result;
       io.baseOutputs.get(0).isConstant = true;
