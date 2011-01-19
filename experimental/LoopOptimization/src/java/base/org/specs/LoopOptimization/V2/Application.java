@@ -17,6 +17,9 @@
 
 package org.specs.LoopOptimization.V2;
 
+import org.specs.DymaLib.MicroBlaze.MbLoopAnalyser.MbLoopAnalysis;
+import org.specs.DymaLib.MicroBlaze.MbLoopAnalyser.MbLoopAnalyser;
+import org.specs.DToolPlus.MbSimulator.MbSimulator;
 import org.specs.DymaLib.Simulator.SimulatorResults;
 import java.io.File;
 import java.util.Collection;

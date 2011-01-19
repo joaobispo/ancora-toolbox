@@ -17,6 +17,8 @@
 
 package org.specs.LoopOptimization.V2;
 
+import org.specs.DymaLib.MicroBlaze.MbLoopAnalyser.MbLoopAnalysisSetup;
+import org.specs.DToolPlus.MbSimulator.MbSimulatorSetup;
 import java.util.Collection;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
