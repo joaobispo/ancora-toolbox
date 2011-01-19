@@ -18,10 +18,13 @@
 package org.specs.DymaLib.MicroBlaze.Vbi;
 
 import java.util.List;
+import org.specs.DymaLib.Vbi.Optimization.CfpOptions;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.specs.DymaLib.Vbi.Utils.Solver;
 import org.specs.DymaLib.Vbi.VbiUtils;
 import org.specs.DymaLib.Vbi.VbiOperandIOView;
+import org.suikasoft.Jani.Base.BaseUtils;
+import org.suikasoft.Jani.Setup;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.DataStructures.ArithmeticResult32;
 import org.suikasoft.SharedLibrary.LoggingUtils;
@@ -35,6 +38,25 @@ import org.suikasoft.SharedLibrary.OperationUtils;
  */
 public class MbSolver implements Solver {
 
+   public MbSolver(boolean solveArithLogic, boolean solveLoads, boolean solveBranches) {
+      this.solveArithLogic = solveArithLogic;
+      this.solveLoads = solveLoads;
+      this.solveBranches = solveBranches;
+   }
+
+   public MbSolver() {
+      this(true, true, true);
+   }
+
+   public MbSolver(Setup setup) {
+      this(
+//              BaseUtils.getBoolean(setup.get(MbSolverOptions.SolveArithmeticAndLogic)),
+//              BaseUtils.getBoolean(setup.get(MbSolverOptions.SolveLoads)),
+//              BaseUtils.getBoolean(setup.get(MbSolverOptions.SolveBranches)));
+              BaseUtils.getBoolean(setup.get(CfpOptions.SolveArithmeticAndLogic)),
+              BaseUtils.getBoolean(setup.get(CfpOptions.SolveLoads)),
+              BaseUtils.getBoolean(setup.get(CfpOptions.SolveBranches)));
+   }
 
 
    public boolean solve(VeryBigInstruction32 vbi) {
@@ -67,6 +89,24 @@ public class MbSolver implements Solver {
       // This might be done another way: use argument properties to extract the inputs
       // from the operation. Then give this inputs to an agnostic solver.
 
+      if (solveArithLogic) {
+         return solveArithLogic(io, mbInstructionName);
+      }
+
+      if (solveLoads) {
+         return solveLoads(io, mbInstructionName, vbi);
+      }
+
+      if(solveBranches) {
+         return solveBranches(mbInstructionName, io, vbi);
+      }
+       
+
+      operationsNotSupported.add(mbInstructionName.getName());
+      return false;
+   }
+
+   private boolean solveArithLogic(VbiOperandIOView io, MbInstructionName mbInstructionName) {
       if (OperationProperties.isAdd(mbInstructionName)) {
          return solveAdd(io, mbInstructionName);
       }
@@ -83,18 +123,21 @@ public class MbSolver implements Solver {
          return solveUnaryLogical(io, mbInstructionName);
       }
 
-      if(OperationProperties.isJump(mbInstructionName)) {
+      return false;
+   }
+
+    private boolean solveLoads(VbiOperandIOView io, MbInstructionName mbInstructionName, VeryBigInstruction32 vbi) {
+      if (OperationProperties.isJump(mbInstructionName)) {
          return solveJump(io, vbi);
       }
 
-      
-      if(OperationProperties.isLoad(mbInstructionName)) {
+      return false;
+   }
+
+    private boolean solveBranches(MbInstructionName mbInstructionName, VbiOperandIOView io, VeryBigInstruction32 vbi) {
+      if (OperationProperties.isLoad(mbInstructionName)) {
          return solveLoad(io, vbi);
       }
-        
-       
-
-      operationsNotSupported.add(mbInstructionName.getName());
       return false;
    }
 
@@ -192,6 +235,17 @@ public class MbSolver implements Solver {
 
    //public static final Map<String, Integer> operationsNotSupported = new HashSet<String>();
    public static AccumulatorMap<String> operationsNotSupported = new AccumulatorMap<String>();
+
+/**
+ * INSTANCE VARIABLES
+ */
+   private boolean solveArithLogic;
+   private boolean solveLoads;
+   private boolean solveBranches;
+
+
+
+
 
 
 

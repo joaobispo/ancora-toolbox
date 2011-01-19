@@ -18,11 +18,8 @@
 package org.specs.DymaLib.MicroBlaze.Assembly;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.specs.DymaLib.Assembly.AssemblyAnalysis;
-import org.specs.DymaLib.Assembly.ConstantRegister;
-import org.specs.DymaLib.Assembly.LiveOut;
 import org.specs.DymaLib.Liveness.LivenessAnalyser;
 import org.specs.DymaLib.Liveness.LivenessAnalysis;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;

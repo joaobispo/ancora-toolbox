@@ -26,8 +26,8 @@ import java.util.Set;
 import org.specs.DymaLib.Vbi.VbiOperand;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.specs.DymaLib.Vbi.Utils.GraphBuilder;
+import org.specs.DymaLib.Weights.WeightTable;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
-import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 
@@ -37,16 +37,27 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
  */
 public class MbGraphBuilder implements GraphBuilder {
 
+   /*
    public MbGraphBuilder() {
       this(null);
    }
-
-   public MbGraphBuilder(Map<String, Integer> nodeWeights) {
-      this.registerWrites = new HashMap<String, GraphNode>();
+    *
+    */
+public MbGraphBuilder(WeightTable nodeWeights) {
+   this.registerWrites = new HashMap<String, GraphNode>();
       this.nodeWeights = nodeWeights;
       this.lastBranch = null;
       this.lastStore = null;
       this.rootNode = null;
+}
+
+   public MbGraphBuilder(Map<String, Integer> nodeWeights) {
+      this(new WeightTable(nodeWeights, DEFAULT_INSTRUCTION_WEIGHT));
+      //this.registerWrites = new HashMap<String, GraphNode>();
+      //this.nodeWeights = nodeWeights;
+      //this.lastBranch = null;
+      //this.lastStore = null;
+      //this.rootNode = null;
    }
 
 
@@ -314,6 +325,8 @@ public class MbGraphBuilder implements GraphBuilder {
    }
 
    private int getWeigth(String id) {
+      return nodeWeights.getWeigth(id);
+      /*
       if(nodeWeights == null) {
          return DEFAULT_INSTRUCTION_WEIGHT;
       }
@@ -326,10 +339,13 @@ public class MbGraphBuilder implements GraphBuilder {
       }
 
       return weight;
+       * 
+       */
    }
 
    private Map<String, GraphNode> registerWrites;
-   private Map<String, Integer> nodeWeights;
+   //private Map<String, Integer> nodeWeights;
+   private WeightTable nodeWeights;
    private GraphNode lastBranch;
    private GraphNode lastStore;
    private GraphNode rootNode;
