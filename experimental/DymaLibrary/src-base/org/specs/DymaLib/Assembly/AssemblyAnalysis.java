@@ -32,12 +32,19 @@ import java.util.Collection;
  */
 public class AssemblyAnalysis {
 
+   public AssemblyAnalysis(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters, boolean hasStores, Collection<String> liveIns) {
+      this.liveOuts = liveOuts;
+      this.constantRegisters = constantRegisters;
+      this.hasStores = hasStores;
+      this.liveIns = liveIns;
+   }
+/*
    public AssemblyAnalysis(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters, boolean hasStores) {
       this.liveOuts = liveOuts;
       this.constantRegisters = constantRegisters;
       this.hasStores = hasStores;
    }
-
+*/
  @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -73,4 +80,6 @@ public class AssemblyAnalysis {
     * True if the loop has store instructions
     */
    public final boolean hasStores;
+
+   public final Collection<String> liveIns;
 }

@@ -56,4 +56,10 @@ public interface TraceReader {
     */
    //Map<RegisterId, Integer> getRegisters();
    RegisterTable getRegisters();
+
+   /**
+    *
+    * @return the total number of cycles up to this moment
+    */
+   long getCycles();
 }

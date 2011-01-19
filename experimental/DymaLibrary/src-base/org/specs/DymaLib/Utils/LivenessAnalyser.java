@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.specs.DymaLib.Utils;
 
 import java.util.ArrayList;
@@ -29,6 +28,15 @@ import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
+ * Analyses the liveness of registers in a sequence of instructions.
+ * 
+ * <p>For each instruction the analyser requires three lists:
+ * <br>operandIds, with Strings which identify each instruction operand;
+ * <br>isInput, with booleans which identify if an operand is an input. If false,
+ * the operand is assumed to be an output;
+ * <br>isConstant, with booleans which identify if an operand does not change 
+ * during the considered sequence (ex.: immediate values);
+ *
  *
  * @author Joao Bispo
  */
@@ -40,87 +48,122 @@ public class LivenessAnalyser {
       counter = 0;
    }
 
-  public void next(List<String> operandIds, List<Boolean> isInput,
-          List<Boolean> isConstant) {
+   /**
+    * Feeds to the analyser the operands of an instruction, along some of the
+    * properties of those operands.
+    *
+    * @param operandIds
+    * @param isInput
+    * @param isConstant
+    */
+   public void next(List<String> operandIds, List<Boolean> isInput,
+           List<Boolean> isConstant) {
 
-     // Check inputs
-     for(int i=0; i<operandIds.size(); i++) {
-        // Next if output
-        if(!isInput.get(i)) {
-           continue;
-        }
-        
-        // Next if constant
-        if(isConstant.get(i)) {
-           continue;
-        }
-        
-        // Check if input register is already in written
-        boolean alreadyWritten = writtenRegisters.containsKey(operandIds.get(i));
-        // Is a live-in?
-        if(!alreadyWritten) {
-           liveIns.add(operandIds.get(i));
-        }  
-     }
-     
-     // Check outputs
-     for(int i=0; i<operandIds.size(); i++) {
-        // Next if input
-        if(isInput.get(i)) {
-           continue;
-        }
-        
-        // Next if constant
-        if(isConstant.get(i)) {
-           continue;
-        }
-        
-        // Add output register to written set
-        writtenRegisters.put(operandIds.get(i), counter);
-     }
+      // Check inputs
+      for (int i = 0; i < operandIds.size(); i++) {
+         // Next if output
+         if (!isInput.get(i)) {
+            continue;
+         }
 
-     // Update Counter
-     counter++;
+         // Next if constant
+         if (isConstant.get(i)) {
+            continue;
+         }
+
+         // Check if input register is already in written
+         boolean alreadyWritten = writtenRegisters.containsKey(operandIds.get(i));
+         // Is a live-in?
+         if (!alreadyWritten) {
+            liveIns.add(operandIds.get(i));
+         }
+      }
+
+      // Check outputs
+      for (int i = 0; i < operandIds.size(); i++) {
+         // Next if input
+         if (isInput.get(i)) {
+            continue;
+         }
+
+         // Next if constant
+         if (isConstant.get(i)) {
+            continue;
+         }
+
+         // Add output register to written set
+         writtenRegisters.put(operandIds.get(i), counter);
+      }
+
+      // Update Counter
+      counter++;
    }
 
-  public Collection<LiveOut> getLiveOuts() {
-     List<LiveOut> liveOuts = new ArrayList<LiveOut>();
+   /**
+    * Returns which operands are considered live-outs. A live-out is defined as
+    * being an operand which is both an output and mutable.
+    *
+    * @return
+    */
+   public Collection<LiveOut> getLiveOuts() {
+      List<LiveOut> liveOuts = new ArrayList<LiveOut>();
 
-     // Get keys and order them
-     List<String> keys = new ArrayList<String>();
-     keys.addAll(writtenRegisters.keySet());
-     Collections.sort(keys);
+      // Get keys and order them
+      List<String> keys = new ArrayList<String>();
+      keys.addAll(writtenRegisters.keySet());
+      Collections.sort(keys);
 
-     for(String key : keys) {
-        Integer line = writtenRegisters.get(key);
-        liveOuts.add(new LiveOut(key, line));
-     }
+      for (String key : keys) {
+         Integer line = writtenRegisters.get(key);
+         liveOuts.add(new LiveOut(key, line));
+      }
 
-     return liveOuts;
-  }
+      return liveOuts;
+   }
 
-  //public Collection<ConstantRegister> getConstantRegisters(Map<String, Integer> registerValues) {
-  public Collection<ConstantRegister> getConstantRegisters(RegisterTable registerValues) {
-     List<ConstantRegister> constantRegisters = new ArrayList<ConstantRegister>();
+   /**
+    * Returns the Constant Register found by the analyser. The Constant Register
+    * objects need to have the value of the register, if a RegisterTable with the
+    * register values is not provided, this method returns null.
+    *
+    * @param registerValues
+    * @return a collection with the constant registers found by the analyser, or
+    * null if a RegisterTable is not provided
+    */
+   //public Collection<ConstantRegister> getConstantRegisters(Map<String, Integer> registerValues) {
+   public Collection<ConstantRegister> getConstantRegisters(RegisterTable registerValues) {
+      if (registerValues == null) {
+         LoggingUtils.getLogger().
+                 warning("RegisterTable is null. Returning null collection.");
+         return null;
+      }
+      List<ConstantRegister> constantRegisters = new ArrayList<ConstantRegister>();
 
-     // Add any live-in which was not written
-     for(String liveIn : liveIns) {
-        boolean wasWritten = writtenRegisters.containsKey(liveIn);
-        // Was written?
-        if(!wasWritten) {
-           Integer value = registerValues.get(liveIn);
-           if(value == null) {
-              LoggingUtils.getLogger().
-                      warning("Could not get value for constant live-in register '"+liveIn+"'");
-              continue;
-           }
-           constantRegisters.add(new ConstantRegister(liveIn, value));
-        }
-     }
+      // Add any live-in which was not written
+      for (String liveIn : liveIns) {
+         boolean wasWritten = writtenRegisters.containsKey(liveIn);
+         // Was written?
+         if (!wasWritten) {
+            Integer value = registerValues.get(liveIn);
+            if (value == null) {
+               LoggingUtils.getLogger().
+                       warning("Could not get value for constant live-in register '" + liveIn + "'");
+               continue;
+            }
+            constantRegisters.add(new ConstantRegister(liveIn, value));
+         }
+      }
 
-     return constantRegisters;
-  }
+      return constantRegisters;
+   }
 
+   /**
+    *
+    * @return the identifiers of the found live-ins
+    */
+   public Collection<String> getLiveIns() {
+      return liveIns;
+   }
    /**
     * Maps the ID of a registers to the number of the instruction where it was
     * written last, according to the order they were fed to the analyser.

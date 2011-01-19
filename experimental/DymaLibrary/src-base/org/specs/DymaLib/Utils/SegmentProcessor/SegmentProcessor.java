@@ -19,12 +19,10 @@ package org.specs.DymaLib.Utils.SegmentProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.Assembly.CodeSegment;
-import org.suikasoft.SharedLibrary.Processors.RegisterId;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
@@ -36,41 +34,10 @@ import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 public class SegmentProcessor {
 
    public SegmentProcessor() {
-//   public LoopProcessor(LoopDetectionInfo jobInfo) {
-//   public LoopProcessor(LoopProcessorInfo jobInfo, LoopDetector loopDetector,
-//           SystemSetup systemSetup) {
-      //this.jobInfo = jobInfo;
-      //this.loopDetector = loopDetector;
-      //this.systemSetup = systemSetup;
-
       this.loopProcessors = new ArrayList<SegmentProcessorJob>();
    }
 
-
-   /*
-   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo) {
-//   public static LoopProcessor newLoopWorker(LoopProcessorInfo jobInfo,
-//           SystemSetup systemSetup) {
-      LoopDetector loopDetector = LoopUtils.newLoopDetector(jobInfo.detectorName,
-              jobInfo.detectorSetup, jobInfo.processor.getInstructionDecoder());
-
-      if (loopDetector == null) {
-         LoggingUtils.getLogger().
-                 warning("Could not create LoopDetector");
-         return null;
-      }
-
-      return new LoopProcessor(jobInfo, loopDetector, systemSetup);
-   }
-    * 
-    */
-
-//   public LoopProcessorResults run() throws InterruptedException {
-//   public LoopProcessorResults run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
-   //public int run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
    public int run(TraceReader traceReader, LoopDetector loopDetector) throws InterruptedException {
-
-      //TraceReader traceReader = DToolReader.newDToolReader(jobInfo.elfFile, systemSetup);
 
       // Stats
       int loopInstCount = 0;
@@ -83,9 +50,7 @@ public class SegmentProcessor {
          loopDetector.step(address, instruction);
 
          List<CodeSegment> loops = getLoops(loopDetector, traceReader);
-         //List<CodeSegment> loops = loopDetector.getAndClearUnits();
-         //addRegisterValuesToLoop(loops, traceReader);
-
+  
          loopInstCount += processLoops(loops);
 
          // Check if work should be interrupted
@@ -96,8 +61,6 @@ public class SegmentProcessor {
 
       loopDetector.close();
       List<CodeSegment> loops = getLoops(loopDetector, traceReader);
-      //loopDetector.getAndClearUnits();
-      //addRegisterValuesToLoop(loops, traceReader);
 
       loopInstCount += processLoops(loops);
 
@@ -145,18 +108,7 @@ public class SegmentProcessor {
       return loopProcessors;
    }
 
-   
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   //private final LoopDetectionInfo jobInfo;
-   //private final LoopDetector loopDetector;
-   //private final SystemSetup systemSetup;
-
-   private final List<SegmentProcessorJob> loopProcessors;
-
-   private void addRegisterValuesToLoop(List<CodeSegment> loops, TraceReader traceReader) {
+      private void addRegisterValuesToLoop(List<CodeSegment> loops, TraceReader traceReader) {
       if (loops == null) {
          return;
       }
@@ -189,7 +141,7 @@ public class SegmentProcessor {
        //System.out.println("Loop Before:"+loops.get(0).getRegisterValues());
        loops.get(0).setRegisterValues(registerValues);
        //System.out.println("Loop After:"+loops.get(0).getRegisterValues());
-     
+
    }
 
    private List<CodeSegment> getLoops(LoopDetector loopDetector, TraceReader traceReader) {
@@ -200,5 +152,9 @@ public class SegmentProcessor {
    }
 
 
+   /**
+    * INSTANCE VARIABLES
+    */
+   private final List<SegmentProcessorJob> loopProcessors;
 
 }

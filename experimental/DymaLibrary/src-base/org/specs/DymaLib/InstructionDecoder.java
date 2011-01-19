@@ -20,6 +20,9 @@ package org.specs.DymaLib;
 /**
  * Extracts information from an instruction in String format.
  *
+ * <p>Avoid using state in this class, in case other classes make subsequent use
+ * of the same InstructionDecoder object.
+ *
  * @author Joao Bispo
  */
 public interface InstructionDecoder {
@@ -36,4 +39,9 @@ public interface InstructionDecoder {
     * the instruction has no delay slots, 1 if it as 1 delay slot, etc.
     */
    int delaySlot(String instruction);
+
+   /**
+    * Resets any state of the object.
+    */
+   //void reset();
 }

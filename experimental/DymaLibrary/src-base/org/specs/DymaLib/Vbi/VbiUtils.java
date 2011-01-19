@@ -20,7 +20,9 @@ package org.specs.DymaLib.Vbi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.specs.DymaLib.Vbi.Parser.VbiParser;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
+import org.suikasoft.SharedLibrary.LoggingUtils;
 
 /**
  * Utility methods related to VBIs and its operands.
@@ -103,5 +105,30 @@ public class VbiUtils {
       }
 
       return counterTable;
+   }
+
+   /**
+    * Transforms assembly instructions into VBIs, with the help of a VbiParser.
+    *
+    * @param assemblyInstructions
+    * @param vbiParser
+    * @return
+    */
+   public static List<VeryBigInstruction32> getVbis(List<?> assemblyInstructions,
+           VbiParser vbiParser) {
+      List<VeryBigInstruction32> vbis = new ArrayList<VeryBigInstruction32>();
+      for (Object asmInstruction : assemblyInstructions) {
+         VeryBigInstruction32 vbi = vbiParser.parseInstruction(asmInstruction);
+         if (vbi == null) {
+            LoggingUtils.getLogger().
+                    warning("Returned null VBI. This may impact operations which"
+                    + " use line number information from pre-analysis.");
+            continue;
+         }
+         vbis.add(vbi);
+
+      }
+
+      return vbis;
    }
 }
