@@ -30,21 +30,23 @@ import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Setup;
 
 /**
+ * Runs a MicroBlaze ELF file. Extracts data such as total number of instructions,
+ * cycles or list of found MegaBlocks.
  *
  * @author Joao Bispo
  */
 public class MbSimulator {
 
    public MbSimulator(Setup setup) {
-      Setup systemJaniSetup = BaseUtils.getSetup(setup.get(MbSimulatorOptions.SystemSetup));
+      Setup systemJaniSetup = BaseUtils.getSetup(setup.get(MbSimulatorSetup.SystemSetup));
       systemSetup = SystemSetup.newSystemSetup(systemJaniSetup);
 
-      loopDetectorSetup = BaseUtils.getSetup(setup.get(MbSimulatorOptions.MegaBlockSetup));
+      loopDetectorSetup = BaseUtils.getSetup(setup.get(MbSimulatorSetup.MegaBlockSetup));
 
       instructionDecoder = (new MbImplementation()).getInstructionDecoder();
       //instructionDecoder = new FW_3SP_Decoder();
 
-      iterationThreshold = BaseUtils.getInteger(setup.get(MbSimulatorOptions.IterationThreshold));
+      iterationThreshold = BaseUtils.getInteger(setup.get(MbSimulatorSetup.IterationThreshold));
    }
 
    public SimulatorResults runElf(File elfFile) {

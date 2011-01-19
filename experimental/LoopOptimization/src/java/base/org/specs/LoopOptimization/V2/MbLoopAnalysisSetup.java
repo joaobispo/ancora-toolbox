@@ -28,14 +28,12 @@ import org.specs.DymaLib.Vbi.Optimization.OptimizersList;
 import org.suikasoft.Jani.Base.BaseUtils;
 
 /**
+ * Bridge between MbLoopAnalyser and Jani API.
  *
  * @author Joao Bispo
  */
 public enum MbLoopAnalysisSetup implements EnumKey, MultipleSetupEnum, SingleSetupEnum {
 
-   //LoadCycles(OptionType.integer),
-   //StoreCycles(OptionType.integer),
-   //OtherCycles(OptionType.integer),
    MbWeights(OptionType.integratedSetup),
    Optimizations(OptionType.setupList);
 
@@ -65,8 +63,5 @@ public enum MbLoopAnalysisSetup implements EnumKey, MultipleSetupEnum, SingleSet
    }
 
    private final OptionType optionType;
-
-
-
 
 }

@@ -31,24 +31,15 @@ import org.suikasoft.SharedLibrary.IoUtils;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 
 /**
+ * Calculates speedups of Elf files when we detect and move MegaBlocks at runtime.
  *
  * @author Joao Bispo
  */
 public class Application implements App {
 
-   public Application() {
-      //nodeWeights = null;
-   }
-
-
    private boolean init(File setupFile) {
       // Get block files to process
       Setup setup = (Setup)IoUtils.readObject(setupFile);
-
-      // Get serialized files
-      //serializedBlocks = getSerializedFiles(setup);
-
-      //nodeWeights = getWeights(setup);
 
       mbLoopAnalyserSetup = BaseUtils.getSetup(setup.get(Options.AnalysisSetup));
 
@@ -59,7 +50,6 @@ public class Application implements App {
          return false;
       }
 
-      /// New vars
       String speedupFilename = BaseUtils.getString(setup.get(Options.SpeedupFile));
       speedupFile = new File(outputFolder, speedupFilename);
       // Clean file
@@ -94,16 +84,6 @@ public class Application implements App {
          processElf(file);
       }
 
-      /*
-      System.out.println("Processing "+serializedBlocks.size()+" files.");
-      for(File file : serializedBlocks) {
-         System.out.println("File '"+file.getName()+"':");
-         processLoop(file);
-      }
-       *
-       */
-
-
       // What instructions are not yet supported?
       System.out.println("Instructions not yet supported by MbSolver which could be optimized by CFP:");
       System.out.println(MbSolver.operationsNotSupported);
@@ -122,10 +102,6 @@ public class Application implements App {
       double cpi = calcCpi(simulatorResults);
       long finalBalance = simulatorResults.totalCycles;
 
-//            System.out.println("Total Elf Cycles:"+simulatorResults.totalCycles);
-//            System.out.println("Total Elf Instructions:"+simulatorResults.totalInstructions);
-//            System.out.println("Elf CPI:"+cpi);
-
       // For each loop, calculate cycles needed to execute it, best theoretical case.
       for(CodeSegment loop : simulatorResults.foundLoops) {
          long loopGppCycles = calcCycles(loop.getTotalInstructions(), cpi);
@@ -134,8 +110,6 @@ public class Application implements App {
          finalBalance -= loopGppCycles;
          finalBalance += loopHwCycles;
 
-//         System.out.println("Loop Gpp Cycles (-):"+loopGppCycles);
-//         System.out.println("Loop HW Cycles (+):"+loopHwCycles);
       }
 
       double speedup = (double)simulatorResults.totalCycles / (double)finalBalance;
@@ -163,138 +137,15 @@ public class Application implements App {
    private long calculateHwCycles(CodeSegment loop) {
       MbLoopAnalyser mbLoopAnalyser = new MbLoopAnalyser(mbLoopAnalyserSetup);
       MbLoopAnalysis analysis = mbLoopAnalyser.analyse(loop);
-      //MbLoopAnalysis analysis = MbLoopAnalysis.analyse(loop, nodeWeights);
 
       return analysis.totalCyclesWithOptimizations;
       //return analysis.totalCyclesWithoutOptimizations;
    }
 
-   /*
-   private List<File> getSerializedFiles(Setup setup) {
-
-      List<File> files = InputType.getFiles(setup, Options.InputPath,
-              Options.PathType);
-
-      // Filter files
-      List<File> blocks = new ArrayList<File>();
-      for (File file : files) {
-         if (!file.getName().endsWith(LoopDiskWriter.SERIALIZED_BLOCK_EXTENSION)) {
-            continue;
-         }
-
-         blocks.add(file);
-      }
-
-      return blocks;
-   }
-*/
-   //private void processLoop(CodeSegment loop) {
-  /*
-   private void processLoop(File loopFile) {
-      CodeSegment loop = (CodeSegment) IoUtils.readObject(loopFile);
-      if (loop == null) {
-         LoggingUtils.getLogger().
-                 warning("Could not open loop for analysis");
-         return;
-      }
-
-
-      // Build MicroBlaze instructions cache
-      List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
-              loop.getAddresses(), loop.getInstructions());
-
-      // Gather complete pass analysis data
-      //AssemblyAnalyser assAnal = MbAssemblyAnalyser.create(loop.getRegisterValues(), mbInstructions);
-      AssemblyAnalysis asmData = MbAssemblyAnalyser.buildData(loop.getRegisterValues(), mbInstructions);
-
-      //System.out.println(assAnal);
-
-      // Expand instructions into very big instructions
-      //MbVbiParser vbiParser = new MbVbiParser(assAnal.getLiveOuts(), assAnal.getConstantRegisters());
-      MbVbiParser vbiParser = new MbVbiParser(asmData);
-      List<VeryBigInstruction32> vbis = getVbis(mbInstructions, vbiParser);
-
-      GraphBuilder graphBuilder = new MbGraphBuilder(nodeWeights);
-      GraphNode rootNode = graphBuilder.buildGraph(vbis);
-      String dottyFilename = loopFile.getName() + ".dotty";
-      IoUtils.write(new File(outputFolder, dottyFilename), DottyGraph.generateDotty(rootNode));
-
-      //VbiAnalysis vbiAnalysisOriginal = VbiAnalyser.buildData(vbis, MbInstructionName.add, rootNode);
-      VbiAnalysis vbiAnalysisOriginal = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
-      //System.out.println(vbiAnalysisOriginal);
-
-
-      optimizeVbis(vbis);
-      graphBuilder = new MbGraphBuilder(nodeWeights);
-      rootNode = graphBuilder.buildGraph(vbis);
-
-      //VbiAnalysis vbiAnalysisTransformed = VbiAnalyser.buildData(vbis, MbInstructionName.add, rootNode);
-      VbiAnalysis vbiAnalysisTransformed = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
-      System.out.println(vbiAnalysisTransformed.diff(vbiAnalysisOriginal));
-
-      dottyFilename = loopFile.getName() + ".after.dotty";
-      IoUtils.write(new File(outputFolder, dottyFilename), DottyGraph.generateDotty(rootNode));
-   }
-*/
-
-/*
-// Move to WeigthTable
-   private Map<String, Integer> getWeights(Setup setup) {
-
-      String propertiesFilename = BaseUtils.getString(setup.get(Options.PropertiesFileWithInstructionCycles));
-      if (propertiesFilename.isEmpty()) {
-         return null;
-      }
-
-      File propertiesFile = new File(propertiesFilename);
-      if (!propertiesFile.isFile()) {
-         LoggingUtils.getLogger().
-                 warning("Could not load properties file '" + propertiesFilename + "'.");
-         return null;
-      }
-
-      Properties properties = IoUtils.loadProperties(propertiesFile);
-
-
-      if (properties == null) {
-         return null;
-      }
-
-      Map<String, Integer> weights = new HashMap<String, Integer>();
-      for (String key : properties.stringPropertyNames()) {
-         String stringValue = properties.getProperty(key);
-         Integer value = ParseUtils.parseInteger(stringValue);
-         if (value == null) {
-            continue;
-         }
-         weights.put(key, value);
-      }
-
-      return weights;
-   }
- * 
- */
-/*
-   private void optimizeVbis(List<VeryBigInstruction32> vbis) {
-      Solver solver = new MbSolver();
-      VbiOptimizer constantPropagation = new ConstantFoldingAndPropagation(solver);
-      //VbiOptimizer constantPropagation2 = new ConstantFoldingAndPropagation(solver);
-      ConstantLoadsRemoval loadRemove = new ConstantLoadsRemoval();
-
-      for(VeryBigInstruction32 vbi : vbis) {
-         constantPropagation.optimize(vbi);
-//         constantPropagation2.optimize(vbi);
-         loadRemove.optimize(vbi);
-      }
-
-      loadRemove.close();
-   }
-*/
+   
    /**
     * INSTANCE VARIABLES
     */
-   //private List<File> serializedBlocks;
-   //private Map<String, Integer> nodeWeights;
    private Setup mbLoopAnalyserSetup;
    private File outputFolder;
    

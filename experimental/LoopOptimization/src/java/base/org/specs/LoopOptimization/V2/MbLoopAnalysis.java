@@ -17,29 +17,11 @@
 
 package org.specs.LoopOptimization.V2;
 
-import java.util.List;
-import java.util.Map;
 import org.specs.DymaLib.Assembly.AssemblyAnalysis;
-import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.Liveness.LivenessAnalysis;
-import org.specs.DymaLib.MicroBlaze.Assembly.MbAssemblyUtils;
-import org.specs.DymaLib.MicroBlaze.Vbi.MbGraphBuilder;
-import org.specs.DymaLib.MicroBlaze.Vbi.MbSolver;
-import org.specs.DymaLib.MicroBlaze.Vbi.MbVbiParser;
-import org.specs.DymaLib.Vbi.Analysis.VbiAnalysis;
-import org.specs.DymaLib.Vbi.Optimization.ConstantFoldingAndPropagation;
-import org.specs.DymaLib.Vbi.Optimization.VbiOptimizer;
-import org.specs.DymaLib.Vbi.Utils.GraphBuilder;
-import org.specs.DymaLib.Vbi.Utils.Solver;
-import org.specs.DymaLib.Vbi.VbiUtils;
-import org.specs.DymaLib.Vbi.VeryBigInstruction32;
-import org.suikasoft.Jani.Setup;
-import org.suikasoft.SharedLibrary.Graphs.GraphNode;
-import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MicroBlazeParser;
 
 /**
+ * Data extracted from MegaBlock analysis.
  *
  * @author Joao Bispo
  */
@@ -65,7 +47,7 @@ public class MbLoopAnalysis {
    public static long calcLoopCycles(int transformedCpl, int loopIterations, int communicationCycles) {
       return transformedCpl * loopIterations + communicationCycles;
    }
-
+/*
    public static MbLoopAnalysis analyse(CodeSegment loop, Map<String, Integer> nodeWeights) {
       // Build MicroBlaze instructions cache
       List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
@@ -99,7 +81,7 @@ public class MbLoopAnalysis {
       
       return new MbLoopAnalysis(optCycles, nonOptCycles);
    }
-
+*/
    /**
     * Communication is calculated by giving one cycle to each non-constant
     * live-in and another cycle for each live-out.
@@ -120,7 +102,7 @@ public class MbLoopAnalysis {
 
       return liveInsCycles + liveOutsCycles;
    }
-
+/*
       private static void optimizeVbis(List<VeryBigInstruction32> vbis) {
       Solver solver = new MbSolver();
       VbiOptimizer constantPropagation = new ConstantFoldingAndPropagation(solver);
@@ -135,13 +117,12 @@ public class MbLoopAnalysis {
 
       //loadRemove.close();
    }
-
+*/
 
    public final long totalCyclesWithOptimizations;
    public final long totalCyclesWithoutOptimizations;
 
    public static final Integer DEFAULT_COMM_CYCLES_PER_REG = 1;
 
-   private Setup mbSolverSetup;
-
+   //private Setup mbSolverSetup;
 }

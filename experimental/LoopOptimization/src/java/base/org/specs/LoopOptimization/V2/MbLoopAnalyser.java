@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.specs.LoopOptimization.V2;
 
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MicroBlazeParser;
 
 /**
+ * Extracts data from MegaBlocks, before and after applying optimizations.
  *
  * @author Joao Bispo
  */
@@ -54,10 +54,8 @@ public class MbLoopAnalyser {
       weights = MbWeightsSetup.buildTable(weightSetup);
 
       Map<String, Setup> optimizations = BaseUtils.getMapOfSetups(mbLoopAnalysisSetup.get(MbLoopAnalysisSetup.Optimizations));
-      //optimizationName = new ArrayList<String>();
-      //optimizationSetup = new ArrayList<Setup>();
       optimizers = new ArrayList<VbiOptimizer>();
-      for(String key : optimizations.keySet()) {
+      for (String key : optimizations.keySet()) {
          // Get setup
          Setup setup = optimizations.get(key);
          // Get optimization name
@@ -73,41 +71,37 @@ public class MbLoopAnalyser {
    private List<Object> buildArguments(OptimizersList value, Setup setup) {
       List<Object> arguments = new ArrayList<Object>();
 
-      if(value == OptimizersList.ConstantFoldingAndPropagation) {
+      if (value == OptimizersList.ConstantFoldingAndPropagation) {
          arguments.add(new MbSolver(setup));
          return arguments;
       }
 
       LoggingUtils.getLogger().
-              warning("Case not defined:"+value);
+              warning("Case not defined:" + value);
       return arguments;
    }
 
    public MbLoopAnalysis analyse(CodeSegment loop) {
- // Build MicroBlaze instructions cache
+      // Build MicroBlaze instructions cache
       List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
               loop.getAddresses(), loop.getInstructions());
 
-       // Gather complete pass analysis data
+      // Gather complete pass analysis data
       AssemblyAnalysis asmData = MbAssemblyUtils.buildAssemblyAnalysis(loop.getRegisterValues(), mbInstructions);
 
       // Expand instructions into very big instructions
       MbVbiParser vbiParser = new MbVbiParser(asmData);
       List<VeryBigInstruction32> vbis = VbiUtils.getVbis(mbInstructions, vbiParser);
 
-      //GraphBuilder graphBuilder = new MbGraphBuilder(nodeWeights);
       GraphBuilder graphBuilder = new MbGraphBuilder(weights);
       GraphNode rootNode = graphBuilder.buildGraph(vbis);
-
 
       VbiAnalysis vbiAnalysisOriginal = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
 
       optimizeVbis(vbis);
-      //graphBuilder = new MbGraphBuilder(nodeWeights);
       graphBuilder = new MbGraphBuilder(weights);
       rootNode = graphBuilder.buildGraph(vbis);
 
-      //VbiAnalysis vbiAnalysisTransformed = VbiAnalyser.buildData(vbis, MbInstructionName.add, rootNode);
       VbiAnalysis vbiAnalysisTransformed = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
       System.out.println(vbiAnalysisTransformed.diff(vbiAnalysisOriginal));
 
@@ -115,18 +109,12 @@ public class MbLoopAnalyser {
       int transformedCpl = vbiAnalysisTransformed.criticalPathLenght;
       int loopIterations = loop.getIterations();
 
-      //int communicationCycles = calcCommCycles(asmData);
       int communicationCycles = MbLoopAnalysis.calcCommunicationCycles(asmData);
       return MbLoopAnalysis.buildAnalysis(originalCpl, transformedCpl, loopIterations, communicationCycles);
-
-      //int nonOptCycles = (vbiAnalysisOriginal.criticalPathLenght*loop.getIterations()) + communicationCycles;
-      //int optCycles = (vbiAnalysisTransformed.criticalPathLenght*loop.getIterations()) + communicationCycles;
-
-      //return new MbLoopAnalysis(optCycles, nonOptCycles);
    }
 
-    private void optimizeVbis(List<VeryBigInstruction32> vbis) {
-      for(VeryBigInstruction32 vbi : vbis) {
+   private void optimizeVbis(List<VeryBigInstruction32> vbis) {
+      for (VeryBigInstruction32 vbi : vbis) {
          optimizeVbi(vbi);
       }
    }
@@ -136,11 +124,6 @@ public class MbLoopAnalyser {
          optimizer.optimize(vbi);
       }
    }
-
-   //private List<String> optimizationName;
-   //private List<Setup> optimizationSetup;
    private List<VbiOptimizer> optimizers;
    private WeightTable weights;
-
-
 }

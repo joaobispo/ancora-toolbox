@@ -21,6 +21,7 @@ import java.util.List;
 import org.specs.DymaLib.Assembly.CodeSegment;
 
 /**
+ * Data extracted from MicroBlaze ELF simulation.
  *
  * @author Joao Bispo
  */

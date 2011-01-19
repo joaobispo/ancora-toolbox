@@ -27,6 +27,7 @@ import org.suikasoft.Jani.PreBuiltTypes.InputType;
 import org.suikasoft.SharedLibrary.EnumUtils;
 
 /**
+ * Bridge between Application and Jani API.
  *
  * @author Joao Bispo
  */
@@ -62,7 +63,7 @@ public enum Options implements EnumKey, MultipleChoiceEnum, SingleSetupEnum {
 
    public Collection<EnumKey> getSetupOptions() {
       if(this == SimulationSetup) {
-         return BaseUtils.extractEnumValues(MbSimulatorOptions.class);
+         return BaseUtils.extractEnumValues(MbSimulatorSetup.class);
       }
 
       if(this == AnalysisSetup) {

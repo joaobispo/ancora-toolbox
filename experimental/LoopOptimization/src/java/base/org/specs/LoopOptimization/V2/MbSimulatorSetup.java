@@ -26,17 +26,18 @@ import org.suikasoft.Jani.Base.OptionType;
 import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
 
 /**
+ * Bridge between MbSimulator and Jani API.
  *
  * @author Joao Bispo
  */
-public enum MbSimulatorOptions implements EnumKey, SingleSetupEnum {
+public enum MbSimulatorSetup implements EnumKey, SingleSetupEnum {
 
    IterationThreshold(OptionType.integer),
    //MegaBlockSetup(OptionType.setup),
    MegaBlockSetup(OptionType.integratedSetup),
    SystemSetup(OptionType.setup);
 
-   private MbSimulatorOptions(OptionType optionType) {
+   private MbSimulatorSetup(OptionType optionType) {
       this.optionType = optionType;
    }
 
