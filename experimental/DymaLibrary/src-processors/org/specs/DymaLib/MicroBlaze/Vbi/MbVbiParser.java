@@ -44,8 +44,10 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 public class MbVbiParser implements VbiParser {
 
    public MbVbiParser(AssemblyAnalysis asmData) {
-      this.liveOuts = new ArrayList<LiveOut>(asmData.liveOuts);
-       this.constantRegisters = new ArrayList<ConstantRegister>(asmData.constantRegisters);
+      //this.liveOuts = new ArrayList<LiveOut>(asmData.liveOuts);
+      this.liveOuts = new ArrayList<LiveOut>(asmData.livenessAnalysis.liveOuts);
+       //this.constantRegisters = new ArrayList<ConstantRegister>(asmData.constantRegisters);
+       this.constantRegisters = new ArrayList<ConstantRegister>(asmData.livenessAnalysis.constantRegisters);
       this.hasStores = asmData.hasStores;
 
       liveoutsIndexes = VbiParserUtils.buildLiveoutsMap(this.liveOuts);

@@ -35,16 +35,19 @@ public class LivenessAnalysis {
       this.liveIns = liveIns;
    }
 
-   
-
+  
    /**
-    * A collection with the constant registers found by the analyser.
+    * Which registers have a constant value through the MegaBlock,
+    * and which value they have.
     */
    public final Collection<ConstantRegister> constantRegisters;
    /**
     * A collection with the operands which were considered live-outs.
     * A live-out is defined as being an operand which is both an output (not input)
     * and mutable (not constant).
+    *
+    * <p>Includes the number of the instruction (according to the order the
+    * operands were fed) where they are written for the last time.
     */
    public final Collection<LiveOut> liveOuts;
    /**

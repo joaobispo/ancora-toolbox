@@ -17,7 +17,7 @@
 
 package org.specs.DymaLib.Assembly;
 
-import java.util.Collection;
+import org.specs.DymaLib.Liveness.LivenessAnalysis;
 
 /**
  * Contains the results of an analysis to a list of assembly instructions 
@@ -32,33 +32,36 @@ import java.util.Collection;
  */
 public class AssemblyAnalysis {
 
-   public AssemblyAnalysis(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters, boolean hasStores, Collection<String> liveIns) {
-      this.liveOuts = liveOuts;
-      this.constantRegisters = constantRegisters;
+   //public AssemblyAnalysis(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters, boolean hasStores, Collection<String> liveIns) {
+   public AssemblyAnalysis(LivenessAnalysis livenessAnalysis, boolean hasStores) {
+      //this.liveOuts = liveOuts;
+      //this.constantRegisters = constantRegisters;
       this.hasStores = hasStores;
-      this.liveIns = liveIns;
+      //this.liveIns = liveIns;
+      this.livenessAnalysis = livenessAnalysis;
    }
-/*
-   public AssemblyAnalysis(Collection<LiveOut> liveOuts, Collection<ConstantRegister> constantRegisters, boolean hasStores) {
-      this.liveOuts = liveOuts;
-      this.constantRegisters = constantRegisters;
-      this.hasStores = hasStores;
-   }
-*/
+
+
  @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
 
       builder.append("Constant Registers:\n");
 
-      builder.append(constantRegisters);
+      //builder.append(constantRegisters);
+      //builder.append(getConstantRegisters());
+      builder.append(livenessAnalysis.constantRegisters);
       builder.append("\n");
 
       builder.append("Live Outs:\n");
-      builder.append(liveOuts);
+      //builder.append(liveOuts);
+      //builder.append(getLiveOuts());
+      builder.append(livenessAnalysis.liveOuts);
       builder.append("\n");
 
       builder.append("Has Stores?:");
+      //builder.append(hasStores);
+      //builder.append(hasStores());
       builder.append(hasStores);
       builder.append("\n");
 
@@ -66,20 +69,70 @@ public class AssemblyAnalysis {
    }
 
    /**
+    * A collection with the operands which were considered live-outs.
+    * A live-out is defined as being an operand which is both an output (not input)
+    * and mutable (not constant).
+    *
+    * <p>Includes the number of the instruction (according to the order the
+    * operands were fed) where they are written for the last time.
+    * 
+    * @return
+    */
+ /*
+   public Collection<LiveOut> getLiveOuts() {
+      return livenessAnalysis.liveOuts;
+   }
+*/
+   /**
+    * The identifiers of the live-ins.
+    *
+    * @return
+    */
+ /*
+   public Collection<String> getLiveIns() {
+      return livenessAnalysis.liveIns;
+   }
+*/
+   /**
+    * Which registers have a constant value through the MegaBlock,
+    * and which value they have.
+    *
+    * @return
+    */
+ /*
+   public Collection<ConstantRegister> getConstantRegisters() {
+      return livenessAnalysis.constantRegisters;
+   }
+*/
+   /**
+    * True if the MegaBlock has store instructions.
+    *
+    * @return
+    */
+ /*
+   public boolean hasStores() {
+      return hasStores;
+   }
+*/
+
+
+   /**
     * Which registers are live-outs, with the number of the instruction
     * (according to the order in the input list) where they are written for the
     * last time
     */
-   public final Collection<LiveOut> liveOuts;
+   //public final Collection<LiveOut> liveOuts;
    /**
     * Which registers have a constant value through the straight-line loop,
     * and which value they have
     */
-   public final Collection<ConstantRegister> constantRegisters;
+   //public final Collection<ConstantRegister> constantRegisters;
    /**
     * True if the loop has store instructions
     */
    public final boolean hasStores;
 
-   public final Collection<String> liveIns;
+   //public final Collection<String> liveIns;
+
+   public final LivenessAnalysis livenessAnalysis;
 }

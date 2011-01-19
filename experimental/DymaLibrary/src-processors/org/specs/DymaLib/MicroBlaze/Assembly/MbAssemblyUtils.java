@@ -24,6 +24,7 @@ import org.specs.DymaLib.Assembly.AssemblyAnalysis;
 import org.specs.DymaLib.Assembly.ConstantRegister;
 import org.specs.DymaLib.Assembly.LiveOut;
 import org.specs.DymaLib.Liveness.LivenessAnalyser;
+import org.specs.DymaLib.Liveness.LivenessAnalysis;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbUtils;
@@ -89,8 +90,18 @@ public class MbAssemblyUtils {
    }
 
 
+   /**
+    * Builds LivenessAnalysis data from a list of MbInstructions and a table
+    * with the values of the registers.
+    *
+    * @param mbInstructions
+    * @param registerTable
+    * @return
+    */
    //public static AssemblyAnalyser createAnalyser(List<MbInstruction> mbInstructions) {
-   public static LivenessAnalyser createLivenessAnalyser(List<MbInstruction> mbInstructions) {
+   //public static LivenessAnalyser buildLivenessAnalysis(List<MbInstruction> mbInstructions) {
+   public static LivenessAnalysis buildLivenessAnalysis(List<MbInstruction> mbInstructions,
+           RegisterTable registerTable) {
       // Use LivenessAnalyser
       //AssemblyAnalyser livenessAnalyser = new AssemblyAnalyser();
       LivenessAnalyser livenessAnalyser = new LivenessAnalyser();
@@ -104,7 +115,13 @@ public class MbAssemblyUtils {
          livenessAnalyser.next(operandIds, isInput, isConstant);
       }
 
-      return livenessAnalyser;
+      LivenessAnalysis liveAnalysis = new LivenessAnalysis(
+              livenessAnalyser.getConstantRegisters(registerTable),
+              livenessAnalyser.getLiveOuts(),
+              livenessAnalyser.getLiveIns());
+
+      //return livenessAnalyser;
+      return liveAnalysis;
    }
 
    /**
@@ -114,12 +131,15 @@ public class MbAssemblyUtils {
     * @param mbInstructions
     * @return
     */
-   public static AssemblyAnalysis buildData(RegisterTable registerTable,
+   public static AssemblyAnalysis buildAssemblyAnalysis(RegisterTable registerTable,
            List<MbInstruction> mbInstructions) {
 
-        LivenessAnalyser livenessAnalyser = MbAssemblyUtils.createLivenessAnalyser(mbInstructions);
+        //LivenessAnalyser livenessAnalyser = MbAssemblyUtils.buildLivenessAnalysis(mbInstructions);
+        LivenessAnalysis livenessAnalyser = MbAssemblyUtils.buildLivenessAnalysis(mbInstructions, registerTable);
 
-      // Extract data for building MbAnalyser
+        return buildAssemblyAnalysis(livenessAnalyser, mbInstructions);
+/*
+        // Extract data for building MbAnalyser
        Collection<LiveOut> liveouts = livenessAnalyser.getLiveOuts();
        //Collection<ConstantRegister> constantRegisters = getConstantRegisters(registerTable, livenessAnalyser);
        Collection<ConstantRegister> constantRegisters = livenessAnalyser.getConstantRegisters(registerTable);
@@ -127,6 +147,27 @@ public class MbAssemblyUtils {
 
        AssemblyAnalysis asmData = new AssemblyAnalysis(liveouts, constantRegisters, hasStores,
                livenessAnalyser.getLiveIns());
+       return asmData;
+ * 
+ */
+   }
+
+   /**
+    * Builds AssemblyAnalysis objects from MicroBlaze assembly instructions.
+    * 
+    * @param liveAnalysis
+    * @param mbInstructions
+    * @return
+    */
+   public static AssemblyAnalysis buildAssemblyAnalysis(LivenessAnalysis liveAnalysis,
+           List<MbInstruction> mbInstructions) {
+
+
+       boolean hasStores = MbUtils.hasStores(mbInstructions);
+
+//       AssemblyAnalysis asmData = new AssemblyAnalysis(liveouts, constantRegisters, hasStores,
+//               livenessAnalyser.getLiveIns());
+       AssemblyAnalysis asmData = new AssemblyAnalysis(liveAnalysis, hasStores);
        return asmData;
    }
 
