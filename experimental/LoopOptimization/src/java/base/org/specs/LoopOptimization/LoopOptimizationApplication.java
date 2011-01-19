@@ -24,22 +24,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.specs.DymaLib.DataStructures.CodeSegment;
-import org.specs.DymaLib.DataStructures.VeryBigInstruction32;
-import org.specs.DymaLib.MicroBlaze.MbAssemblyAnalyser;
-import org.specs.DymaLib.MicroBlaze.MbGraphBuilder;
-import org.specs.DymaLib.MicroBlaze.MbVbiParser;
-import org.specs.DymaLib.AssemblyAnalyser;
-import org.specs.DymaLib.DataStructures.VbiAnalysis;
+import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.specs.DymaLib.MicroBlaze.Vbi.MbGraphBuilder;
+import org.specs.DymaLib.MicroBlaze.Vbi.MbVbiParser;
+import org.specs.DymaLib.Assembly.AssemblyAnalysis;
+import org.specs.DymaLib.Vbi.Analysis.VbiAnalysis;
 import org.specs.DymaLib.Dotty.DottyGraph;
-import org.specs.DymaLib.GraphBuilder;
-import org.specs.DymaLib.LoopOptimization.ConstantFoldingAndPropagation;
-import org.specs.DymaLib.MicroBlaze.MbSolver;
-import org.specs.DymaLib.Solver;
+import org.specs.DymaLib.MicroBlaze.Assembly.MbAssemblyUtils;
+import org.specs.DymaLib.Vbi.Utils.GraphBuilder;
+import org.specs.DymaLib.Vbi.Optimization.ConstantFoldingAndPropagation;
+import org.specs.DymaLib.Vbi.Optimization.ConstantLoadsRemoval;
+import org.specs.DymaLib.MicroBlaze.Vbi.MbSolver;
+import org.specs.DymaLib.Vbi.Utils.Solver;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
-import org.specs.DymaLib.Utils.VbiAnalyser;
-import org.specs.DymaLib.VbiOptimizer;
-import org.specs.DymaLib.VbiParser;
+import org.specs.DymaLib.Vbi.Optimization.VbiOptimizer;
+import org.specs.DymaLib.Vbi.Parser.VbiParser;
 import org.suikasoft.Jani.App;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
@@ -87,6 +87,7 @@ public class LoopOptimizationApplication implements App {
 
       // Get object
       //List<CodeSegment> loops = new ArrayList<CodeSegment>();
+      MbSolver.reset();
       System.out.println("Processing "+serializedBlocks.size()+" files.");
       for(File file : serializedBlocks) {
          System.out.println("File '"+file.getName()+"':");
@@ -154,49 +155,35 @@ public class LoopOptimizationApplication implements App {
               loop.getAddresses(), loop.getInstructions());
 
       // Gather complete pass analysis data
-      AssemblyAnalyser assAnal = MbAssemblyAnalyser.create(loop.getRegisterValues(), mbInstructions);
-//      System.out.println(assAnal);
-      //showPreAnalysisInfo(assAnal);
+      //AssemblyAnalyser assAnal = MbAssemblyAnalyser.create(loop.getRegisterValues(), mbInstructions);
+      AssemblyAnalysis asmData = MbAssemblyUtils.buildAssemblyAnalysis(loop.getRegisterValues(), mbInstructions);
+      //System.out.println(assAnal);
 
-
-      MbVbiParser vbiParser = new MbVbiParser(assAnal.getLiveOuts(), assAnal.getConstantRegisters());
+      // Expand instructions into very big instructions
+      //MbVbiParser vbiParser = new MbVbiParser(assAnal.getLiveOuts(), assAnal.getConstantRegisters());
+      MbVbiParser vbiParser = new MbVbiParser(asmData);
       List<VeryBigInstruction32> vbis = getVbis(mbInstructions, vbiParser);
 
-      //Map<String, Integer> nodeWeights = getWeights(properties);
       GraphBuilder graphBuilder = new MbGraphBuilder(nodeWeights);
       GraphNode rootNode = graphBuilder.buildGraph(vbis);
       String dottyFilename = loopFile.getName() + ".dotty";
       IoUtils.write(new File(outputFolder, dottyFilename), DottyGraph.generateDotty(rootNode));
-      //VbiAnalysis vbiAnalysis = VbiAnalyser.getData(vbis, MbInstructionName.add, new MbGraphBuilder());
-      //VbiAnalysis vbiAnalysis = VbiAnalyser.getData(vbis, MbInstructionName.add, graphBuilder);
-      
-      VbiAnalysis vbiAnalysisOriginal = VbiAnalyser.getData(vbis, MbInstructionName.add, rootNode);
+
+      //VbiAnalysis vbiAnalysisOriginal = VbiAnalyser.buildData(vbis, MbInstructionName.add, rootNode);
+      VbiAnalysis vbiAnalysisOriginal = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
       //System.out.println(vbiAnalysisOriginal);
-      //showVbiInfo(vbis);
-      // Expand instructions into very big instructions
+
 
       optimizeVbis(vbis);
       graphBuilder = new MbGraphBuilder(nodeWeights);
       rootNode = graphBuilder.buildGraph(vbis);
 
-      VbiAnalysis vbiAnalysisTransformed = VbiAnalyser.getData(vbis, MbInstructionName.add, rootNode);
+      //VbiAnalysis vbiAnalysisTransformed = VbiAnalyser.buildData(vbis, MbInstructionName.add, rootNode);
+      VbiAnalysis vbiAnalysisTransformed = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
       System.out.println(vbiAnalysisTransformed.diff(vbiAnalysisOriginal));
 
       dottyFilename = loopFile.getName() + ".after.dotty";
       IoUtils.write(new File(outputFolder, dottyFilename), DottyGraph.generateDotty(rootNode));
-
-      // Characterize the loop
-      /*
-      LowLevelParser lowLevelParser = new MbLowLevelParser();
-      List<LowLevelInstruction> llInsts =
-              lowLevelParser.parseInstructions(loop.getAddresses(), loop.getInstructions());
-
-      SllAnalyser analysis = SllAnalyser.analyse(llInsts);
-*/
-      //System.out.println(analysis);
-
-      //System.out.println("Register Values:");
-      //System.out.println(loop.getRegisterValues());
    }
 
    private List<VeryBigInstruction32> getVbis(List<?> mbInstructions,
@@ -236,7 +223,6 @@ public class LoopOptimizationApplication implements App {
       }
    }
 
-   //private Map<String, Integer> getWeights(Properties properties) {
    private Map<String, Integer> getWeights(Setup setup) {
 
       String propertiesFilename = BaseUtils.getString(setup.get(LoopOptimizationOptions.PropertiesFileWithInstructionCycles));
@@ -274,59 +260,18 @@ public class LoopOptimizationApplication implements App {
    private void optimizeVbis(List<VeryBigInstruction32> vbis) {
       Solver solver = new MbSolver();
       VbiOptimizer constantPropagation = new ConstantFoldingAndPropagation(solver);
+      //VbiOptimizer constantPropagation2 = new ConstantFoldingAndPropagation(solver);
+      ConstantLoadsRemoval loadRemove = new ConstantLoadsRemoval();
 
       for(VeryBigInstruction32 vbi : vbis) {
          constantPropagation.optimize(vbi);
+//         constantPropagation2.optimize(vbi);
+         loadRemove.optimize(vbi);
       }
+
+      loadRemove.close();
    }
 
-/*
-   private void showVbiInfo(List<VeryBigInstruction32> vbis) {
-      Collection<String> loadStoreInstNames = new ArrayList<String>();
-      for(MbInstructionName instName : InstructionProperties.LOAD_INSTRUCTIONS) {
-         loadStoreInstNames.add(instName.name());
-      }
-      for(MbInstructionName instName : InstructionProperties.STORE_INSTRUCTIONS) {
-         loadStoreInstNames.add(instName.name());
-      }
-
-      Map<String,Integer> histogram = VbiAnalyser.getInstructionsHistogram(vbis, loadStoreInstNames);
-      // Extract num of loads and stores
-      int numLoadStoreInst = 0;
-      for(String key : histogram.keySet()) {
-         numLoadStoreInst += histogram.get(key);
-      }
-
-
-      int mappableInstructions = VbiAnalyser.getMappableInstructions(vbis);
-      int cpl = VbiAnalyser.getCriticalPathLenght(vbis, new MbGraphBuilder());
-
-
-      System.out.println("#Mappable Instructions  :"+mappableInstructions);
-      System.out.println("#Load/Store Instructions:"+numLoadStoreInst);
-      System.out.println("Critical Path Lenght    :"+cpl);
-      System.out.println(" ");
-      /*
-      System.out.println("VBIs size:"+vbis.size());
-      for(VeryBigInstruction32 vbi : vbis) {
-         System.out.println(vbi);
-      }
-
-
-      System.out.print("Critical Path Length:"+VbiAnalyser.getCriticalPathLenght(vbis, new MbGraphBuilder()));
-       *
-       */
-//   }
-
-        /*
-   private void showPreAnalysisInfo(AssemblyAnalyser assAnal) {
-      System.out.println("Constant Registers:");
-      System.out.println(assAnal.getConstantRegisters());
-      System.out.println("Live Outs:");
-      System.out.println(assAnal.getLiveOuts());
-      System.out.println(" ");
-   }
-*/
    /**
     * INSTANCE VARIABLES
     */

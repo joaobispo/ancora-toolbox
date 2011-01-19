@@ -18,6 +18,9 @@
 package org.specs.LoopOptimization;
 
 import java.io.File;
+import org.specs.DToolPlus.DToolUtils;
+import org.specs.LoopOptimization.V2.Application;
+import org.suikasoft.Jani.App;
 import org.suikasoft.Jani.SimpleGui;
 import org.suikasoft.SharedLibrary.IoUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
@@ -34,10 +37,12 @@ public class Launcher {
      */
     public static void main(String[] args) {
        ProcessUtils.programStandardInit();
+       DToolUtils.prepareDtoolMicroblaze();
 
-       LoopOptimizationApplication app = new LoopOptimizationApplication();
+//       LoopOptimizationApplication app = new LoopOptimizationApplication();
+       App app = new Application();
        SimpleGui simpleGui = new SimpleGui(app);
-       simpleGui.setTitle("Straigh-Line Loop Optimizations v0.1");
+       simpleGui.setTitle("Straigh-Line Loop Optimizations v0.2");
        simpleGui.execute();
   
 
