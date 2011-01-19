@@ -7,7 +7,7 @@
             <source-roots>
                 <root id="src.base.dir" name="Base"/>
                 <root id="src.utils.dir" name="Utils"/>
-                <root id="src.processors.dir" name="Processors"/>
+                <root id="src.processors.dir" name="MicroBlaze"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>
