@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.specs.DymaLib.Utils;
+package org.specs.DymaLib.Liveness;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,12 +28,13 @@ import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- * Analyses the liveness of registers in a sequence of instructions.
+ * Analyses the liveness of operands from the sequence of instructions of a
+ * MegaBlock.
  * 
  * <p>For each instruction the analyser requires three lists:
  * <br>operandIds, with Strings which identify each instruction operand;
- * <br>isInput, with booleans which identify if an operand is an input. If false,
- * the operand is assumed to be an output;
+ * <br>isInput, with booleans which identify if an operand is an input. If false
+ * , the operand is assumed to be an output;
  * <br>isConstant, with booleans which identify if an operand does not change 
  * during the considered sequence (ex.: immediate values);
  *
@@ -127,15 +128,17 @@ public class LivenessAnalyser {
     * register values is not provided, this method returns null.
     *
     * @param registerValues
-    * @return a collection with the constant registers found by the analyser, or
-    * null if a RegisterTable is not provided
+    * @return a collection with the constant registers found by the analyser
     */
    //public Collection<ConstantRegister> getConstantRegisters(Map<String, Integer> registerValues) {
    public Collection<ConstantRegister> getConstantRegisters(RegisterTable registerValues) {
+      //boolean hasRegisterTable = registerValues != null;
       if (registerValues == null) {
+      //if (!hasRegisterTable) {
          LoggingUtils.getLogger().
-                 warning("RegisterTable is null. Returning null collection.");
-         return null;
+                 warning("RegisterTable is null. Constant Registers will have "
+                 + "its value set to null.");
+         //return null;
       }
       List<ConstantRegister> constantRegisters = new ArrayList<ConstantRegister>();
 
@@ -144,17 +147,26 @@ public class LivenessAnalyser {
          boolean wasWritten = writtenRegisters.containsKey(liveIn);
          // Was written?
          if (!wasWritten) {
-            Integer value = registerValues.get(liveIn);
-            if (value == null) {
-               LoggingUtils.getLogger().
-                       warning("Could not get value for constant live-in register '" + liveIn + "'");
-               continue;
-            }
+            Integer value = getValue(registerValues, liveIn);
             constantRegisters.add(new ConstantRegister(liveIn, value));
          }
       }
 
       return constantRegisters;
+   }
+
+   private Integer getValue(RegisterTable registerValues, String liveIn) {
+      Integer value = null;
+      if (registerValues != null) {
+         //Integer value = registerValues.get(liveIn);
+         value = registerValues.get(liveIn);
+         if (value == null) {
+            LoggingUtils.getLogger().
+                    warning("Could not get value for constant live-in register '" + liveIn + "'");
+            //continue;
+         }
+      }
+      return value;
    }
 
    /**
@@ -171,4 +183,5 @@ public class LivenessAnalyser {
    private Map<String, Integer> writtenRegisters;
    private List<String> liveIns;
    private int counter;
+
 }

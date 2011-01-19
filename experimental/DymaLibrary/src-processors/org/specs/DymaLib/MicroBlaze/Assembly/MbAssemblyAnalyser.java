@@ -22,7 +22,7 @@ import java.util.List;
 import org.specs.DymaLib.Assembly.ConstantRegister;
 import org.specs.DymaLib.Assembly.LiveOut;
 import org.specs.DymaLib.Assembly.AssemblyAnalysis;
-import org.specs.DymaLib.Utils.LivenessAnalyser;
+import org.specs.DymaLib.Liveness.LivenessAnalyser;
 import org.suikasoft.SharedLibrary.MicroBlaze.InstructionProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
@@ -64,7 +64,7 @@ public class MbAssemblyAnalyser {
    public static AssemblyAnalysis buildData(RegisterTable registerTable,
            List<MbInstruction> mbInstructions) {
 
-        LivenessAnalyser livenessAnalyser = MbLivenessUtils.createLivenessAnalyser(mbInstructions);
+        LivenessAnalyser livenessAnalyser = MbAssemblyUtils.createLivenessAnalyser(mbInstructions);
 
       // Extract data for building MbAnalyser
        Collection<LiveOut> liveouts = livenessAnalyser.getLiveOuts();

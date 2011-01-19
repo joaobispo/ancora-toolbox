@@ -18,24 +18,38 @@
 package org.specs.DymaLib.MicroBlaze.Assembly;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.specs.DymaLib.Utils.LivenessAnalyser;
+import org.specs.DymaLib.Assembly.AssemblyAnalysis;
+import org.specs.DymaLib.Assembly.ConstantRegister;
+import org.specs.DymaLib.Assembly.LiveOut;
+import org.specs.DymaLib.Liveness.LivenessAnalyser;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
+import org.suikasoft.SharedLibrary.MicroBlaze.MbUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- * Utility methods related to liveness analysis of MicroBlaze assembly instructions.
+ * Utility methods related to analysis of MicroBlaze assembly instructions.
  *
  * @author Joao Bispo
  */
-public class MbLivenessUtils {
+public class MbAssemblyUtils {
 
-    public static void extractInfo(MbInstruction mbInst, List<String> operandIds, List<Boolean> isInput, List<Boolean> isConstant) {
+   /**
+    * Parses a MbInstruction into the Lists needed for the LivenessAnalysis object.
+    *
+    * @param mbInst
+    * @param operandIds
+    * @param isInput
+    * @param isConstant
+    */
+    public static void livenessParser(MbInstruction mbInst, List<String> operandIds, List<Boolean> isInput, List<Boolean> isConstant) {
       // Extract info from MbInst operands
       for(MbOperand mbOperand : mbInst.getOperands()) {
-         extractInfo(mbOperand, operandIds, isInput, isConstant);
+         livenessParser(mbOperand, operandIds, isInput, isConstant);
       }
 
       // Extract info from carries
@@ -56,7 +70,15 @@ public class MbLivenessUtils {
    }
 
 
-   public static void extractInfo(MbOperand mbOperand, List<String> operandIds, List<Boolean> input, List<Boolean> constant) {
+    /**
+     * Parses a MbOperand into the Lists needed for the LivenessAnalysis object.
+     *
+     * @param mbOperand
+     * @param operandIds
+     * @param input
+     * @param constant
+     */
+   public static void livenessParser(MbOperand mbOperand, List<String> operandIds, List<Boolean> input, List<Boolean> constant) {
       String operandId = mbOperand.getId();
       Boolean isInput = MbOperand.isInput(mbOperand.getFlow());
       Boolean isConstant = MbOperand.isConstant(mbOperand.getType());
@@ -78,10 +100,34 @@ public class MbLivenessUtils {
          List<String> operandIds = new ArrayList<String>();
          List<Boolean> isInput = new ArrayList<Boolean>();
          List<Boolean> isConstant = new ArrayList<Boolean>();
-         extractInfo(mbInst, operandIds, isInput, isConstant);
+         livenessParser(mbInst, operandIds, isInput, isConstant);
          livenessAnalyser.next(operandIds, isInput, isConstant);
       }
 
       return livenessAnalyser;
    }
+
+   /**
+    * Builds AssemblyAnalysis objects from MicroBlaze assembly instructions.
+    *
+    * @param registerTable
+    * @param mbInstructions
+    * @return
+    */
+   public static AssemblyAnalysis buildData(RegisterTable registerTable,
+           List<MbInstruction> mbInstructions) {
+
+        LivenessAnalyser livenessAnalyser = MbAssemblyUtils.createLivenessAnalyser(mbInstructions);
+
+      // Extract data for building MbAnalyser
+       Collection<LiveOut> liveouts = livenessAnalyser.getLiveOuts();
+       //Collection<ConstantRegister> constantRegisters = getConstantRegisters(registerTable, livenessAnalyser);
+       Collection<ConstantRegister> constantRegisters = livenessAnalyser.getConstantRegisters(registerTable);
+       boolean hasStores = MbUtils.hasStores(mbInstructions);
+
+       AssemblyAnalysis asmData = new AssemblyAnalysis(liveouts, constantRegisters, hasStores,
+               livenessAnalyser.getLiveIns());
+       return asmData;
+   }
+
 }

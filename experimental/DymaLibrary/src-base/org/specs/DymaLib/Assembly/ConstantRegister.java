@@ -30,7 +30,8 @@ import java.io.Serializable;
  */
 public class ConstantRegister implements Serializable {
 
-   public ConstantRegister(String id, int value) {
+   //public ConstantRegister(String id, int value) {
+   public ConstantRegister(String id, Integer value) {
       this.id = id;
       this.value = value;
    }
@@ -41,7 +42,8 @@ public class ConstantRegister implements Serializable {
    }
 
    public final String id;
-   public final int value;
+   //public final int value;
+   public final Integer value;
 
    private static final long serialVersionUID = 1;
 }
