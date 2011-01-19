@@ -20,6 +20,8 @@ package org.specs.MbGccScripter.Programs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -38,78 +40,73 @@ public class Compile implements Program {
 
    @Override
    public boolean execute(List<String> arguments, OptionsTable state) {
-      
-      /*
-      // Prepare flags
-      List<String> flagsArray = state.getList(MbGccOption.flagList);
-      // Prepare optimizations
-      List<String> optArray = state.getList(MbGccOption.optionList);
-
-      List<File> inputs = MbGccUtils.getInputs(state);
-
-      boolean result = true;
-*/
-      // Determine mode
-      String modeName = state.get(MbGccOption.gccMode);
-      GccModes mode = EnumUtils.valueOf(GccModes.class, modeName);
-
-      switch(mode) {
-         case fileIsProgram:
-            return runFileIsProgram(state);
-         case folderIsProgram:
-            return runFolderIsProgram(state);
-         default:
-            LoggingUtils.getLogger(this).
-                    warning("Case not defined: '"+mode+"'");
-            return false;
-      }
-/*
-      for(File input : inputs) {
-         for(String optimization : optArray) {
-            // Get files
-            List<File> inputFiles = getFiles(mode, input);
-            String baseFilename = getBaseFilename(mode, input);
-
+      try {
+         /*
+         // Prepare flags
+         List<String> flagsArray = state.getList(MbGccOption.flagList);
+         // Prepare optimizations
+         List<String> optArray = state.getList(MbGccOption.optionList);
+         List<File> inputs = MbGccUtils.getInputs(state);
+         boolean result = true;
+          */
+         // Determine mode
+         String modeName = state.get(MbGccOption.gccMode);
+         GccModes mode = EnumUtils.valueOf(GccModes.class, modeName);
+         switch (mode) {
+            case fileIsProgram:
+               return runFileIsProgram(state);
+            case folderIsProgram:
+               return runFolderIsProgram(state);
+            default:
+               LoggingUtils.getLogger(this).warning("Case not defined: '" + mode + "'");
+               return false;
          }
-      }
-*/
-      // Prepare files
-      //File[] files = (new File(DEFAULT_INPUT_FOLDER)).listFiles();
-      //List<File> files = IoUtils.getFilesRecursive(new File(DEFAULT_INPUT_FOLDER));
-/*
-
-      List<File> programFolders = getProgramFolders();
-
-
-      
-      for(File programFolder : programFolders) {
-      //for(List<File> fileArray : programs) {
+         /*
+         for(File input : inputs) {
          for(String optimization : optArray) {
-            // Get files
-            String[] inputFiles = getProgramFiles(programFolder);
-
-            //String baseFilename = IoUtils.removeExtension(inputFiles[0], IoUtils.DEFAULT_EXTENSION_SEPARATOR);
-            String baseFilename = programFolder.getName();
-            String parentInputFolder = programFolder.getParent();
-            String outputFolder = parentInputFolder+"\\elf\\"+optimization.substring(1)+"\\";
-            //String outputFolder = DEFAULT_INPUT_FOLDER+"\\..\\elf\\"+optimization.substring(1)+"\\";
-            //String outputFile = baseFilename + optimization + ".elf";
-            String outputFile = outputFolder + baseFilename + optimization + ".elf";
-            //System.out.println("Program Folder:"+programFolder.getName());
-            //System.out.println("Program Folder:"+programFolder.getAbsolutePath());
-            MbGccRun run = new MbGccRun(outputFile, inputFiles, optimization, flagsArray, programFolder.getAbsolutePath());
-            int intResult = run.run();
-            if(intResult != 0) {
-               LoggingUtils.getLogger(this).
-                       warning("MbGcc returned result other than 0 ("+intResult+")");
-               result = false;
-            }
+         // Get files
+         List<File> inputFiles = getFiles(mode, input);
+         String baseFilename = getBaseFilename(mode, input);
          }
+         }
+          */
+         // Prepare files
+         //File[] files = (new File(DEFAULT_INPUT_FOLDER)).listFiles();
+         //List<File> files = IoUtils.getFilesRecursive(new File(DEFAULT_INPUT_FOLDER));
+         /*
+         List<File> programFolders = getProgramFolders();
+         for(File programFolder : programFolders) {
+         //for(List<File> fileArray : programs) {
+         for(String optimization : optArray) {
+         // Get files
+         String[] inputFiles = getProgramFiles(programFolder);
+         //String baseFilename = IoUtils.removeExtension(inputFiles[0], IoUtils.DEFAULT_EXTENSION_SEPARATOR);
+         String baseFilename = programFolder.getName();
+         String parentInputFolder = programFolder.getParent();
+         String outputFolder = parentInputFolder+"\\elf\\"+optimization.substring(1)+"\\";
+         //String outputFolder = DEFAULT_INPUT_FOLDER+"\\..\\elf\\"+optimization.substring(1)+"\\";
+         //String outputFile = baseFilename + optimization + ".elf";
+         String outputFile = outputFolder + baseFilename + optimization + ".elf";
+         //System.out.println("Program Folder:"+programFolder.getName());
+         //System.out.println("Program Folder:"+programFolder.getAbsolutePath());
+         MbGccRun run = new MbGccRun(outputFile, inputFiles, optimization, flagsArray, programFolder.getAbsolutePath());
+         int intResult = run.run();
+         if(intResult != 0) {
+         LoggingUtils.getLogger(this).
+         warning("MbGcc returned result other than 0 ("+intResult+")");
+         result = false;
+         }
+         }
+         }
+         return result;
+          *
+          */
+      } catch (InterruptedException ex) {
+         Logger.getLogger(Compile.class.getName()).log(Level.SEVERE, null, ex);
+         Thread.currentThread().interrupt();
       }
 
-      return result;
- * 
- */
+      return false;
    }
 
    @Override
@@ -136,7 +133,7 @@ public class Compile implements Program {
       return result;
    }
 */
-   private boolean runFolderIsProgram(OptionsTable state) {
+   private boolean runFolderIsProgram(OptionsTable state) throws InterruptedException {
       // Prepare flags
       List<String> flagsArray = state.getList(MbGccOption.flagList);
       // Prepare optimizations
@@ -173,7 +170,7 @@ public class Compile implements Program {
       return result;
    }
 
-   private boolean runFileIsProgram(OptionsTable state) {
+   private boolean runFileIsProgram(OptionsTable state) throws InterruptedException {
             // Prepare flags
       List<String> flagsArray = state.getList(MbGccOption.flagList);
       // Prepare optimizations

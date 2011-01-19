@@ -17,6 +17,8 @@
 
 package org.specs.LoopOptimization.V2;
 
+import org.specs.DymaLib.Simulator.SimulatorResults;
+import org.specs.DymaLib.Simulator.SimpleSimulator;
 import java.io.File;
 import org.specs.DToolPlus.Config.SystemSetup;
 import org.specs.DToolPlus.DToolReader;

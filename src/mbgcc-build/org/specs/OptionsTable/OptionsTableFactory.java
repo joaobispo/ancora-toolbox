@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import org.ancora.SharedLibrary.ParseUtils;
 
 /**

@@ -17,6 +17,7 @@
 
 package org.specs.LoopOptimization.V2;
 
+import org.specs.DymaLib.Simulator.SimulatorResults;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;

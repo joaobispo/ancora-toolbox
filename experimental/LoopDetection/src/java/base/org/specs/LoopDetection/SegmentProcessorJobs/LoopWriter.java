@@ -17,7 +17,7 @@
 
 package org.specs.LoopDetection.SegmentProcessorJobs;
 
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.Utils.LoopDiskWriter.DiskWriterSetup;
 import org.specs.DymaLib.Utils.LoopDiskWriter.LoopDiskWriter;
 import org.specs.LoopDetection.LoopDetectionInfo;

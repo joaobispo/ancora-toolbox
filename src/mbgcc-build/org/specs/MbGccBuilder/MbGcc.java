@@ -17,6 +17,8 @@
 
 package org.specs.MbGccBuilder;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 
@@ -30,10 +32,15 @@ public class MbGcc {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    LoggingUtils.setupConsoleOnly();
-      //buildMenottiElfs();
-      buildAdhocElfs();
-      //buildDtooElfs();
+      try {
+         LoggingUtils.setupConsoleOnly();
+         //buildMenottiElfs();
+         buildAdhocElfs();
+         //buildDtooElfs();
+      } catch (InterruptedException ex) {
+         Logger.getLogger(MbGcc.class.getName()).log(Level.SEVERE, null, ex);
+         Thread.currentThread().interrupt();
+      }
    }
 /*
    public static int runProcess(List<String> command, String workingDir) {
@@ -100,19 +107,19 @@ public class MbGcc {
       return builder.toString();
    }
 */
-   private static void buildMenottiElfs() {
+   private static void buildMenottiElfs() throws InterruptedException {
       for(MbGccRun run : MenottiGccRuns.getRuns()) {
          run.run();
        }
    }
 
-   private static void buildAdhocElfs() {
+   private static void buildAdhocElfs() throws InterruptedException {
       for(MbGccRun run : AdhocGccRuns.getRuns()) {
          run.run();
        }
    }
 
-   private static void buildDtooElfs() {
+   private static void buildDtooElfs() throws InterruptedException {
        for(MbGccRun run : DtoolGccRuns.getRuns()) {
          run.run();
        }

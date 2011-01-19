@@ -19,6 +19,7 @@ package org.specs.LoopMapping;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.ancora.FuMatrix.Mapper.GeneralMapper;
@@ -42,14 +43,17 @@ import org.ancora.StreamTransform.RemoveR0Or;
 import org.ancora.StreamTransform.ResolveLiteralInputs;
 import org.ancora.StreamTransform.SingleStaticAssignment;
 import org.ancora.StreamTransform.StreamTransformation;
-import org.specs.DymaLib.LoopDetection.LoopUnit;
-import org.specs.DymaLib.LowLevelInstruction.Elements.LowLevelInstruction;
-import org.specs.DymaLib.LowLevelInstruction.LowLevelParser;
+import org.specs.DToolPlus.Config.SystemSetup;
+import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
+import org.specs.DymaLib.deprecated.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.Mapping.Architecture.Architecture;
 import org.specs.DymaLib.Mapping.Mapper;
-import org.specs.DymaLib.MbImplementation;
+import org.specs.DymaLib.MicroBlaze.MbImplementation;
 import org.specs.DymaLib.ProcessorImplementation;
 import org.specs.DymaLib.Utils.LoopDiskWriter.BlockParser;
+import system.SysteM;
+import system.SysteMException;
 
 /**
  *
@@ -81,7 +85,26 @@ public class LoopMapping implements App {
          //processFileOldMapper(inputFile);
          //processElfOldMapper(inputFile);
       }
+/*
+       File elfFile = new File("E:\\temp\\elf\\bs-Os.elf");
+      SystemSetup setup = SystemSetup.getDefaultConfig();
 
+      //TraceReader traceReader = DToolReader.newDToolReader(elfFile, setup);
+
+      //String systemConfig = "./Configuration Files/systemconfig.xml";
+      String systemConfig = "D:\\Programming\\Ancora\\AncoraToolbox\\experimental\\LoopDetection\\run\\Configuration Files\\systemconfig.xml";
+      String elfFilename = elfFile.getPath();
+      try {
+         //SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, false);
+         //SysteM originalSystem = DToolUtils.newSysteM(systemConfig, elfFilename, setup);
+         SysteM system = new SysteM(systemConfig, elfFilename, false, true);
+      } catch (SysteMException ex) {
+         System.out.println("Exception!");
+         System.out.println(ex.getMessage());
+         System.out.println(Arrays.toString(ex.getStackTrace()));
+      }
+      System.out.println("No exception?");
+*/
       return 0;
    }
 
@@ -207,7 +230,7 @@ public class LoopMapping implements App {
     *
     */
 
-   public static long removedInst(LoopUnit unit) {
+   public static long removedInst(CodeSegment unit) {
 
       List<GenericInstruction> genericInstructions = new ArrayList<GenericInstruction>();
       for(int i=0; i<unit.getInstructions().size(); i++) {

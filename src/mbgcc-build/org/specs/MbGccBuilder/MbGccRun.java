@@ -38,7 +38,7 @@ public class MbGccRun {
       this.workingDir = workingDir;
    }
 
-   public int run() {
+   public int run() throws InterruptedException {
       // Create Folder for outputfile
       File outputFil = new File(outputFile);
       File outputFol = outputFil.getParentFile();

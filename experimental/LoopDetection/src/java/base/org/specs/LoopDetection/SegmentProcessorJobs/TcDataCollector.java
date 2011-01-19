@@ -18,7 +18,7 @@
 package org.specs.LoopDetection.SegmentProcessorJobs;
 
 import org.specs.CoverageData.TcData;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.Utils.SegmentProcessor.SegmentProcessorJob;
 
 /**

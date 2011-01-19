@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 SuikaSoft.
+ *  Copyright 2010 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,33 +15,35 @@
  *  under the License.
  */
 
-package org.specs.LoopOptimization.V2;
+package org.specs.DymaLib.Mapping.Tables;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.Mapping.Architecture.Architecture;
+import org.specs.DymaLib.Mapping.Representation.Exit;
 
 /**
- * Data extracted from MicroBlaze ELF simulation.
  *
  * @author Joao Bispo
  */
-public class SimulatorResults {
+public class WorkingCycle {
 
-   public SimulatorResults(long totalInstructions, long totalCycles, List<CodeSegment> foundLoops) {
-      this.totalInstructions = totalInstructions;
-      this.totalCycles = totalCycles;
-      this.foundLoops = foundLoops;
+   public WorkingCycle(Architecture arch, int cycleNumber) {
+      this.cycleAval = new CycleAvaliability(arch);
+      mappedPes = new ArrayList<MappedPe>();
+      this.cycleNumber = cycleNumber;
    }
 
    @Override
    public String toString() {
-      return "Total instructions:"+totalInstructions+"\n"
-              + "Found Loops:"+foundLoops;
+      return "Cycle: "+cycleNumber;
    }
 
-   
 
-   public final long totalInstructions;
-   public final long totalCycles;
-   public final List<CodeSegment> foundLoops;
+
+
+   public CycleAvaliability cycleAval;
+   public List<MappedPe> mappedPes;
+   public List<Exit> exits;
+   public final int cycleNumber;
 }

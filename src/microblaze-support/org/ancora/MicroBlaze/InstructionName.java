@@ -160,7 +160,7 @@ public enum InstructionName {
     * null if could not find an object with the same name
     */
    public static InstructionName getEnum(String instructionName) {
-      try{
+      try{            
          return valueOf(instructionName.toLowerCase());
       } catch(IllegalArgumentException ex) {
          Logger.getLogger(InstructionName.class.getName()).

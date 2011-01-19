@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.ancora.SharedLibrary.EnumUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils;
@@ -140,10 +139,11 @@ public class LoopDetection implements App {
 
    //private boolean init(Map<String, AppValue> options) {
    private boolean init(Setup options) {
-      String inputTypeName = BaseUtils.getString(options.get(AppOptions.InputType));
-      InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
+      //String inputTypeName = BaseUtils.getString(options.get(AppOptions.InputType));
+      //InputType inputType = EnumUtils.valueOf(InputType.class, inputTypeName);
 
-      inputFiles = InputType.getFiles(options, AppOptions.ProgramFileOrFolder, inputType);
+      //inputFiles = InputType.getFiles(options, AppOptions.ProgramFileOrFolder, inputType);
+      inputFiles = InputType.getFiles(options, AppOptions.ProgramFileOrFolder, AppOptions.InputType);
       if(inputFiles == null) {
          return false;
       }

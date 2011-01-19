@@ -93,7 +93,8 @@ public class ChartMain {
       series2.add(90, 0.639060454958277*100);
 
       // Create series for WarpBlock
-      XYSeries series3 = new XYSeries("WarpBlock");
+      //XYSeries series3 = new XYSeries("WarpBlock");
+      XYSeries series3 = new XYSeries("BackwardBranchBlock");
       series3.add(1, 1*100);
       series3.add(2, 0.673735793687178*100);
       series3.add(90, 0.32752345990641*100);

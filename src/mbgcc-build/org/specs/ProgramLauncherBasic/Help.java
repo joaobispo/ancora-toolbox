@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.SharedLibrary.Files.LineParser;
+import org.ancora.SharedLibrary.Utilities.LineParser;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.specs.OptionsTable.OptionsTable;
 import org.specs.ProgramLauncher.Program;

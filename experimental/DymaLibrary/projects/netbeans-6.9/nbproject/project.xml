@@ -5,8 +5,9 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Dyma Library</name>
             <source-roots>
-                <root id="src.dir"/>
-                <root id="src.src-processors.dir" name="Processors"/>
+                <root id="src.base.dir" name="Base"/>
+                <root id="src.utils.dir" name="Utils"/>
+                <root id="src.processors.dir" name="Processors"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>

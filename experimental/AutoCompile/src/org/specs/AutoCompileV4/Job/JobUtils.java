@@ -58,6 +58,10 @@ public class JobUtils {
       // Add stack size
       String stackSize = BaseUtils.getString(jobOptions.get(JobOption.StackSize));
       //String stackSize = AppUtils.getString(jobOptions, JobOption.StackSize);
+      if(stackSize.isEmpty()) {
+         stackSize = "0x800";
+         LoggingUtils.getLogger().info("Using default stack size (0x800)");
+      }
       otherFlags.addAll(getStackSizeArgument(stackSize));
 
       // Get list of programs to compile

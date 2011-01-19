@@ -19,7 +19,7 @@ package org.specs.CoverageData;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.specs.DymaLib.LoopDetection.CodeSegment;
+import org.specs.DymaLib.Assembly.CodeSegment;
 
 /**
  * Stores the number of instruction per repetition in InstructionBlocks
