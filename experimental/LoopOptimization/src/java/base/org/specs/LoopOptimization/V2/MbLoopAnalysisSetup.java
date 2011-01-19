@@ -17,27 +17,47 @@
 
 package org.specs.LoopOptimization.V2;
 
+import java.util.Arrays;
 import java.util.Collection;
-import org.specs.DToolPlus.Config.SystemOptionsV4;
-import org.specs.DymaLib.LoopDetection.MegaBlock.MegaBlockOptionsV4;
-import org.suikasoft.Jani.Base.BaseUtils;
+import org.specs.DymaLib.MicroBlaze.MbWeightsSetup;
 import org.suikasoft.Jani.Base.EnumKey;
 import org.suikasoft.Jani.Base.OptionType;
+import org.suikasoft.Jani.EnumKeyOptions.MultipleSetupEnum;
 import org.suikasoft.Jani.EnumKeyOptions.SingleSetupEnum;
+import org.specs.DymaLib.Vbi.Optimization.OptimizersList;
+import org.suikasoft.Jani.Base.BaseUtils;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum MbSimulatorOptions implements EnumKey, SingleSetupEnum {
+public enum MbLoopAnalysisSetup implements EnumKey, MultipleSetupEnum, SingleSetupEnum {
 
-   IterationThreshold(OptionType.integer),
-   //MegaBlockSetup(OptionType.setup),
-   MegaBlockSetup(OptionType.integratedSetup),
-   SystemSetup(OptionType.setup);
+   //LoadCycles(OptionType.integer),
+   //StoreCycles(OptionType.integer),
+   //OtherCycles(OptionType.integer),
+   MbWeights(OptionType.integratedSetup),
+   Optimizations(OptionType.setupList);
 
-   private MbSimulatorOptions(OptionType optionType) {
+
+   public Collection<SingleSetupEnum> getSetups() {
+      if(this == Optimizations) {
+         return Arrays.asList((SingleSetupEnum[]) OptimizersList.values());
+      }
+
+      return null;
+   }
+
+   private MbLoopAnalysisSetup(OptionType optionType) {
       this.optionType = optionType;
+   }
+
+   public Collection<EnumKey> getSetupOptions() {
+      if(this == MbWeights) {
+         return BaseUtils.extractEnumValues(MbWeightsSetup.class);
+      }
+
+      return null;
    }
 
    public OptionType getType() {
@@ -46,15 +66,7 @@ public enum MbSimulatorOptions implements EnumKey, SingleSetupEnum {
 
    private final OptionType optionType;
 
-   public Collection<EnumKey> getSetupOptions() {
-      if(this == MegaBlockSetup) {
-         return BaseUtils.extractEnumValues(MegaBlockOptionsV4.class);
-      }
 
-      if(this == SystemSetup) {
-         return BaseUtils.extractEnumValues(SystemOptionsV4.class);
-      }
 
-      return null;
-   }
+
 }

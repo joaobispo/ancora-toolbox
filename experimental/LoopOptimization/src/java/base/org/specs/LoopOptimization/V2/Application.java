@@ -19,10 +19,7 @@ package org.specs.LoopOptimization.V2;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import org.specs.DymaLib.Assembly.CodeSegment;
 import org.specs.DymaLib.MicroBlaze.Vbi.MbSolver;
 import org.suikasoft.Jani.App;
@@ -32,7 +29,6 @@ import org.suikasoft.Jani.PreBuiltTypes.InputType;
 import org.suikasoft.Jani.Setup;
 import org.suikasoft.SharedLibrary.IoUtils;
 import org.suikasoft.SharedLibrary.LoggingUtils;
-import org.suikasoft.SharedLibrary.ParseUtils;
 
 /**
  *
@@ -41,7 +37,7 @@ import org.suikasoft.SharedLibrary.ParseUtils;
 public class Application implements App {
 
    public Application() {
-      nodeWeights = null;
+      //nodeWeights = null;
    }
 
 
@@ -52,7 +48,9 @@ public class Application implements App {
       // Get serialized files
       //serializedBlocks = getSerializedFiles(setup);
 
-      nodeWeights = getWeights(setup);
+      //nodeWeights = getWeights(setup);
+
+      mbLoopAnalyserSetup = BaseUtils.getSetup(setup.get(Options.AnalysisSetup));
 
       outputFolder = BaseUtils.getFolder(setup.get(Options.OutputFolder));
       if(outputFolder == null) {
@@ -163,7 +161,9 @@ public class Application implements App {
    }
 
    private long calculateHwCycles(CodeSegment loop) {
-      MbLoopAnalysis analysis = MbLoopAnalysis.analyse(loop, nodeWeights);
+      MbLoopAnalyser mbLoopAnalyser = new MbLoopAnalyser(mbLoopAnalyserSetup);
+      MbLoopAnalysis analysis = mbLoopAnalyser.analyse(loop);
+      //MbLoopAnalysis analysis = MbLoopAnalysis.analyse(loop, nodeWeights);
 
       return analysis.totalCyclesWithOptimizations;
       //return analysis.totalCyclesWithoutOptimizations;
@@ -237,8 +237,8 @@ public class Application implements App {
    }
 */
 
-
-
+/*
+// Move to WeigthTable
    private Map<String, Integer> getWeights(Setup setup) {
 
       String propertiesFilename = BaseUtils.getString(setup.get(Options.PropertiesFileWithInstructionCycles));
@@ -272,6 +272,8 @@ public class Application implements App {
 
       return weights;
    }
+ * 
+ */
 /*
    private void optimizeVbis(List<VeryBigInstruction32> vbis) {
       Solver solver = new MbSolver();
@@ -292,7 +294,8 @@ public class Application implements App {
     * INSTANCE VARIABLES
     */
    //private List<File> serializedBlocks;
-   private Map<String, Integer> nodeWeights;
+   //private Map<String, Integer> nodeWeights;
+   private Setup mbLoopAnalyserSetup;
    private File outputFolder;
    
    // New vars

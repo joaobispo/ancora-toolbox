@@ -39,7 +39,7 @@ public class Launcher {
        ProcessUtils.programStandardInit();
        DToolUtils.prepareDtoolMicroblaze();
 
-//       LoopOptimizationApplication app = new LoopOptimizationApplication();
+//      LoopOptimizationApplication app = new LoopOptimizationApplication();
        App app = new Application();
        SimpleGui simpleGui = new SimpleGui(app);
        simpleGui.setTitle("Straigh-Line Loop Optimizations v0.2");

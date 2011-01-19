@@ -33,6 +33,7 @@ import org.specs.DymaLib.Vbi.Utils.GraphBuilder;
 import org.specs.DymaLib.Vbi.Utils.Solver;
 import org.specs.DymaLib.Vbi.VbiUtils;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
+import org.suikasoft.Jani.Setup;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
 import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
@@ -51,7 +52,19 @@ public class MbLoopAnalysis {
       this.totalCyclesWithoutOptimizations = totalCyclesWithoutOptimizations;
    }
 
+   public static MbLoopAnalysis buildAnalysis(int originalCpl, int transformedCpl, int loopIterations,
+           int communicationCycles) {
 
+      long totalCyclesWithOptimizations = calcLoopCycles(transformedCpl, loopIterations, communicationCycles);
+      long totalCyclesWithoutOptimizations = calcLoopCycles(originalCpl, loopIterations, communicationCycles);
+
+      return new MbLoopAnalysis(totalCyclesWithOptimizations, totalCyclesWithoutOptimizations);
+   }
+
+
+   public static long calcLoopCycles(int transformedCpl, int loopIterations, int communicationCycles) {
+      return transformedCpl * loopIterations + communicationCycles;
+   }
 
    public static MbLoopAnalysis analyse(CodeSegment loop, Map<String, Integer> nodeWeights) {
       // Build MicroBlaze instructions cache
@@ -79,7 +92,7 @@ public class MbLoopAnalysis {
       VbiAnalysis vbiAnalysisTransformed = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
       System.out.println(vbiAnalysisTransformed.diff(vbiAnalysisOriginal));
 
-      int communicationCycles = calcCommCycles(asmData);
+      int communicationCycles = calcCommunicationCycles(asmData);
 
       int nonOptCycles = (vbiAnalysisOriginal.criticalPathLenght*loop.getIterations()) + communicationCycles;
       int optCycles = (vbiAnalysisTransformed.criticalPathLenght*loop.getIterations()) + communicationCycles;
@@ -94,7 +107,7 @@ public class MbLoopAnalysis {
     * @param asmData
     * @return
     */
-   private static int calcCommCycles(AssemblyAnalysis asmData) {
+   public static int calcCommunicationCycles(AssemblyAnalysis asmData) {
       LivenessAnalysis liveness = asmData.livenessAnalysis;
       // # Non-constant live-ins
       //int liveIns = asmData.liveIns.size() - asmData.constantRegisters.size();
@@ -128,4 +141,7 @@ public class MbLoopAnalysis {
    public final long totalCyclesWithoutOptimizations;
 
    public static final Integer DEFAULT_COMM_CYCLES_PER_REG = 1;
+
+   private Setup mbSolverSetup;
+
 }

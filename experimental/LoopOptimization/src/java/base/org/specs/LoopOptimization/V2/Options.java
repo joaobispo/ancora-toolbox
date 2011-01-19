@@ -36,8 +36,10 @@ public enum Options implements EnumKey, MultipleChoiceEnum, SingleSetupEnum {
    PathType(OptionType.multipleChoice),
    OutputFolder(OptionType.string),
    SpeedupFile(OptionType.string),
-   SimulationSetup(OptionType.setup),
-   PropertiesFileWithInstructionCycles(OptionType.string);
+   //SimulationSetup(OptionType.setup),
+   SimulationSetup(OptionType.integratedSetup),
+   //PropertiesFileWithInstructionCycles(OptionType.string),
+   AnalysisSetup(OptionType.integratedSetup);
 
    private Options(OptionType optionType) {
       this.optionType = optionType;
@@ -61,6 +63,10 @@ public enum Options implements EnumKey, MultipleChoiceEnum, SingleSetupEnum {
    public Collection<EnumKey> getSetupOptions() {
       if(this == SimulationSetup) {
          return BaseUtils.extractEnumValues(MbSimulatorOptions.class);
+      }
+
+      if(this == AnalysisSetup) {
+         return BaseUtils.extractEnumValues(MbLoopAnalysisSetup.class);
       }
 
       return null;
