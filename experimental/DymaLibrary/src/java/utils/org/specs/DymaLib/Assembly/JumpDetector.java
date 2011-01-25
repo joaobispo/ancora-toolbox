@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 SPeCS Research Group.
+ *  Copyright 2011 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,35 +17,25 @@
 
 package org.specs.DymaLib.Assembly;
 
-import java.io.Serializable;
-import java.util.List;
-import org.suikasoft.SharedLibrary.Processors.RegisterTable;
-
 /**
- * Represents a segment of code, which can represent a loop.
+ * Detects Basic Block limits from a list of instructions.
  *
  * @author Joao Bispo
  */
-public interface CodeSegment extends Serializable {
+public interface JumpDetector {
 
-   List<String> getInstructions();
+   /**
+    * Feeds an instruction to BasicBlockDetector.
+    * 
+    * @param instruction
+    */
+   public void nextInstruction(Object instruction);
 
-   List<Integer> getAddresses();
-
-   int getId();
-
-   int getNumInstructions();
-
-   int getIterations();
-
-   int getTotalInstructions();
-
-   boolean isLoop();
-
-   boolean areAllInstructionsStored();
-
-   RegisterTable getRegisterValues();
-
-   void setRegisterValues(RegisterTable registerValues);
-
+   /**
+    * Detects the end of a BasicBlock.
+    *
+    * @return true, if the last given instruction is the end of the current
+    * BasicBlock. False otherwise.
+    */
+   public boolean isJump();
 }

@@ -19,7 +19,7 @@ package org.specs.DymaLib.LoopDetection.WarpBlock;
 
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.TraceUnitUtils;
 import org.suikasoft.SharedLibrary.Processors.RegisterId;

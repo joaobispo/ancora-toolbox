@@ -20,6 +20,8 @@ package org.specs.DymaLib.Vbi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.specs.DymaLib.Dotty.Instructions.DottyOpWithData;
+import org.specs.DymaLib.Dotty.Instructions.DottyOperand;
 import org.specs.DymaLib.Vbi.Parser.VbiParser;
 import org.suikasoft.SharedLibrary.DataStructures.AccumulatorMap;
 import org.suikasoft.SharedLibrary.LoggingUtils;
@@ -130,5 +132,46 @@ public class VbiUtils {
       }
 
       return vbis;
+   }
+
+   public static DottyOperand toDottyOperand(VbiOperand operand) {
+      String value = null;
+      if(operand.value != null) {
+         value = operand.value.toString();
+      }
+
+      return new DottyOperand(operand.id, value, operand.isInput, !operand.isRegister
+              , operand.isConstant, operand.isLiveIn, operand.isLiveOut);
+   }
+
+   public static List<DottyOperand> extractDottyOperands(VeryBigInstruction32 vbi) {
+      List<DottyOperand> ops = new ArrayList<DottyOperand>();
+
+      for(VbiOperand vbiOp : vbi.originalOperands) {
+         ops.add(toDottyOperand(vbiOp));
+      }
+
+      for(VbiOperand vbiOp : vbi.supportOperands) {
+         ops.add(toDottyOperand(vbiOp));
+      }
+
+      return ops;
+   }
+
+   public static String generateDotFile(List<VeryBigInstruction32> vbis) {
+      DottyOpWithData dottyGenerator = new DottyOpWithData();
+
+      for(VeryBigInstruction32 vbi : vbis) {
+         if(!vbi.isMappable) {
+            continue;
+         }
+         
+         //dottyGenerator.addInstruction(vbi.op, vbi.isMappable,
+         dottyGenerator.addInstruction(vbi.op,
+                 VbiUtils.extractDottyOperands(vbi));
+      }
+      dottyGenerator.close();
+
+      return dottyGenerator.getDotty();
    }
 }

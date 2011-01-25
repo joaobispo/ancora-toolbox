@@ -15,17 +15,37 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Utils.SegmentProcessor;
+package org.specs.DymaLib.PreAnalysis;
 
-import org.specs.DymaLib.PreAnalysis.CodeSegment;
+import java.io.Serializable;
+import java.util.List;
+import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**
- * Performs some work using loop information.
+ * Represents a segment of code, which can represent a loop.
  *
  * @author Joao Bispo
  */
-public interface SegmentProcessorJob {
+public interface CodeSegment extends Serializable {
 
-   public void processSegment(CodeSegment segment);
+   List<String> getInstructions();
+
+   List<Integer> getAddresses();
+
+   int getId();
+
+   int getNumInstructions();
+
+   int getIterations();
+
+   int getTotalInstructions();
+
+   boolean isLoop();
+
+   boolean areAllInstructionsStored();
+
+   RegisterTable getRegisterValues();
+
+   void setRegisterValues(RegisterTable registerValues);
 
 }

@@ -20,8 +20,8 @@ package org.specs.DymaLib.Vbi.Parser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.Assembly.ConstantRegister;
-import org.specs.DymaLib.Assembly.LiveOut;
+import org.specs.DymaLib.PreAnalysis.ConstantRegister;
+import org.specs.DymaLib.PreAnalysis.LiveOut;
 
 /**
  * Utility methods related to parsing and creation of VBI instructions.

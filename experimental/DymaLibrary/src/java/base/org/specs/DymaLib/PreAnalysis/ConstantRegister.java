@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 SuikaSoft.
+ *  Copyright 2011 SPeCS Research Group.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,33 +15,35 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Simulator;
+package org.specs.DymaLib.PreAnalysis;
 
-import java.util.List;
-import org.specs.DymaLib.PreAnalysis.CodeSegment;
+import java.io.Serializable;
 
 /**
- * Data extracted from MicroBlaze ELF simulation.
+ * Represents a register which does not change its value during the considered
+ * segment.
+ *
+ * <p>Includes an id to identify the register and the value
+ * of the register during the considered segment.
  *
  * @author Joao Bispo
  */
-public class SimulatorResults {
+public class ConstantRegister implements Serializable {
 
-   public SimulatorResults(long totalInstructions, long totalCycles, List<CodeSegment> foundLoops) {
-      this.totalInstructions = totalInstructions;
-      this.totalCycles = totalCycles;
-      this.foundLoops = foundLoops;
+   //public ConstantRegister(String id, int value) {
+   public ConstantRegister(String id, Integer value) {
+      this.id = id;
+      this.value = value;
    }
 
    @Override
    public String toString() {
-      return "Total instructions:"+totalInstructions+"\n"
-              + "Found Loops:"+foundLoops;
+      return id+"("+value+")";
    }
 
-   
+   public final String id;
+   //public final int value;
+   public final Integer value;
 
-   public final long totalInstructions;
-   public final long totalCycles;
-   public final List<CodeSegment> foundLoops;
+   private static final long serialVersionUID = 1;
 }

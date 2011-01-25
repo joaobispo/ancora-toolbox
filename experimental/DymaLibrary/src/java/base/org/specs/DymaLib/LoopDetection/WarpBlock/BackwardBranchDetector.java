@@ -25,7 +25,7 @@ import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.InstructionDecoder;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 

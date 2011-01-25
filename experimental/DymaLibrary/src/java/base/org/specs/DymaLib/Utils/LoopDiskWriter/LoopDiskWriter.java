@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.SharedLibrary.IoUtils;
 import org.specs.DymaLib.Dotty.DottyStraigthLineLoop;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.deprecated.LowLevelInstruction.Elements.LowLevelInstruction;
 import org.specs.DymaLib.deprecated.LowLevelInstruction.LowLevelParser;
 import org.specs.DymaLib.deprecated.Stats.SllAnalyser;
@@ -187,10 +187,16 @@ public class LoopDiskWriter {
               lowLevelParser.parseInstructions(unit.getAddresses(), unit.getInstructions());
 
       String dottyBody = DottyStraigthLineLoop.generateDotty(llInsts, instructionNames);
+      //String dottyBody = generateDotty(llInsts, instructionNames);
 
       IoUtils.write(new File(outputFolder, dottyFilename), dottyBody);
    }
 
+   /*
+   private String generateDotty(List<LowLevelInstruction> llInsts, Enum[] instructionNames) {
+      llInsts.get(0).operands.get(0).
+   }
+   */
    private File outputFolder;
    private String programFilename;
    private String setupName;
@@ -208,5 +214,7 @@ public class LoopDiskWriter {
    public static final String DOT_EXTENSION = ".dotty";
    public static final String BLOCK_EXTENSION = ".block";
    public static final String SERIALIZED_BLOCK_EXTENSION = BLOCK_EXTENSION+".serialized";
+
+
 
 }

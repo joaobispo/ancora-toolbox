@@ -17,8 +17,10 @@
 
 package org.specs.DymaLib.Vbi.Optimization;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.specs.DymaLib.Vbi.Optimization.Analysis.MemoryAccessAnalyser;
 import org.specs.DymaLib.Vbi.Utils.Solver;
 import org.suikasoft.Jani.Base.BaseUtils;
 import org.suikasoft.Jani.Base.EnumKey;
@@ -32,7 +34,8 @@ import org.suikasoft.SharedLibrary.LoggingUtils;
  */
 public enum OptimizersList implements SingleSetupEnum {
 
-   ConstantFoldingAndPropagation(BaseUtils.extractEnumValues(CfpOptions.class));
+   ConstantFoldingAndPropagation(BaseUtils.extractEnumValues(CfpOptions.class)),
+   MemoryAccessAnalyser(new ArrayList<EnumKey>());
 
    private OptimizersList(List<EnumKey> options) {
       this.options = options;
@@ -47,6 +50,10 @@ public enum OptimizersList implements SingleSetupEnum {
       if(this == ConstantFoldingAndPropagation) {
          Solver solver = (Solver) arguments.get(0);
          return new ConstantFoldingAndPropagation(solver);
+      }
+
+      if(this == MemoryAccessAnalyser) {
+         return new MemoryAccessAnalyser();
       }
       
       LoggingUtils.getLogger().

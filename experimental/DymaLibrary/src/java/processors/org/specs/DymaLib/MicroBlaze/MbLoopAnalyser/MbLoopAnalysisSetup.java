@@ -20,7 +20,6 @@ package org.specs.DymaLib.MicroBlaze.MbLoopAnalyser;
 import java.util.Arrays;
 import java.util.Collection;
 import org.specs.DymaLib.MicroBlaze.MbWeightsSetup;
-import org.specs.DymaLib.MicroBlaze.MbWeightsSetup;
 import org.suikasoft.Jani.Base.EnumKey;
 import org.suikasoft.Jani.Base.OptionType;
 import org.suikasoft.Jani.EnumKeyOptions.MultipleSetupEnum;
@@ -35,6 +34,7 @@ import org.suikasoft.Jani.Base.BaseUtils;
  */
 public enum MbLoopAnalysisSetup implements EnumKey, MultipleSetupEnum, SingleSetupEnum {
 
+   EnableMegaBlockSpeculation(OptionType.bool),
    MbWeights(OptionType.integratedSetup),
    Optimizations(OptionType.setupList);
 

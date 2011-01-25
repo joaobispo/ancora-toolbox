@@ -15,8 +15,9 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Vbi.Optimization;
+package org.specs.DymaLib.Vbi.Optimization.Analysis;
 
+import org.specs.DymaLib.Vbi.Optimization.VbiOptimizer;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.specs.DymaLib.Vbi.VbiUtils;
 import org.specs.DymaLib.Vbi.VbiOperandIOView;
@@ -27,9 +28,9 @@ import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
  *
  * @author Joao Bispo
  */
-public class ConstantLoadsRemoval implements VbiOptimizer {
+public class ConstantLoadsAnalyser implements VbiOptimizer {
 
-   public ConstantLoadsRemoval() {
+   public ConstantLoadsAnalyser() {
       hasLiteralLoads = false;
       hasStores = false;
    }

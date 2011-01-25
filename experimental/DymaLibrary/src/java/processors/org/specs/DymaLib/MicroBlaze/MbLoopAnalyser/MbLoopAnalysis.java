@@ -17,7 +17,7 @@
 
 package org.specs.DymaLib.MicroBlaze.MbLoopAnalyser;
 
-import org.specs.DymaLib.Assembly.AssemblyAnalysis;
+import org.specs.DymaLib.PreAnalysis.AssemblyAnalysis;
 import org.specs.DymaLib.Liveness.LivenessAnalysis;
 
 /**

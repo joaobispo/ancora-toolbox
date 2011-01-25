@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Assembly;
+package org.specs.DymaLib.PreAnalysis;
 
 import java.io.Serializable;
 

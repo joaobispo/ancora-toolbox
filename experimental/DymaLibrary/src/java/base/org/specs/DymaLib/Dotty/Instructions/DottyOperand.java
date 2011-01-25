@@ -15,35 +15,31 @@
  *  under the License.
  */
 
-package org.specs.DymaLib.Assembly;
-
-import java.io.Serializable;
+package org.specs.DymaLib.Dotty.Instructions;
 
 /**
- * Represents a register which does not change its value during the considered
- * segment.
- *
- * <p>Includes an id to identify the register and the value
- * of the register during the considered segment.
+ * Data class used for DOT graphs in this package.
  *
  * @author Joao Bispo
  */
-public class ConstantRegister implements Serializable {
+public class DottyOperand {
 
-   //public ConstantRegister(String id, int value) {
-   public ConstantRegister(String id, Integer value) {
+   public DottyOperand(String id, String value, boolean isInput, boolean isImmediate, boolean isConstant, boolean isLiveIn, boolean isLiveOut) {
       this.id = id;
       this.value = value;
+      this.isInput = isInput;
+      this.isImmediate = isImmediate;
+      this.isConstant = isConstant;
+      this.isLiveIn = isLiveIn;
+      this.isLiveOut = isLiveOut;
    }
-
-   @Override
-   public String toString() {
-      return id+"("+value+")";
-   }
+   
 
    public final String id;
-   //public final int value;
-   public final Integer value;
-
-   private static final long serialVersionUID = 1;
+   public final String value;
+   public boolean isInput;
+   public boolean isImmediate;
+   public boolean isConstant;
+   public boolean isLiveIn;
+   public boolean isLiveOut;
 }

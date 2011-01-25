@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.specs.DymaLib.Assembly.AssemblyAnalysis;
-import org.specs.DymaLib.Assembly.ConstantRegister;
-import org.specs.DymaLib.Assembly.LiveOut;
+import org.specs.DymaLib.PreAnalysis.AssemblyAnalysis;
+import org.specs.DymaLib.PreAnalysis.ConstantRegister;
+import org.specs.DymaLib.PreAnalysis.LiveOut;
 import org.specs.DymaLib.Vbi.VbiOperand;
 import org.specs.DymaLib.Vbi.VeryBigInstruction32;
 import org.specs.DymaLib.Vbi.Parser.VbiParser;
@@ -33,8 +33,8 @@ import org.suikasoft.SharedLibrary.BitUtils;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbInstruction;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbOperand;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 
 /**

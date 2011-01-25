@@ -22,7 +22,7 @@ import java.util.List;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.specs.DymaLib.TraceReader;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**

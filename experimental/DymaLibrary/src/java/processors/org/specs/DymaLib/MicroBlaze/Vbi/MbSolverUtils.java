@@ -71,6 +71,12 @@ public class MbSolverUtils {
 
       for(int i=0; i<numInputs; i++) {
          Integer value = io.baseInputs.get(i).value;
+         if(value == null) {
+            LoggingUtils.getLogger().
+                    warning("A Constant Register has null value. Setting arbitrary value.");
+            value = 1;
+
+         }
          inputs.add(value);
       }
 

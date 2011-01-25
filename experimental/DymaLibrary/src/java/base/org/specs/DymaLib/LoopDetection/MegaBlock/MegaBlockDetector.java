@@ -20,7 +20,7 @@ package org.specs.DymaLib.LoopDetection.MegaBlock;
 import java.util.ArrayList;
 import java.util.List;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopDetectors;
 import org.specs.DymaLib.TraceUnit.TraceUnit;
 import org.specs.DymaLib.TraceUnit.UnitBuilder;

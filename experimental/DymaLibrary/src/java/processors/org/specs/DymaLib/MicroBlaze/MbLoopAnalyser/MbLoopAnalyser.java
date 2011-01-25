@@ -19,10 +19,9 @@ package org.specs.DymaLib.MicroBlaze.MbLoopAnalyser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.specs.DymaLib.Assembly.AssemblyAnalysis;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.AssemblyAnalysis;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.MicroBlaze.Assembly.MbAssemblyUtils;
-import org.specs.DymaLib.MicroBlaze.MbWeightsSetup;
 import org.specs.DymaLib.MicroBlaze.MbWeightsSetup;
 import org.specs.DymaLib.MicroBlaze.Vbi.MbGraphBuilder;
 import org.specs.DymaLib.MicroBlaze.Vbi.MbSolver;
@@ -40,8 +39,9 @@ import org.suikasoft.SharedLibrary.EnumUtils;
 import org.suikasoft.SharedLibrary.Graphs.GraphNode;
 import org.suikasoft.SharedLibrary.LoggingUtils;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbInstructionName;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MicroBlazeParser;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbInstruction;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbParserUtils;
+//import org.suikasoft.SharedLibrary.Utilities.IntCounter;
 
 /**
  * Extracts data from MegaBlocks, before and after applying optimizations.
@@ -53,6 +53,8 @@ public class MbLoopAnalyser {
    public MbLoopAnalyser(Setup mbLoopAnalysisSetup) {
       Setup weightSetup = BaseUtils.getSetup(mbLoopAnalysisSetup.get(MbLoopAnalysisSetup.MbWeights));
       weights = MbWeightsSetup.buildTable(weightSetup);
+
+      enableSpeculation = BaseUtils.getBoolean(mbLoopAnalysisSetup.get(MbLoopAnalysisSetup.EnableMegaBlockSpeculation));
 
       Map<String, Setup> optimizations = BaseUtils.getMapOfSetups(mbLoopAnalysisSetup.get(MbLoopAnalysisSetup.Optimizations));
       optimizers = new ArrayList<VbiOptimizer>();
@@ -67,6 +69,8 @@ public class MbLoopAnalyser {
          VbiOptimizer newOptimizer = optimizerEnum.getOptimizer(arguments);
          optimizers.add(newOptimizer);
       }
+
+      //loopCounter = new IntCounter();
    }
 
    private List<Object> buildArguments(OptimizersList value, Setup setup) {
@@ -77,14 +81,23 @@ public class MbLoopAnalyser {
          return arguments;
       }
 
+      if (value == OptimizersList.MemoryAccessAnalyser) {
+         return arguments;
+      }
+
       LoggingUtils.getLogger().
               warning("Case not defined:" + value);
       return arguments;
    }
 
    public MbLoopAnalysis analyse(CodeSegment loop) {
+      System.out.println("Analysing Loop");
+      //loopCounter.increment();
+      //System.out.println("Analysing Loop "+loopCounter);
       // Build MicroBlaze instructions cache
-      List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
+      //List<MbInstruction> mbInstructions = MicroBlazeParser.getMbInstructions(
+      //        loop.getAddresses(), loop.getInstructions());
+      List<MbInstruction> mbInstructions = MbParserUtils.getMbInstructions(
               loop.getAddresses(), loop.getInstructions());
 
       // Gather complete pass analysis data
@@ -93,14 +106,18 @@ public class MbLoopAnalyser {
       // Expand instructions into very big instructions
       MbVbiParser vbiParser = new MbVbiParser(asmData);
       List<VeryBigInstruction32> vbis = VbiUtils.getVbis(mbInstructions, vbiParser);
+      // Dotty Before
+      //IoUtils.write(new File("E:/loop-before.dotty"), VbiUtils.generateDotFile(vbis));
 
-      GraphBuilder graphBuilder = new MbGraphBuilder(weights);
+      GraphBuilder graphBuilder = new MbGraphBuilder(weights, enableSpeculation);
       GraphNode rootNode = graphBuilder.buildGraph(vbis);
 
       VbiAnalysis vbiAnalysisOriginal = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
 
       optimizeVbis(vbis);
-      graphBuilder = new MbGraphBuilder(weights);
+      // Dotty After
+      //IoUtils.write(new File("E:/loop-after.dotty"), VbiUtils.generateDotFile(vbis));
+      graphBuilder = new MbGraphBuilder(weights, enableSpeculation);
       rootNode = graphBuilder.buildGraph(vbis);
 
       VbiAnalysis vbiAnalysisTransformed = VbiAnalysis.newAnalysis(vbis, MbInstructionName.add, rootNode);
@@ -127,4 +144,6 @@ public class MbLoopAnalyser {
    }
    private List<VbiOptimizer> optimizers;
    private WeightTable weights;
+   private boolean enableSpeculation;
+   //private IntCounter loopCounter;
 }

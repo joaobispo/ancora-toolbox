@@ -19,14 +19,14 @@ package org.specs.DymaLib.MicroBlaze.Assembly;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.specs.DymaLib.Assembly.AssemblyAnalysis;
+import org.specs.DymaLib.PreAnalysis.AssemblyAnalysis;
 import org.specs.DymaLib.Liveness.LivenessAnalyser;
 import org.specs.DymaLib.Liveness.LivenessAnalysis;
 import org.suikasoft.SharedLibrary.MicroBlaze.CarryProperties;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbRegisterId;
 import org.suikasoft.SharedLibrary.MicroBlaze.MbUtils;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbInstruction;
-import org.suikasoft.SharedLibrary.MicroBlaze.ParsedInstruction.MbOperand;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbInstruction;
+import org.suikasoft.SharedLibrary.MicroBlaze.Parsing.MbOperand;
 import org.suikasoft.SharedLibrary.Processors.RegisterTable;
 
 /**

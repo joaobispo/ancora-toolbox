@@ -194,17 +194,20 @@ public class DottyStraigthLineLoop {
    }
 
    private void addInputOperand(Operand operand, String operationId) {
-              String operandId = null;
+      String operandId = null;
 
          if(operand.type == Operand.TYPE_REGISTER) {
+//                  System.out.println("Adding Input Register:"+operand);
             // Check if we need to declare
 //            operandId = registersIds.get(Integer.toString(operand.value));
             operandId = registersIds.get(operand.value);
 
             // Create
             if(operandId == null) {
+
                //String operandName = "In:r"+operand.value;
                String operandName = "In:"+operand.value;
+//               System.out.println("Created Input Operand '"+operandName+"'");
 
                operandId = newOperandId();
                //operandId = OPERAND_PREFIX + operandCounter;

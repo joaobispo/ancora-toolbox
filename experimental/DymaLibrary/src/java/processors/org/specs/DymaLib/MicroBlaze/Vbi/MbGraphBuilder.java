@@ -43,16 +43,35 @@ public class MbGraphBuilder implements GraphBuilder {
    }
     *
     */
-public MbGraphBuilder(WeightTable nodeWeights) {
+   /**
+    *
+    * @param nodeWeights
+    * @param enableSpeculation if true, branches and stores will not respect the position of the last
+    * known branch. This means that a branch will indicate an exit as soon as
+    * possible and stores will be executed as soon as possible.
+    * <br>It also means that after an exit, we have to rollback to the previous
+    * state before entering the last iteration of the graph.
+    */
+public MbGraphBuilder(WeightTable nodeWeights, boolean enableSpeculation) {
    this.registerWrites = new HashMap<String, GraphNode>();
+   this.enableSpeculation = enableSpeculation;
       this.nodeWeights = nodeWeights;
       this.lastBranch = null;
       this.lastStore = null;
       this.rootNode = null;
 }
 
-   public MbGraphBuilder(Map<String, Integer> nodeWeights) {
-      this(new WeightTable(nodeWeights, DEFAULT_INSTRUCTION_WEIGHT));
+   /**
+    *
+    * @param nodeWeights
+    * @param enableSpeculation if true, branches and stores will not respect the position of the last
+    * known branch. This means that a branch will indicate an exit as soon as
+    * possible and stores will be executed as soon as possible.
+    * <br>It also means that after an exit, we have to rollback to the previous
+    * state before entering the last iteration of the graph.
+    */
+   public MbGraphBuilder(Map<String, Integer> nodeWeights, boolean enableSpeculation) {
+      this(new WeightTable(nodeWeights, DEFAULT_INSTRUCTION_WEIGHT), enableSpeculation);
       //this.registerWrites = new HashMap<String, GraphNode>();
       //this.nodeWeights = nodeWeights;
       //this.lastBranch = null;
@@ -262,7 +281,9 @@ public MbGraphBuilder(WeightTable nodeWeights) {
       }
 
       // Check last branch
-      if (lastBranch != null) {
+      //boolean checkLastBranch = !enableSpeculation && lastBranch != null;
+      //if (!enableSpeculation && lastBranch != null) {
+      if (checkLastBranch()) {
          int weigth = getWeigth(lastBranch.getId());
 
          parentNodes.add(lastBranch);
@@ -293,7 +314,9 @@ public MbGraphBuilder(WeightTable nodeWeights) {
       }
 
       // Check last branch
-      if (lastBranch != null) {
+      //boolean checkLastBranch = !enableSpeculation && lastBranch != null;
+      //if (!enableSpeculation && lastBranch != null) {
+      if (checkLastBranch()) {
          parentNodes.add(lastBranch);
          parentWeights.add(ZERO_INSTRUCTION_WEIGHT);
          parentProps.add(PROP_BRANCH);
@@ -326,25 +349,24 @@ public MbGraphBuilder(WeightTable nodeWeights) {
 
    private int getWeigth(String id) {
       return nodeWeights.getWeigth(id);
-      /*
-      if(nodeWeights == null) {
-         return DEFAULT_INSTRUCTION_WEIGHT;
-      }
-
-      Integer weight = nodeWeights.get(id);
-      if(weight == null) {
-         LoggingUtils.getLogger().
-                 warning("Could not find weigth for id '"+id+"'.");
-         return DEFAULT_INSTRUCTION_WEIGHT;
-      }
-
-      return weight;
-       * 
-       */
    }
 
+
+   private boolean checkLastBranch() {
+      boolean lastBranchExists = lastBranch != null;
+      return !enableSpeculation && lastBranchExists;
+   }
+
+   /**
+    * If true, branches and stores will not respect the position of the last
+    * known branch. This means that a branch will indicate an exit as soon as
+    * possible and stores will be executed as soon as possible.
+    * <br>It also means that after an exit, we have to rollback to the previous
+    * state before entering the last iteration of the graph. 
+    */
+   private boolean enableSpeculation;
+
    private Map<String, GraphNode> registerWrites;
-   //private Map<String, Integer> nodeWeights;
    private WeightTable nodeWeights;
    private GraphNode lastBranch;
    private GraphNode lastStore;
@@ -358,12 +380,6 @@ public MbGraphBuilder(WeightTable nodeWeights) {
    
    public static final String PROP_STORE = "store";
    public static final String PROP_BRANCH = "branch";
-
-
-
-
-
-
    }
 
 

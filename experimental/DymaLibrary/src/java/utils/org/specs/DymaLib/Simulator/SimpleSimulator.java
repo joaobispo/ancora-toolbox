@@ -18,7 +18,7 @@ package org.specs.DymaLib.Simulator;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.specs.DymaLib.Assembly.CodeSegment;
+import org.specs.DymaLib.PreAnalysis.CodeSegment;
 import org.specs.DymaLib.LoopDetection.LoopDetector;
 import org.specs.DymaLib.TraceReader;
 import org.suikasoft.SharedLibrary.LoggingUtils;
@@ -128,14 +128,16 @@ public class SimpleSimulator {
 
          approvedLoops.add(loop);
       }
-
+//System.out.println("Approved Loops:");
+//      System.out.println(approvedLoops);
       if(approvedLoops.isEmpty()) {
          return null;
       }
       
       addRegisterValuesToLoop(approvedLoops, traceReader);
 
-      return loops;
+      //return loops; //BUG
+      return approvedLoops;
    }
 
    private static void addRegisterValuesToLoop(List<CodeSegment> loops, TraceReader traceReader) {      
@@ -149,7 +151,15 @@ public class SimpleSimulator {
          return;
       }
 
-      loops.get(0).setRegisterValues(registerValues);
+      if(loops.size() > 1) {
+         LoggingUtils.getLogger().
+                 warning("Adding values to constant registers in more than one loop. The values will not be reliable.");
+      }
+
+      for(CodeSegment codeSegment : loops) {
+        codeSegment.setRegisterValues(registerValues);
+      }
+      //loops.get(0).setRegisterValues(registerValues);
 
    }
 

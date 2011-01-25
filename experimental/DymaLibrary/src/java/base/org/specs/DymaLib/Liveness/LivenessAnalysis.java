@@ -18,8 +18,8 @@
 package org.specs.DymaLib.Liveness;
 
 import java.util.Collection;
-import org.specs.DymaLib.Assembly.ConstantRegister;
-import org.specs.DymaLib.Assembly.LiveOut;
+import org.specs.DymaLib.PreAnalysis.ConstantRegister;
+import org.specs.DymaLib.PreAnalysis.LiveOut;
 
 /**
  * Contains the results of an analysis to operands from a list of instruction
